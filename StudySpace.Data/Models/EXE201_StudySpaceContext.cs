@@ -18,6 +18,7 @@ public partial class EXE201_StudySpaceContext : DbContext
     {
     }
 
+
     public virtual DbSet<Account> Accounts { get; set; }
 
     public virtual DbSet<Amity> Amities { get; set; }

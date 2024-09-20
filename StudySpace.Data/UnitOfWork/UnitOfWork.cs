@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FENGSHUIKOI.Data.UnitOfWork
+namespace StudySpace.Data.UnitOfWork
 {
     public class UnitOfWork
     {
