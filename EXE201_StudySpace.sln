@@ -5,11 +5,13 @@ VisualStudioVersion = 17.10.35013.160
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StudySpace.Data", "StudySpace.Data\StudySpace.Data.csproj", "{579EA4B3-90E3-47E2-940B-71B2F70AAE36}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StudySpace.Service", "StudySpace.Service\StudySpace.Service.csproj", "{8D42A4FA-BE71-4939-B16D-7BF85DB7E8A5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StudySpace.Service", "StudySpace.Service\StudySpace.Service.csproj", "{8D42A4FA-BE71-4939-B16D-7BF85DB7E8A5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StudySpace.Common", "StudySpace.Common\StudySpace.Common.csproj", "{80D15050-98BA-4008-8C3A-F57308FBD293}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StudySpace.Common", "StudySpace.Common\StudySpace.Common.csproj", "{80D15050-98BA-4008-8C3A-F57308FBD293}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StudySpace.API", "StudySpace.API\StudySpace.API.csproj", "{ACFEC938-9A83-40D4-B4D9-4FDF01D57418}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StudySpace.API", "StudySpace.API\StudySpace.API.csproj", "{ACFEC938-9A83-40D4-B4D9-4FDF01D57418}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StudySpace.DTOs", "StudySpace.DTOs\StudySpace.DTOs.csproj", "{1625A7CD-0E1C-4698-B3C0-C15BDC197AD8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{ACFEC938-9A83-40D4-B4D9-4FDF01D57418}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ACFEC938-9A83-40D4-B4D9-4FDF01D57418}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ACFEC938-9A83-40D4-B4D9-4FDF01D57418}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1625A7CD-0E1C-4698-B3C0-C15BDC197AD8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1625A7CD-0E1C-4698-B3C0-C15BDC197AD8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1625A7CD-0E1C-4698-B3C0-C15BDC197AD8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1625A7CD-0E1C-4698-B3C0-C15BDC197AD8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,0 +1,41 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\BINF\\Desktop\\Term08\\EXE201\\study-space\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{ACFEC938-9A83-40D4-B4D9-4FDF01D57418}|StudySpace.API\\StudySpace.API.csproj|c:\\users\\binf\\desktop\\term08\\exe201\\study-space\\studyspace.api\\controllers\\accountscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{ACFEC938-9A83-40D4-B4D9-4FDF01D57418}|StudySpace.API\\StudySpace.API.csproj|solutionrelative:studyspace.api\\controllers\\accountscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{b1e99781-ab81-11d0-b683-00aa00a3ee26}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "AccountsController.cs",
+              "DocumentMoniker": "C:\\Users\\BINF\\Desktop\\Term08\\EXE201\\study-space\\StudySpace.API\\Controllers\\AccountsController.cs",
+              "RelativeDocumentMoniker": "StudySpace.API\\Controllers\\AccountsController.cs",
+              "ToolTip": "C:\\Users\\BINF\\Desktop\\Term08\\EXE201\\study-space\\StudySpace.API\\Controllers\\AccountsController.cs",
+              "RelativeToolTip": "StudySpace.API\\Controllers\\AccountsController.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAB0AAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-09-22T10:45:16.612Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

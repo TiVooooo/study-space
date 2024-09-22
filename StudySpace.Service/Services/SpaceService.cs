@@ -6,10 +6,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using StudySpace.Common;
 
 namespace StudySpace.Service.Services
 {
-    public class SpaceService
+    public interface ISpaceService
+    {
+        Task<IBusinessResult> GetAll();
+        Task<IBusinessResult> GetById(int id);
+        Task<IBusinessResult> Update(Space space);
+        Task<IBusinessResult> DeleteById(int id);
+        Task<IBusinessResult> Save(Space space);
+    }
+
+    public class SpaceService : ISpaceService
     {
         private readonly UnitOfWork _unitOfWork;
 
@@ -100,11 +110,11 @@ namespace StudySpace.Service.Services
         }
 
 
-        public async Task<IBusinessResult> Save(Space payment)
+        public async Task<IBusinessResult> Save(Space space)
         {
             try
             {
-                int result = await _unitOfWork.SpaceRepository.CreateAsync(payment);
+                int result = await _unitOfWork.SpaceRepository.CreateAsync(space);
                 if (result > 0)
                 {
                     return new BusinessResult(Const.SUCCESS_CREATE, Const.SUCCESS_CREATE_MSG);
@@ -120,12 +130,12 @@ namespace StudySpace.Service.Services
             }
         }
 
-        public async Task<IBusinessResult> Update(Space payment)
+        public async Task<IBusinessResult> Update(Space space)
         {
             try
             {
 
-                int result = await _unitOfWork.SpaceRepository.UpdateAsync(payment);
+                int result = await _unitOfWork.SpaceRepository.UpdateAsync(space);
                 if (result > 0)
                 {
                     return new BusinessResult(Const.FAIL_UDATE, Const.SUCCESS_UDATE_MSG);
