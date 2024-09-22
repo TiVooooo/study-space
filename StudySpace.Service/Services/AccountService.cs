@@ -18,6 +18,8 @@ namespace StudySpace.Service.Services
         Task<IBusinessResult> Update(Account acc);
         Task<IBusinessResult> DeleteById(int id);
         Task<IBusinessResult> Save(Account acc);
+
+        
     }
 
     public class AccountService : IAccountService
