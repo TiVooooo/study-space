@@ -13,9 +13,9 @@ public partial class Store
 
     public string ThumbnailUrl { get; set; }
 
-    public int? Longitude { get; set; }
+    public double? Longitude { get; set; }
 
-    public int? Latitude { get; set; }
+    public double? Latitude { get; set; }
 
     public string Description { get; set; }
 
@@ -34,6 +34,12 @@ public partial class Store
     public string Phone { get; set; }
 
     public DateTime? CreateDate { get; set; }
+
+    public DateTime? OpenTime { get; set; }
+
+    public DateTime? CloseTime { get; set; }
+
+    public bool? IsOverNight { get; set; }
 
     public bool? IsActive { get; set; }
 

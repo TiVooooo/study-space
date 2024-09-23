@@ -9,11 +9,9 @@ public partial class UserRole
 {
     public int Id { get; set; }
 
-    public int? UserId { get; set; }
-
     public string RoleName { get; set; }
 
     public string Description { get; set; }
 
-    public virtual Account User { get; set; }
+    public virtual ICollection<Account> Accounts { get; set; } = new List<Account>();
 }
