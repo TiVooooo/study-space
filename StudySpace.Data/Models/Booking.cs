@@ -17,7 +17,7 @@ public partial class Booking
 
     public DateTime? EndTime { get; set; }
 
-    public string Status { get; set; }
+    public bool? Status { get; set; }
 
     public decimal? Fee { get; set; }
 
