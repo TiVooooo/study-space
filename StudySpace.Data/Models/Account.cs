@@ -23,9 +23,13 @@ public partial class Account
 
     public string Gender { get; set; }
 
+    public DateTime? Dob { get; set; }
+
     public DateTime? CreatedDate { get; set; }
 
     public bool? IsActive { get; set; }
+
+    public double? Wallet { get; set; }
 
     public string AvatarUrl { get; set; }
 

@@ -19,7 +19,7 @@ public partial class Transaction
 
     public DateTime? Date { get; set; }
 
-    public decimal? Amount { get; set; }
+    public double? Amount { get; set; }
 
     public virtual Booking Booking { get; set; }
 

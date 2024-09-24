@@ -15,7 +15,7 @@ public partial class EXE201_StudySpaceContext : DbContext
     }
 
     public EXE201_StudySpaceContext()
-
+     
     {
     }
 
@@ -31,7 +31,6 @@ public partial class EXE201_StudySpaceContext : DbContext
     }
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseSqlServer(GetConnectionString("DefaultConnection"));
-
 
     public virtual DbSet<Account> Accounts { get; set; }
 
@@ -63,15 +62,16 @@ public partial class EXE201_StudySpaceContext : DbContext
     {
         modelBuilder.Entity<Account>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Account__3214EC27DF61F3EA");
+            entity.HasKey(e => e.Id).HasName("PK__Account__3214EC27F7265F3D");
 
             entity.ToTable("Account");
 
-            entity.Property(e => e.Id)
-                .ValueGeneratedNever()
-                .HasColumnName("ID");
+            entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.AvatarUrl).IsUnicode(false);
             entity.Property(e => e.CreatedDate).HasColumnType("datetime");
+            entity.Property(e => e.Dob)
+                .HasColumnType("datetime")
+                .HasColumnName("DOB");
             entity.Property(e => e.Email).IsUnicode(false);
             entity.Property(e => e.Gender).HasMaxLength(4);
             entity.Property(e => e.Password).IsUnicode(false);
@@ -85,11 +85,9 @@ public partial class EXE201_StudySpaceContext : DbContext
 
         modelBuilder.Entity<Amity>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Amities__3214EC2733276D6C");
+            entity.HasKey(e => e.Id).HasName("PK__Amities__3214EC27354802C8");
 
-            entity.Property(e => e.Id)
-                .ValueGeneratedNever()
-                .HasColumnName("ID");
+            entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.Description).HasColumnType("ntext");
             entity.Property(e => e.RoomId).HasColumnName("RoomID");
 
@@ -100,16 +98,14 @@ public partial class EXE201_StudySpaceContext : DbContext
 
         modelBuilder.Entity<Booking>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Booking__3214EC2760CF9FBD");
+            entity.HasKey(e => e.Id).HasName("PK__Booking__3214EC275C6A0580");
 
             entity.ToTable("Booking");
 
-            entity.Property(e => e.Id)
-                .ValueGeneratedNever()
-                .HasColumnName("ID");
+            entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.BookingDate).HasColumnType("datetime");
             entity.Property(e => e.EndTime).HasColumnType("datetime");
-            entity.Property(e => e.Fee).HasColumnType("decimal(10, 2)");
+            entity.Property(e => e.Note).HasColumnType("ntext");
             entity.Property(e => e.RoomId).HasColumnName("RoomID");
             entity.Property(e => e.StartTime).HasColumnType("datetime");
             entity.Property(e => e.Status).HasDefaultValueSql("((1))");
@@ -126,13 +122,11 @@ public partial class EXE201_StudySpaceContext : DbContext
 
         modelBuilder.Entity<Feedback>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Feedback__3214EC273833A53B");
+            entity.HasKey(e => e.Id).HasName("PK__Feedback__3214EC2756161DAC");
 
             entity.ToTable("Feedback");
 
-            entity.Property(e => e.Id)
-                .ValueGeneratedNever()
-                .HasColumnName("ID");
+            entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.BookingId).HasColumnName("BookingID");
             entity.Property(e => e.ReviewDate).HasColumnType("datetime");
             entity.Property(e => e.ReviewText).HasColumnType("ntext");
@@ -149,13 +143,11 @@ public partial class EXE201_StudySpaceContext : DbContext
 
         modelBuilder.Entity<ImageFeedback>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Image_Fe__3214EC2798FAAA77");
+            entity.HasKey(e => e.Id).HasName("PK__Image_Fe__3214EC2790971DC9");
 
             entity.ToTable("Image_Feedback");
 
-            entity.Property(e => e.Id)
-                .ValueGeneratedNever()
-                .HasColumnName("ID");
+            entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.FeedbackId).HasColumnName("FeedbackID");
 
             entity.HasOne(d => d.Feedback).WithMany(p => p.ImageFeedbacks)
@@ -165,13 +157,11 @@ public partial class EXE201_StudySpaceContext : DbContext
 
         modelBuilder.Entity<ImageRoom>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Image_Ro__3214EC2770DFE2B3");
+            entity.HasKey(e => e.Id).HasName("PK__Image_Ro__3214EC279F000FE6");
 
             entity.ToTable("Image_Room");
 
-            entity.Property(e => e.Id)
-                .ValueGeneratedNever()
-                .HasColumnName("ID");
+            entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.RoomId).HasColumnName("RoomID");
 
             entity.HasOne(d => d.Room).WithMany(p => p.ImageRooms)
@@ -181,29 +171,23 @@ public partial class EXE201_StudySpaceContext : DbContext
 
         modelBuilder.Entity<Package>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Package__3214EC27885EF241");
+            entity.HasKey(e => e.Id).HasName("PK__Package__3214EC27DC558C29");
 
             entity.ToTable("Package");
 
-            entity.Property(e => e.Id)
-                .ValueGeneratedNever()
-                .HasColumnName("ID");
+            entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.Description).HasColumnType("ntext");
-            entity.Property(e => e.Fee).HasColumnType("decimal(10, 2)");
         });
 
         modelBuilder.Entity<Room>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Room__3214EC27A3066F06");
+            entity.HasKey(e => e.Id).HasName("PK__Room__3214EC27AD849216");
 
             entity.ToTable("Room");
 
-            entity.Property(e => e.Id)
-                .ValueGeneratedNever()
-                .HasColumnName("ID");
-            entity.Property(e => e.Area).HasColumnType("decimal(10, 2)");
+            entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.Description).HasColumnType("ntext");
-            entity.Property(e => e.PricePerHour).HasColumnType("decimal(10, 2)");
+            entity.Property(e => e.HouseRule).HasColumnType("ntext");
             entity.Property(e => e.SpaceId).HasColumnName("SpaceID");
             entity.Property(e => e.StoreId).HasColumnName("StoreID");
 
@@ -218,25 +202,21 @@ public partial class EXE201_StudySpaceContext : DbContext
 
         modelBuilder.Entity<Space>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Space__3214EC27C820A4B8");
+            entity.HasKey(e => e.Id).HasName("PK__Space__3214EC27C1D649B2");
 
             entity.ToTable("Space");
 
-            entity.Property(e => e.Id)
-                .ValueGeneratedNever()
-                .HasColumnName("ID");
+            entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.Description).HasColumnType("ntext");
         });
 
         modelBuilder.Entity<Store>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Store__3214EC27CB533FEA");
+            entity.HasKey(e => e.Id).HasName("PK__Store__3214EC272B50A3A1");
 
             entity.ToTable("Store");
 
-            entity.Property(e => e.Id)
-                .ValueGeneratedNever()
-                .HasColumnName("ID");
+            entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.CloseTime).HasColumnType("datetime");
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.Description).HasColumnType("ntext");
@@ -247,15 +227,12 @@ public partial class EXE201_StudySpaceContext : DbContext
 
         modelBuilder.Entity<StorePackage>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Store_Pa__3214EC2710471DB3");
+            entity.HasKey(e => e.Id).HasName("PK__Store_Pa__3214EC2731F6228E");
 
             entity.ToTable("Store_Package");
 
-            entity.Property(e => e.Id)
-                .ValueGeneratedNever()
-                .HasColumnName("ID");
+            entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.EndDate).HasColumnType("datetime");
-            entity.Property(e => e.Fee).HasColumnType("decimal(10, 2)");
             entity.Property(e => e.PackageId).HasColumnName("PackageID");
             entity.Property(e => e.StartDate).HasColumnType("datetime");
             entity.Property(e => e.StoreId).HasColumnName("StoreID");
@@ -271,14 +248,11 @@ public partial class EXE201_StudySpaceContext : DbContext
 
         modelBuilder.Entity<Transaction>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Transact__3214EC277E6031D8");
+            entity.HasKey(e => e.Id).HasName("PK__Transact__3214EC2703CA26AA");
 
             entity.ToTable("Transaction");
 
-            entity.Property(e => e.Id)
-                .ValueGeneratedNever()
-                .HasColumnName("ID");
-            entity.Property(e => e.Amount).HasColumnType("decimal(10, 2)");
+            entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.BookingId).HasColumnName("BookingID");
             entity.Property(e => e.Date).HasColumnType("datetime");
             entity.Property(e => e.PackageId).HasColumnName("PackageID");
@@ -299,18 +273,16 @@ public partial class EXE201_StudySpaceContext : DbContext
 
             entity.HasOne(d => d.User).WithMany(p => p.Transactions)
                 .HasForeignKey(d => d.UserId)
-                .HasConstraintName("FK__Transacti__Amoun__4AB81AF0");
+                .HasConstraintName("FK__Transacti__UserI__4AB81AF0");
         });
 
         modelBuilder.Entity<UserRole>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__UserRole__3214EC27A5F9867A");
+            entity.HasKey(e => e.Id).HasName("PK__UserRole__3214EC27700BE186");
 
             entity.ToTable("UserRole");
 
-            entity.Property(e => e.Id)
-                .ValueGeneratedNever()
-                .HasColumnName("ID");
+            entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.Description).HasColumnType("ntext");
         });
 

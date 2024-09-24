@@ -19,13 +19,15 @@ public partial class Booking
 
     public bool? Status { get; set; }
 
-    public decimal? Fee { get; set; }
+    public double? Fee { get; set; }
 
     public DateTime? BookingDate { get; set; }
 
     public string PaymentMethod { get; set; }
 
     public bool? Checkin { get; set; }
+
+    public string Note { get; set; }
 
     public virtual ICollection<Feedback> Feedbacks { get; set; } = new List<Feedback>();
 

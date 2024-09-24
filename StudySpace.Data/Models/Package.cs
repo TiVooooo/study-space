@@ -11,7 +11,7 @@ public partial class Package
 
     public string Name { get; set; }
 
-    public decimal? Fee { get; set; }
+    public double? Fee { get; set; }
 
     public string Description { get; set; }
 
