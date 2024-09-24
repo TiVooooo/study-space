@@ -20,9 +20,11 @@ namespace StudySpace.Service.Services
             Task<IBusinessResult> Update(Room space);
             Task<IBusinessResult> DeleteById(int id);
             Task<IBusinessResult> Save(Room space);
+            Task<IBusinessResult> SearchRooms(int pageNumber, int pageSize, string space, string location, string room, int person);
+
         }
 
-        public class RoomService : IRoomService
+    public class RoomService : IRoomService
         {
             private readonly UnitOfWork _unitOfWork;
 
@@ -96,7 +98,7 @@ namespace StudySpace.Service.Services
             }
         }
 
-        /*public async Task<IBusinessResult> SearchRooms(int pageNumber, int pageSize, string space, string location, string room, int person)
+        public async Task<IBusinessResult> SearchRooms(int pageNumber, int pageSize, string space, string location, string room, int person)
         {
             try
             {
@@ -106,14 +108,13 @@ namespace StudySpace.Service.Services
                 if (!string.IsNullOrWhiteSpace(space) || !string.IsNullOrWhiteSpace(location) || !string.IsNullOrWhiteSpace(room) || person == 0)
                 {
                     rooms = rooms.Where(r =>
-                        (string.IsNullOrWhiteSpace(space) || r.Space?.SpaceName.Contains(space, StringComparison.OrdinalIgnoreCase)) &&
-                        (string.IsNullOrWhiteSpace(location) || r.Store?.Address.Contains(location, StringComparison.OrdinalIgnoreCase)) &&
-                        (string.IsNullOrWhiteSpace(room) || r.RoomName.Contains(room, StringComparison.OrdinalIgnoreCase)) &&
+                        (space.Equals("All") || (r.Space != null && r.Space.SpaceName.Contains(space, StringComparison.OrdinalIgnoreCase))) &&
+                        (location.Equals("All") || (r.Store != null && r.Store.Address.Contains(location, StringComparison.OrdinalIgnoreCase))) &&
+                        (room.Equals("All") || r.RoomName.Contains(room, StringComparison.OrdinalIgnoreCase)) &&
                         (r.Capacity >= person)
                     ).ToList();
                 }
 
-                // Apply pagination
                 var pagedRooms = rooms.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
 
                 var list = pagedRooms.Select(r => new RoomModel
@@ -140,7 +141,7 @@ namespace StudySpace.Service.Services
                 return new BusinessResult(Const.ERROR_EXEPTION, ex.Message);
             }
         }
-*/
+
 
         public async Task<IBusinessResult> GetById(int id)
             {
