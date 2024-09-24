@@ -9,8 +9,6 @@ public partial class Store
 {
     public int Id { get; set; }
 
-    public int? SpaceId { get; set; }
-
     public string ThumbnailUrl { get; set; }
 
     public double? Longitude { get; set; }
@@ -44,8 +42,6 @@ public partial class Store
     public bool? IsActive { get; set; }
 
     public virtual ICollection<Room> Rooms { get; set; } = new List<Room>();
-
-    public virtual Space Space { get; set; }
 
     public virtual ICollection<StorePackage> StorePackages { get; set; } = new List<StorePackage>();
 

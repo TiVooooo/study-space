@@ -15,7 +15,7 @@ public partial class EXE201_StudySpaceContext : DbContext
     }
 
     public EXE201_StudySpaceContext()
-       
+
     {
     }
 
@@ -31,6 +31,7 @@ public partial class EXE201_StudySpaceContext : DbContext
     }
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseSqlServer(GetConnectionString("DefaultConnection"));
+
 
     public virtual DbSet<Account> Accounts { get; set; }
 
@@ -62,7 +63,7 @@ public partial class EXE201_StudySpaceContext : DbContext
     {
         modelBuilder.Entity<Account>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Account__3214EC27D9D02DCE");
+            entity.HasKey(e => e.Id).HasName("PK__Account__3214EC27DF61F3EA");
 
             entity.ToTable("Account");
 
@@ -84,7 +85,7 @@ public partial class EXE201_StudySpaceContext : DbContext
 
         modelBuilder.Entity<Amity>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Amities__3214EC27FD534DE5");
+            entity.HasKey(e => e.Id).HasName("PK__Amities__3214EC2733276D6C");
 
             entity.Property(e => e.Id)
                 .ValueGeneratedNever()
@@ -99,7 +100,7 @@ public partial class EXE201_StudySpaceContext : DbContext
 
         modelBuilder.Entity<Booking>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Booking__3214EC27C122BF01");
+            entity.HasKey(e => e.Id).HasName("PK__Booking__3214EC2760CF9FBD");
 
             entity.ToTable("Booking");
 
@@ -125,7 +126,7 @@ public partial class EXE201_StudySpaceContext : DbContext
 
         modelBuilder.Entity<Feedback>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Feedback__3214EC27A5486868");
+            entity.HasKey(e => e.Id).HasName("PK__Feedback__3214EC273833A53B");
 
             entity.ToTable("Feedback");
 
@@ -148,7 +149,7 @@ public partial class EXE201_StudySpaceContext : DbContext
 
         modelBuilder.Entity<ImageFeedback>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Image_Fe__3214EC27A739B7B1");
+            entity.HasKey(e => e.Id).HasName("PK__Image_Fe__3214EC2798FAAA77");
 
             entity.ToTable("Image_Feedback");
 
@@ -164,7 +165,7 @@ public partial class EXE201_StudySpaceContext : DbContext
 
         modelBuilder.Entity<ImageRoom>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Image_Ro__3214EC27D0141CA5");
+            entity.HasKey(e => e.Id).HasName("PK__Image_Ro__3214EC2770DFE2B3");
 
             entity.ToTable("Image_Room");
 
@@ -180,7 +181,7 @@ public partial class EXE201_StudySpaceContext : DbContext
 
         modelBuilder.Entity<Package>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Package__3214EC2793CDDEED");
+            entity.HasKey(e => e.Id).HasName("PK__Package__3214EC27885EF241");
 
             entity.ToTable("Package");
 
@@ -193,7 +194,7 @@ public partial class EXE201_StudySpaceContext : DbContext
 
         modelBuilder.Entity<Room>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Room__3214EC27BD8B164E");
+            entity.HasKey(e => e.Id).HasName("PK__Room__3214EC27A3066F06");
 
             entity.ToTable("Room");
 
@@ -203,16 +204,21 @@ public partial class EXE201_StudySpaceContext : DbContext
             entity.Property(e => e.Area).HasColumnType("decimal(10, 2)");
             entity.Property(e => e.Description).HasColumnType("ntext");
             entity.Property(e => e.PricePerHour).HasColumnType("decimal(10, 2)");
+            entity.Property(e => e.SpaceId).HasColumnName("SpaceID");
             entity.Property(e => e.StoreId).HasColumnName("StoreID");
+
+            entity.HasOne(d => d.Space).WithMany(p => p.Rooms)
+                .HasForeignKey(d => d.SpaceId)
+                .HasConstraintName("FK__Room__SpaceID__412EB0B6");
 
             entity.HasOne(d => d.Store).WithMany(p => p.Rooms)
                 .HasForeignKey(d => d.StoreId)
-                .HasConstraintName("FK__Room__StoreID__412EB0B6");
+                .HasConstraintName("FK__Room__StoreID__403A8C7D");
         });
 
         modelBuilder.Entity<Space>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Space__3214EC27881A5B36");
+            entity.HasKey(e => e.Id).HasName("PK__Space__3214EC27C820A4B8");
 
             entity.ToTable("Space");
 
@@ -224,7 +230,7 @@ public partial class EXE201_StudySpaceContext : DbContext
 
         modelBuilder.Entity<Store>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Store__3214EC2721BF0E0A");
+            entity.HasKey(e => e.Id).HasName("PK__Store__3214EC27CB533FEA");
 
             entity.ToTable("Store");
 
@@ -236,17 +242,12 @@ public partial class EXE201_StudySpaceContext : DbContext
             entity.Property(e => e.Description).HasColumnType("ntext");
             entity.Property(e => e.IsOverNight).HasColumnName("isOverNight");
             entity.Property(e => e.OpenTime).HasColumnType("datetime");
-            entity.Property(e => e.SpaceId).HasColumnName("SpaceID");
             entity.Property(e => e.ThumbnailUrl).IsUnicode(false);
-
-            entity.HasOne(d => d.Space).WithMany(p => p.Stores)
-                .HasForeignKey(d => d.SpaceId)
-                .HasConstraintName("FK__Store__SpaceID__3E52440B");
         });
 
         modelBuilder.Entity<StorePackage>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Store_Pa__3214EC2751D89F19");
+            entity.HasKey(e => e.Id).HasName("PK__Store_Pa__3214EC2710471DB3");
 
             entity.ToTable("Store_Package");
 
@@ -270,7 +271,7 @@ public partial class EXE201_StudySpaceContext : DbContext
 
         modelBuilder.Entity<Transaction>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Transact__3214EC270DD3B0E2");
+            entity.HasKey(e => e.Id).HasName("PK__Transact__3214EC277E6031D8");
 
             entity.ToTable("Transaction");
 
@@ -303,7 +304,7 @@ public partial class EXE201_StudySpaceContext : DbContext
 
         modelBuilder.Entity<UserRole>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__UserRole__3214EC279A025141");
+            entity.HasKey(e => e.Id).HasName("PK__UserRole__3214EC27A5F9867A");
 
             entity.ToTable("UserRole");
 

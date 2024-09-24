@@ -15,5 +15,5 @@ public partial class Space
 
     public bool? Status { get; set; }
 
-    public virtual ICollection<Store> Stores { get; set; } = new List<Store>();
+    public virtual ICollection<Room> Rooms { get; set; } = new List<Room>();
 }
