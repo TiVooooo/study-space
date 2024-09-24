@@ -260,3 +260,6 @@ C:\Users\BINF\Desktop\Term08\EXE201\study-space\StudySpace.API\bin\Debug\net8.0\
 C:\Users\BINF\Desktop\Term08\EXE201\study-space\StudySpace.API\obj\Debug\net8.0\StudySpace.API.RazorAssemblyInfo.cache
 C:\Users\BINF\Desktop\Term08\EXE201\study-space\StudySpace.API\obj\Debug\net8.0\StudySpace.API.RazorAssemblyInfo.cs
 C:\Users\BINF\Desktop\Term08\EXE201\study-space\StudySpace.API\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Users\BINF\Desktop\Term08\EXE201\study-space\StudySpace.API\bin\Debug\net8.0\libman.json
+C:\Users\BINF\Desktop\Term08\EXE201\study-space\StudySpace.API\bin\Debug\net8.0\StudySpace.DTOs.dll
+C:\Users\BINF\Desktop\Term08\EXE201\study-space\StudySpace.API\bin\Debug\net8.0\StudySpace.DTOs.pdb

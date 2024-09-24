@@ -17,35 +17,35 @@ build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = StudySpace.API
 build_property.RootNamespace = StudySpace.API
-build_property.ProjectDir = C:\Term8\EXE201\V2\study-space\StudySpace.API\
+build_property.ProjectDir = C:\Users\BINF\Desktop\Term08\EXE201\study-space\StudySpace.API\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.RazorLangVersion = 8.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = C:\Term8\EXE201\V2\study-space\StudySpace.API
+build_property.MSBuildProjectDirectory = C:\Users\BINF\Desktop\Term08\EXE201\study-space\StudySpace.API
 build_property._RazorSourceGeneratorDebug = 
 
-[C:/Term8/EXE201/V2/study-space/StudySpace.API/Views/Accounts/Create.cshtml]
+[C:/Users/BINF/Desktop/Term08/EXE201/study-space/StudySpace.API/Views/Accounts/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudHNcQ3JlYXRlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Term8/EXE201/V2/study-space/StudySpace.API/Views/Accounts/Delete.cshtml]
+[C:/Users/BINF/Desktop/Term08/EXE201/study-space/StudySpace.API/Views/Accounts/Delete.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudHNcRGVsZXRlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Term8/EXE201/V2/study-space/StudySpace.API/Views/Accounts/Details.cshtml]
+[C:/Users/BINF/Desktop/Term08/EXE201/study-space/StudySpace.API/Views/Accounts/Details.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudHNcRGV0YWlscy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Term8/EXE201/V2/study-space/StudySpace.API/Views/Accounts/Edit.cshtml]
+[C:/Users/BINF/Desktop/Term08/EXE201/study-space/StudySpace.API/Views/Accounts/Edit.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudHNcRWRpdC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Term8/EXE201/V2/study-space/StudySpace.API/Views/Accounts/Index.cshtml]
+[C:/Users/BINF/Desktop/Term08/EXE201/study-space/StudySpace.API/Views/Accounts/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudHNcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Term8/EXE201/V2/study-space/StudySpace.API/Views/Shared/_ValidationScriptsPartial.cshtml]
+[C:/Users/BINF/Desktop/Term08/EXE201/study-space/StudySpace.API/Views/Shared/_ValidationScriptsPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 

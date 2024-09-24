@@ -1140,6 +1140,19 @@
         "runtime": {
           "bin/placeholder/StudySpace.Data.dll": {}
         }
+      },
+      "StudySpace.DTOs/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v8.0",
+        "dependencies": {
+          "StudySpace.Data": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/StudySpace.DTOs.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/StudySpace.DTOs.dll": {}
+        }
       }
     }
   },
@@ -3143,28 +3156,39 @@
       "type": "project",
       "path": "../StudySpace.Data/StudySpace.Data.csproj",
       "msbuildProject": "../StudySpace.Data/StudySpace.Data.csproj"
+    },
+    "StudySpace.DTOs/1.0.0": {
+      "type": "project",
+      "path": "../StudySpace.DTOs/StudySpace.DTOs.csproj",
+      "msbuildProject": "../StudySpace.DTOs/StudySpace.DTOs.csproj"
     }
   },
   "projectFileDependencyGroups": {
     "net8.0": [
       "StudySpace.Common >= 1.0.0",
+      "StudySpace.DTOs >= 1.0.0",
       "StudySpace.Data >= 1.0.0"
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Tienvo\\.nuget\\packages\\": {}
+    "C:\\Users\\BINF\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Term8\\EXE201\\V2\\study-space\\StudySpace.Service\\StudySpace.Service.csproj",
+      "projectUniqueName": "C:\\Users\\BINF\\Desktop\\Term08\\EXE201\\study-space\\StudySpace.Service\\StudySpace.Service.csproj",
       "projectName": "StudySpace.Service",
-      "projectPath": "C:\\Term8\\EXE201\\V2\\study-space\\StudySpace.Service\\StudySpace.Service.csproj",
-      "packagesPath": "C:\\Users\\Tienvo\\.nuget\\packages\\",
-      "outputPath": "C:\\Term8\\EXE201\\V2\\study-space\\StudySpace.Service\\obj\\",
+      "projectPath": "C:\\Users\\BINF\\Desktop\\Term08\\EXE201\\study-space\\StudySpace.Service\\StudySpace.Service.csproj",
+      "packagesPath": "C:\\Users\\BINF\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\BINF\\Desktop\\Term08\\EXE201\\study-space\\StudySpace.Service\\obj\\",
       "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+      ],
       "configFilePaths": [
-        "C:\\Users\\Tienvo\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\BINF\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -3179,11 +3203,14 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "C:\\Term8\\EXE201\\V2\\study-space\\StudySpace.Common\\StudySpace.Common.csproj": {
-              "projectPath": "C:\\Term8\\EXE201\\V2\\study-space\\StudySpace.Common\\StudySpace.Common.csproj"
+            "C:\\Users\\BINF\\Desktop\\Term08\\EXE201\\study-space\\StudySpace.Common\\StudySpace.Common.csproj": {
+              "projectPath": "C:\\Users\\BINF\\Desktop\\Term08\\EXE201\\study-space\\StudySpace.Common\\StudySpace.Common.csproj"
             },
-            "C:\\Term8\\EXE201\\V2\\study-space\\StudySpace.Data\\StudySpace.Data.csproj": {
-              "projectPath": "C:\\Term8\\EXE201\\V2\\study-space\\StudySpace.Data\\StudySpace.Data.csproj"
+            "C:\\Users\\BINF\\Desktop\\Term08\\EXE201\\study-space\\StudySpace.Data\\StudySpace.Data.csproj": {
+              "projectPath": "C:\\Users\\BINF\\Desktop\\Term08\\EXE201\\study-space\\StudySpace.Data\\StudySpace.Data.csproj"
+            },
+            "C:\\Users\\BINF\\Desktop\\Term08\\EXE201\\study-space\\StudySpace.DTOs\\StudySpace.DTOs.csproj": {
+              "projectPath": "C:\\Users\\BINF\\Desktop\\Term08\\EXE201\\study-space\\StudySpace.DTOs\\StudySpace.DTOs.csproj"
             }
           }
         }
@@ -3218,7 +3245,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.302/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.303/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

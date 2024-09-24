@@ -11,10 +11,11 @@
 using System;
 using System.Reflection;
 
+[assembly: Microsoft.Extensions.Configuration.UserSecrets.UserSecretsIdAttribute("29b98bb0-ae05-41d4-9a1e-c5d5a3ddbc7e")]
 [assembly: System.Reflection.AssemblyCompanyAttribute("StudySpace.API")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+68c511650de521bb394bccf2aec5c7876ab1cd78")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+54ff3cd6bef328c490b8407ff1834376f354bd1d")]
 [assembly: System.Reflection.AssemblyProductAttribute("StudySpace.API")]
 [assembly: System.Reflection.AssemblyTitleAttribute("StudySpace.API")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

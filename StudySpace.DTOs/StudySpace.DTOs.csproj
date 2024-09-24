@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\StudySpace.Data\StudySpace.Data.csproj" />
+  </ItemGroup>
+
 </Project>

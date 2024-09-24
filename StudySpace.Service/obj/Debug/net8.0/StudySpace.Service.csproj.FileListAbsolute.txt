@@ -16,3 +16,5 @@ C:\Users\BINF\Desktop\Term08\EXE201\study-space\StudySpace.Service\obj\Debug\net
 C:\Users\BINF\Desktop\Term08\EXE201\study-space\StudySpace.Service\obj\Debug\net8.0\refint\StudySpace.Service.dll
 C:\Users\BINF\Desktop\Term08\EXE201\study-space\StudySpace.Service\obj\Debug\net8.0\StudySpace.Service.pdb
 C:\Users\BINF\Desktop\Term08\EXE201\study-space\StudySpace.Service\obj\Debug\net8.0\ref\StudySpace.Service.dll
+C:\Users\BINF\Desktop\Term08\EXE201\study-space\StudySpace.Service\bin\Debug\net8.0\StudySpace.DTOs.dll
+C:\Users\BINF\Desktop\Term08\EXE201\study-space\StudySpace.Service\bin\Debug\net8.0\StudySpace.DTOs.pdb

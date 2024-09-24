@@ -28,5 +28,11 @@ namespace StudySpace.API.Controllers
             return Ok(result);
         }
 
+        [HttpDelete("CreateUser/{id}")]
+        public async Task<IActionResult> Oke(int id)
+        {
+            return Ok(await _accService.DeleteById(id));
+        }
+
     }
 }

@@ -4,6 +4,8 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>29b98bb0-ae05-41d4-9a1e-c5d5a3ddbc7e</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
   </PropertyGroup>
 
   <ItemGroup>
@@ -13,13 +15,16 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.20.1" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.5" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.7.3" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.0.2" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\StudySpace.Common\StudySpace.Common.csproj" />
     <ProjectReference Include="..\StudySpace.Data\StudySpace.Data.csproj" />
+    <ProjectReference Include="..\StudySpace.DTOs\StudySpace.DTOs.csproj" />
     <ProjectReference Include="..\StudySpace.Service\StudySpace.Service.csproj" />
   </ItemGroup>
 

@@ -9,6 +9,7 @@
       "StudySpace.Service/1.0.0": {
         "dependencies": {
           "StudySpace.Common": "1.0.0",
+          "StudySpace.DTOs": "1.0.0",
           "StudySpace.Data": "1.0.0"
         },
         "runtime": {
@@ -652,6 +653,14 @@
         "runtime": {
           "StudySpace.Data.dll": {}
         }
+      },
+      "StudySpace.DTOs/1.0.0": {
+        "dependencies": {
+          "StudySpace.Data": "1.0.0"
+        },
+        "runtime": {
+          "StudySpace.DTOs.dll": {}
+        }
       }
     }
   },
@@ -1094,6 +1103,11 @@
       "sha512": ""
     },
     "StudySpace.Data/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "StudySpace.DTOs/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

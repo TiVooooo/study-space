@@ -9,6 +9,7 @@
   <ItemGroup>
     <ProjectReference Include="..\StudySpace.Common\StudySpace.Common.csproj" />
     <ProjectReference Include="..\StudySpace.Data\StudySpace.Data.csproj" />
+    <ProjectReference Include="..\StudySpace.DTOs\StudySpace.DTOs.csproj" />
   </ItemGroup>
 
 </Project>
