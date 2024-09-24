@@ -8,6 +8,6 @@ build_property.PlatformNeutralAssembly =
 build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = StudySpace.Service
-build_property.ProjectDir = C:\Term8\EXE201\v4\study-space\StudySpace.Service\
+build_property.ProjectDir = C:\Users\BINF\Desktop\study-space\StudySpace.Service\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 

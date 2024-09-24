@@ -14,32 +14,19 @@ namespace StudySpace.API.Controllers
 {
     [Route("/[controller]")]
     [ApiController]
-    public class AccountsController : ControllerBase
+    public class StoresController : ControllerBase
     {
-        private readonly IAccountService _accService;
+        private readonly IStoreService _storeService;
 
-        public AccountsController(IAccountService accService)
+        public StoresController(IStoreService storeService)
         {
-            _accService ??= accService;
-        }
-
-        [HttpGet("GetAll")]
-        public async Task<IActionResult> Index()
-        {
-            var result = await _accService.GetAll();
-            return Ok(result);
-        }
-
-        [HttpDelete("CreateUser/{id}")]
-        public async Task<IActionResult> Oke(int id)
-        {
-            return Ok(await _accService.DeleteById(id));
+            _storeService ??= storeService;
         }
 
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequestDTO model)
         {
-            var result = await _accService.Login(model.Email, model.Password);
+            var result = await _storeService.Login(model.Email, model.Password);
 
             if (result.Status == 1)
             {
@@ -59,7 +46,7 @@ namespace StudySpace.API.Controllers
 
             try
             {
-                var decodedInfo = _accService.DecodeToken(token);
+                var decodedInfo = _storeService.DecodeToken(token);
                 return Ok(decodedInfo);
             }
             catch (Exception ex)
@@ -73,7 +60,7 @@ namespace StudySpace.API.Controllers
         public async Task<IActionResult> Logout()
         {
             var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
-            var result = await _accService.Logout(token);
+            var result = await _storeService.Logout(token);
 
             if (result.Status == 1)
             {

@@ -16,5 +16,10 @@ namespace StudySpace.Data.Repository
         {
             _context = context;
         }
+
+        public async Task<Account> GetByEmailAsync(string email)
+        {
+            return await _context.Accounts.Include(a => a.Role).FirstOrDefaultAsync(e => e.Email == email);
+        }
     }
 }

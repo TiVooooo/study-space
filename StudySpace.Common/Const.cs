@@ -30,6 +30,10 @@ namespace StudySpace.Common
         public static string SUCCESS_UDATE_MSG = "Update data success";
         public static int SUCCESS_DELETE = 1;
         public static string SUCCESS_DELETE_MSG = "Delete data success";
+        public static int SUCCESS_LOGIN = 1;
+        public static string SUCCESS_LOGIN_MSG = "Login success";
+        public static int SUCCESS_LOGOUT = 1;
+        public static string SUCCESS_LOGOUT_MSG = "Logout success";
         #endregion
 
 
@@ -43,6 +47,8 @@ namespace StudySpace.Common
         public static string FAIL_UDATE_MSG = "Update data fail";
         public static int FAIL_DELETE = 0;
         public static string FAIL_DELETE_MSG = "Delete data fail";
+        public static int FAIL_LOGIN = 0;
+        public static string FAIL_LOGIN_MSG = "Invalid email or password.";
         #endregion
 
 

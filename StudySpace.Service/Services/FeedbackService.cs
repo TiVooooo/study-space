@@ -18,7 +18,7 @@ namespace StudySpace.Service.Services
         Task<IBusinessResult> GetById(int id);
         Task<IBusinessResult> Update(Feedback acc);
         Task<IBusinessResult> DeleteById(int id);
-        Task<IBusinessResult> Save(FeedbackModel acc);
+        //Task<IBusinessResult> Save(FeedbackModel acc);
 
 
     }

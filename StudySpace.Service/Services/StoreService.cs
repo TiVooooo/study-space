@@ -12,28 +12,27 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace StudySpace.Service.Services
 {
-    public interface IAccountService
+    public interface IStoreService
     {
         Task<IBusinessResult> GetAll();
         Task<IBusinessResult> GetById(int id);
-        Task<IBusinessResult> Update(Account acc);
+        Task<IBusinessResult> Update(Store store);
         Task<IBusinessResult> DeleteById(int id);
-        Task<IBusinessResult> Save(Account acc);
+        Task<IBusinessResult> Save(Store store);
         Task<IBusinessResult> Login(string email, string password);
         Task<IBusinessResult> Logout(string token);
         DecodeTokenResponseDTO DecodeToken(string token);
     }
 
-    public class AccountService : IAccountService
+    public class StoreService : IStoreService
     {
         private readonly UnitOfWork _unitOfWork;
         private readonly string _jwtSecret = "s3cr3tKeyF0rJWT@2024!MustBe32Char$";
 
-        public AccountService()
+        public StoreService()
         {
             _unitOfWork ??= new UnitOfWork();
 
@@ -44,11 +43,11 @@ namespace StudySpace.Service.Services
             try
             {
 
-                var obj = await _unitOfWork.AccountRepository.GetByIdAsync(id);
+                var obj = await _unitOfWork.StoreRepository.GetByIdAsync(id);
                 if (obj != null)
                 {
 
-                    var result = await _unitOfWork.AccountRepository.RemoveAsync(obj);
+                    var result = await _unitOfWork.StoreRepository.RemoveAsync(obj);
                     if (result)
                     {
                         return new BusinessResult(Const.SUCCESS_DELETE, Const.SUCCESS_DELETE_MSG);
@@ -77,7 +76,7 @@ namespace StudySpace.Service.Services
                 #region Business rule
                 #endregion
 
-                var objs = await _unitOfWork.AccountRepository.GetAllAsync();
+                var objs = await _unitOfWork.StoreRepository.GetAllAsync();
 
                 if (objs == null)
                 {
@@ -102,7 +101,7 @@ namespace StudySpace.Service.Services
                 #endregion
 
 
-                var obj = await _unitOfWork.AccountRepository.GetByIdAsync(id);
+                var obj = await _unitOfWork.StoreRepository.GetByIdAsync(id);
 
                 if (obj == null)
                 {
@@ -120,11 +119,11 @@ namespace StudySpace.Service.Services
         }
 
 
-        public async Task<IBusinessResult> Save(Account acc)
+        public async Task<IBusinessResult> Save(Store store)
         {
             try
             {
-                int result = await _unitOfWork.AccountRepository.CreateAsync(acc);
+                int result = await _unitOfWork.StoreRepository.CreateAsync(store);
                 if (result > 0)
                 {
                     return new BusinessResult(Const.SUCCESS_CREATE, Const.SUCCESS_CREATE_MSG);
@@ -140,12 +139,12 @@ namespace StudySpace.Service.Services
             }
         }
 
-        public async Task<IBusinessResult> Update(Account acc)
+        public async Task<IBusinessResult> Update(Store store)
         {
             try
             {
 
-                int result = await _unitOfWork.AccountRepository.UpdateAsync(acc);
+                int result = await _unitOfWork.StoreRepository.UpdateAsync(store);
                 if (result > 0)
                 {
                     return new BusinessResult(Const.FAIL_UDATE, Const.SUCCESS_UDATE_MSG);
@@ -163,9 +162,9 @@ namespace StudySpace.Service.Services
 
         public async Task<IBusinessResult> Login(string email, string password)
         {
-            var acc = await _unitOfWork.AccountRepository.GetByEmailAsync(email);
+            var store = await _unitOfWork.StoreRepository.GetByEmailAsync(email);
 
-            if (acc == null || acc.Password != password)
+            if (store == null || store.Password != password)
             {
                 return new BusinessResult(Const.FAIL_LOGIN, Const.FAIL_LOGIN_MSG);
             }
@@ -173,21 +172,19 @@ namespace StudySpace.Service.Services
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_jwtSecret);
 
-            var accountId = acc.Id.ToString() ?? throw new ArgumentNullException("Account ID cannot be null");
-            var accountRole = acc.Role?.RoleName ?? "User";
+            var accountId = store.Id.ToString() ?? throw new ArgumentNullException("Store ID cannot be null");
+            var accountRole = "Store";
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new[]
                 {
-                    new Claim(ClaimTypes.NameIdentifier, acc.Id.ToString()),
-                    new Claim(ClaimTypes.GivenName, acc.Name),
-                    new Claim(ClaimTypes.Email, acc.Email),
-                    new Claim(ClaimTypes.HomePhone, acc.Phone),
-                    new Claim(ClaimTypes.StreetAddress, acc.Address),
-                    new Claim(ClaimTypes.Gender, acc.Gender),
-                    new Claim(ClaimTypes.Role, accountRole),
-                    new Claim(ClaimTypes.Uri, acc.AvatarUrl)
+                    new Claim(ClaimTypes.NameIdentifier, accountId),
+                    new Claim(ClaimTypes.GivenName, store.Name),
+                    new Claim(ClaimTypes.Email, store.Email),
+                    new Claim(ClaimTypes.HomePhone, store.Phone),
+                    new Claim(ClaimTypes.StreetAddress, store.Address),
+                    new Claim(ClaimTypes.Uri, store.ThumbnailUrl)
                 }),
                 //Expires = DateTime.UtcNow.AddHours(2),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
@@ -219,25 +216,23 @@ namespace StudySpace.Service.Services
 
             var jwtToken = handler.ReadJwtToken(token);
 
-            var userID = jwtToken.Claims.FirstOrDefault(c => c.Type == "nameid")?.Value;
+            var storeID = jwtToken.Claims.FirstOrDefault(c => c.Type == "nameid")?.Value;
             var name = jwtToken.Claims.FirstOrDefault(c => c.Type == "given_name")?.Value;
             var email = jwtToken.Claims.FirstOrDefault(c => c.Type == "email")?.Value;
             var phone = jwtToken.Claims.FirstOrDefault(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/homephone")?.Value;
             var address = jwtToken.Claims.FirstOrDefault(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/streetaddress")?.Value;
-            var gender = jwtToken.Claims.FirstOrDefault(c => c.Type == "gender")?.Value;
-            var roleName = jwtToken.Claims.FirstOrDefault(c => c.Type == "role")?.Value;
+            var roleName = "Store";
             var avaUrl = jwtToken.Claims.FirstOrDefault(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/uri")?.Value;
 
             //var expiration = jwtToken.ValidTo;
 
             return new DecodeTokenResponseDTO
             {
-                UserID = int.Parse(userID),
+                UserID = int.Parse(storeID),
                 Name = name,
                 Email = email,
                 Phone = phone,
                 Address = address,
-                Gender = gender,
                 RoleName = roleName,
                 avaURL = avaUrl,
                 //Expiration = expiration
@@ -250,3 +245,4 @@ namespace StudySpace.Service.Services
         }
     }
 }
+
