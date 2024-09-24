@@ -17,7 +17,7 @@ public partial class StorePackage
 
     public DateTime? EndDate { get; set; }
 
-    public decimal? Fee { get; set; }
+    public double? Fee { get; set; }
 
     public double? Duration { get; set; }
 

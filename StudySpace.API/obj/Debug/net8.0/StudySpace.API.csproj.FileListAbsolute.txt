@@ -271,6 +271,8 @@ C:\Term8\EXE201\v4\study-space\StudySpace.API\bin\Debug\net8.0\StudySpace.API.de
 C:\Term8\EXE201\v4\study-space\StudySpace.API\bin\Debug\net8.0\StudySpace.API.runtimeconfig.json
 C:\Term8\EXE201\v4\study-space\StudySpace.API\bin\Debug\net8.0\StudySpace.API.dll
 C:\Term8\EXE201\v4\study-space\StudySpace.API\bin\Debug\net8.0\StudySpace.API.pdb
+C:\Term8\EXE201\v4\study-space\StudySpace.API\bin\Debug\net8.0\AutoMapper.dll
+C:\Term8\EXE201\v4\study-space\StudySpace.API\bin\Debug\net8.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
 C:\Term8\EXE201\v4\study-space\StudySpace.API\bin\Debug\net8.0\Azure.Core.dll
 C:\Term8\EXE201\v4\study-space\StudySpace.API\bin\Debug\net8.0\Azure.Identity.dll
 C:\Term8\EXE201\v4\study-space\StudySpace.API\bin\Debug\net8.0\Humanizer.dll

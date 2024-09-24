@@ -41,6 +41,10 @@ public partial class Store
 
     public bool? IsActive { get; set; }
 
+    public string TaxNumber { get; set; }
+
+    public string PostalNumber { get; set; }
+
     public virtual ICollection<Room> Rooms { get; set; } = new List<Room>();
 
     public virtual ICollection<StorePackage> StorePackages { get; set; } = new List<StorePackage>();

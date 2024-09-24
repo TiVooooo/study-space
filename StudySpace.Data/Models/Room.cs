@@ -17,13 +17,15 @@ public partial class Room
 
     public int? Capacity { get; set; }
 
-    public decimal? PricePerHour { get; set; }
+    public double? PricePerHour { get; set; }
 
     public string Description { get; set; }
 
     public bool? Status { get; set; }
 
-    public decimal? Area { get; set; }
+    public double? Area { get; set; }
+
+    public string HouseRule { get; set; }
 
     public virtual ICollection<Amity> Amities { get; set; } = new List<Amity>();
 
