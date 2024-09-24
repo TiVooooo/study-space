@@ -9,6 +9,8 @@ public partial class Room
 {
     public int Id { get; set; }
 
+    public int? SpaceId { get; set; }
+
     public string RoomName { get; set; }
 
     public int? StoreId { get; set; }
@@ -28,6 +30,8 @@ public partial class Room
     public virtual ICollection<Booking> Bookings { get; set; } = new List<Booking>();
 
     public virtual ICollection<ImageRoom> ImageRooms { get; set; } = new List<ImageRoom>();
+
+    public virtual Space Space { get; set; }
 
     public virtual Store Store { get; set; }
 }
