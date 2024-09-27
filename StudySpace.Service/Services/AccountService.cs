@@ -1,10 +1,12 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using AutoMapper;
+using Microsoft.IdentityModel.Tokens;
 using StudySpace.Common;
 using StudySpace.Data.Models;
 using StudySpace.Data.UnitOfWork;
 using StudySpace.DTOs.LoginDTO;
 using StudySpace.DTOs.TokenDTO;
 using StudySpace.Service.Base;
+using StudySpace.Service.BusinessModel;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -31,12 +33,13 @@ namespace StudySpace.Service.Services
     public class AccountService : IAccountService
     {
         private readonly UnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
         private readonly string _jwtSecret = "s3cr3tKeyF0rJWT@2024!MustBe32Char$";
 
-        public AccountService()
+        public AccountService(IMapper mapper)
         {
             _unitOfWork ??= new UnitOfWork();
-
+            _mapper = mapper;
         }
 
         public async Task<IBusinessResult> DeleteById(int id)
@@ -98,10 +101,6 @@ namespace StudySpace.Service.Services
         {
             try
             {
-                #region Business rule
-                #endregion
-
-
                 var obj = await _unitOfWork.AccountRepository.GetByIdAsync(id);
 
                 if (obj == null)
@@ -110,7 +109,8 @@ namespace StudySpace.Service.Services
                 }
                 else
                 {
-                    return new BusinessResult(Const.SUCCESS_READ, Const.SUCCESS_READ_MSG, obj);
+                    var userModel = _mapper.Map<GetDetailUserModel>(obj);
+                    return new BusinessResult(Const.SUCCESS_READ, Const.SUCCESS_READ_MSG, userModel);
                 }
             }
             catch (Exception ex)
@@ -118,6 +118,7 @@ namespace StudySpace.Service.Services
                 return new BusinessResult(-4, ex.Message);
             }
         }
+
 
 
         public async Task<IBusinessResult> Save(Account acc)

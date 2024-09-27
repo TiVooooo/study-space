@@ -30,11 +30,6 @@ namespace StudySpace.API.Controllers
             return Ok(result);
         }
 
-        [HttpDelete("CreateUser/{id}")]
-        public async Task<IActionResult> Oke(int id)
-        {
-            return Ok(await _accService.DeleteById(id));
-        }
 
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequestDTO model)
@@ -66,6 +61,13 @@ namespace StudySpace.API.Controllers
             {
                 return BadRequest(new { message = ex.Message });
             }
+        }
+
+        [HttpGet("detail/{id}")]
+        public async Task<IActionResult> GetDeatailUser(int id)
+        {
+                return Ok(await _accService.GetById(id));
+            
         }
 
         [Authorize]
