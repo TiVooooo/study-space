@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using StudySpace.Data.Models;
+using StudySpace.Service.BusinessModel;
 
 namespace StudySpace.API.Helper
 {
@@ -6,6 +8,8 @@ namespace StudySpace.API.Helper
     {
         public MappingProfiles()
         {
+            CreateMap<Account, GetDetailUserModel>();
+
         }
     }
 }
