@@ -13,8 +13,6 @@ namespace StudySpace.Service.BusinessModel
         public string StoreName { get; set; }
 
         public int Capacity { get; set; }
-
-
         public double PricePerHour { get; set; }
 
         public string Description { get; set; }
@@ -23,11 +21,19 @@ namespace StudySpace.Service.BusinessModel
 
         public double Area { get; set; }
 
+        public double? Longtitude
+        {
+
+            get; set;
+        }
+
+        public double? Latitude { get; set; }
+
         public string HouseRule { get; set; }
 
         public string TypeOfRoom { get; set; }
 
-        public List<string> ListImages {  get; set; }
+        public List<string> ListImages { get; set; }
 
         public List<string> Aminities { get; set; }
 
