@@ -12,7 +12,7 @@ using StudySpace.Service.Services;
 
 namespace StudySpace.API.Controllers
 {
-    [Route("/[controller]")]
+    [Route("/Accounts")]
     [ApiController]
     public class AccountsController : ControllerBase
     {

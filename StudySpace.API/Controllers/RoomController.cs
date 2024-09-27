@@ -17,7 +17,7 @@ namespace StudySpace.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll(int pageNumber, int pageSize)
         {
-            var result = await _roomService.GetAll(pageNumber,pageSize);
+            var result = await _roomService.GetAll(pageNumber, pageSize);
             return Ok(result);
         }
 
@@ -26,6 +26,12 @@ namespace StudySpace.API.Controllers
         {
             var result = await _roomService.SearchRooms(pageNumber, pageSize, space, location, room, person);
             return Ok(result);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetDetailRoom(int id)
+        {
+            return Ok(await _roomService.GetById(id));
         }
     }
 }

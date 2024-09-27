@@ -9,21 +9,21 @@ public partial class Room
 {
     public int Id { get; set; }
 
-    public int? SpaceId { get; set; }
+    public int SpaceId { get; set; }
 
     public string RoomName { get; set; }
 
-    public int? StoreId { get; set; }
+    public int StoreId { get; set; }
 
-    public int? Capacity { get; set; }
+    public int Capacity { get; set; }
 
-    public double? PricePerHour { get; set; }
+    public double PricePerHour { get; set; }
 
     public string Description { get; set; }
 
-    public bool? Status { get; set; }
+    public bool Status { get; set; }
 
-    public double? Area { get; set; }
+    public double Area { get; set; }
 
     public string HouseRule { get; set; }
 

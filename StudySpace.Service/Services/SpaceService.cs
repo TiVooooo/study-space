@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using StudySpace.Common;
+using Microsoft.EntityFrameworkCore;
+using StudySpace.Service.BusinessModel;
 
 namespace StudySpace.Service.Services
 {
@@ -17,6 +19,10 @@ namespace StudySpace.Service.Services
         Task<IBusinessResult> Update(Space space);
         Task<IBusinessResult> DeleteById(int id);
         Task<IBusinessResult> Save(Space space);
+        Task<IBusinessResult> GetSpacePopular();
+        Task<IBusinessResult> GetAllSpace();
+
+
     }
 
     public class SpaceService : ISpaceService
@@ -151,5 +157,49 @@ namespace StudySpace.Service.Services
             }
         }
 
+        public async Task<IBusinessResult> GetSpacePopular()
+        {
+            try
+            {
+                var spaces = _unitOfWork.SpaceRepository.FindByCondition(s => s.SpaceName.Equals("Coffee Space") || s.SpaceName.Equals("Library Space") || s.SpaceName.Equals("Meeting Room"))
+                    .Select(s => new SpacePopularModel
+                    {
+                        Description = s.Description,
+                        Status = s.Status,
+                        Type = s.SpaceName,
+                        PricePerHour = s.Rooms.Where(r => r.PricePerHour>0)
+                                              .OrderBy(r => r.PricePerHour)
+                                              .Select(r => r.PricePerHour)
+                                              .FirstOrDefault()
+                    })
+
+
+                    .ToList();
+                return new BusinessResult(Const.SUCCESS_READ, Const.SUCCESS_READ_MSG, spaces);
+
+
+            }
+            catch (Exception ex)
+            {
+                return new BusinessResult(Const.ERROR_EXEPTION, ex.Message);
+            }
+
+        }
+
+        public async Task<IBusinessResult> GetAllSpace()
+        {
+            try
+            {
+                var spaces = _unitOfWork.SpaceRepository.GetAll().Select(s=>s.SpaceName).Distinct().ToList();
+                spaces.Add("All");
+                return new BusinessResult(Const.SUCCESS_READ,Const.SUCCESS_READ_MSG, spaces);
+            }
+            catch (Exception ex)
+            {
+                return new BusinessResult(Const.ERROR_EXEPTION, ex.Message);
+
+            }
+
+        }
     }
 }
