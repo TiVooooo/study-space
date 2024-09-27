@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("StudySpace.Data")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+da6cc5ee6338b9737eedc712726ef2a756b3ea16")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+cb608d81e5127dcc5950d1b2500a80928516aaa6")]
 [assembly: System.Reflection.AssemblyProductAttribute("StudySpace.Data")]
 [assembly: System.Reflection.AssemblyTitleAttribute("StudySpace.Data")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

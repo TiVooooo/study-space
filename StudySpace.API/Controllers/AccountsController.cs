@@ -23,7 +23,7 @@ namespace StudySpace.API.Controllers
             _accService ??= accService;
         }
 
-        [HttpGet("GetAll")]
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
             var result = await _accService.GetAll();
