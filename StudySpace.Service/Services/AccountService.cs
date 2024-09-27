@@ -22,7 +22,7 @@ namespace StudySpace.Service.Services
     {
         Task<IBusinessResult> GetAll();
         Task<IBusinessResult> GetById(int id);
-        Task<IBusinessResult> Update(Account acc);
+      //  Task<IBusinessResult> Update(Account acc);
         Task<IBusinessResult> DeleteById(int id);
         Task<IBusinessResult> Save(Account acc);
         Task<IBusinessResult> Login(string email, string password);
@@ -109,7 +109,11 @@ namespace StudySpace.Service.Services
                 }
                 else
                 {
+                    
+
                     var userModel = _mapper.Map<GetDetailUserModel>(obj);
+                    var roleName = _unitOfWork.UserRoleRepository.FindByCondition(r=>r.Id == obj.RoleId).Select(r=>r.RoleName).FirstOrDefault();
+                    userModel.RoleName = roleName;
                     return new BusinessResult(Const.SUCCESS_READ, Const.SUCCESS_READ_MSG, userModel);
                 }
             }
@@ -141,12 +145,26 @@ namespace StudySpace.Service.Services
             }
         }
 
-        public async Task<IBusinessResult> Update(Account acc)
+       /* public async Task<IBusinessResult> Update(int id, GetDetailUserModel acc)
         {
             try
             {
+                var existedUser = await _unitOfWork.AccountRepository.GetByIdAsync(id);
+
+                if (existedUser != null)
+                {
+                    existedUser.Address = acc.Address;
+                    
+                }
+
+
+
+
+
+
 
                 int result = await _unitOfWork.AccountRepository.UpdateAsync(acc);
+
                 if (result > 0)
                 {
                     return new BusinessResult(Const.FAIL_UDATE, Const.SUCCESS_UDATE_MSG);
@@ -161,7 +179,7 @@ namespace StudySpace.Service.Services
                 return new BusinessResult(-4, ex.Message);
             }
         }
-
+*/
         public async Task<IBusinessResult> Login(string email, string password)
         {
             var acc = await _unitOfWork.AccountRepository.GetByEmailAsync(email);

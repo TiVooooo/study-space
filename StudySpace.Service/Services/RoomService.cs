@@ -108,17 +108,27 @@ namespace StudySpace.Service.Services
                 var rooms = _unitOfWork.RoomRepository.FindByCondition(r=>r.Space.SpaceName.Equals(condition)).Take(3).ToList();
 
 
-                var list = rooms.Select(r => new RoomModel
+                var list = new List<RoomModel>();
+
+                foreach (var r in rooms)
                 {
-                    RoomName = r.RoomName,
-                    StoreName = r.Store?.Name,
-                    Capacity = r.Capacity,
-                    PricePerHour = r.PricePerHour,
-                    Description = r.Description,
-                    Status = r.Status,
-                    Area = r.Area,
-                    Type = r.Amities.Any() ? r.Amities.First().Type : null
-                }).ToList();
+                    var store = _unitOfWork.StoreRepository.GetById(r.StoreId);
+                    var amity = _unitOfWork.AmityRepository.FindByCondition(a => a.RoomId == r.Id).Select(a=>a.Type).FirstOrDefault();
+                    var roomModel = new RoomModel
+                    {
+                        RoomName = r.RoomName,
+                        StoreName = store.Name,
+                        Capacity = r.Capacity,
+                        PricePerHour = r.PricePerHour,
+                        Description = r.Description,
+                        Status = r.Status,
+                        Area = r.Area,
+                        Type = amity
+                    };
+                    list.Add(roomModel);
+                }
+
+               
 
                 if (!list.Any())
                 {
@@ -137,7 +147,7 @@ namespace StudySpace.Service.Services
         {
             try
             {
-                var rooms = await _unitOfWork.RoomRepository.GetAllRoomsAsync();
+                var rooms = _unitOfWork.RoomRepository.FindByCondition(x=>x.Status ==true).ToList();
 
                 if (!string.IsNullOrWhiteSpace(space) || !string.IsNullOrWhiteSpace(location) || !string.IsNullOrWhiteSpace(room) || person == 0)
                 {
@@ -196,7 +206,10 @@ namespace StudySpace.Service.Services
                 {
                     return new BusinessResult(Const.WARNING_NO_DATA, Const.WARNING_NO_DATA_MSG);
                 }
-
+                else if (!room.Status)
+                {
+                    return new BusinessResult(Const.FAIL_READ, Const.FAIL_READ_MSG);
+                }
 
                 var listImageOfRoom = _unitOfWork.ImageRoomRepository.FindByCondition(i => i.RoomId == id).Select(i => i.ImageUrl).ToList();
                 var listAminity = _unitOfWork.AmityRepository.FindByCondition(a => a.RoomId == id).Select(a => a.Name).ToList();
@@ -204,7 +217,7 @@ namespace StudySpace.Service.Services
 
                 var feedbackResult = await _feedbackService.GetFeedback(id);
 
-                var spaceName = _unitOfWork.SpaceRepository.GetById(room.SpaceId); // Use room.SpaceId if that's the FK
+                var spaceName = _unitOfWork.SpaceRepository.GetById(room.SpaceId);
                 
 
                 var relatedRoomsResult = await GetRoomWithCondition(spaceName.SpaceName);
@@ -213,13 +226,12 @@ namespace StudySpace.Service.Services
                     return new BusinessResult(Const.WARNING_NO_DATA, "Related room information is not available.");
                 }
 
-                var storeName = _unitOfWork.StoreRepository.FindByCondition(s => s.Id == room.StoreId).Select(s => s.Name).FirstOrDefault();
-                var storeAddress = _unitOfWork.StoreRepository.FindByCondition(s => s.Id == room.StoreId).Select(s => s.Address).FirstOrDefault();
+                var store = _unitOfWork.StoreRepository.FindByCondition(s => s.Id == room.StoreId).FirstOrDefault();
 
                 var result = new RoomDetailModel
                 {
                     RoomName = room.RoomName,
-                    StoreName = storeName,
+                    StoreName = store.Name,
                     Capacity = room.Capacity,
                     PricePerHour = room.PricePerHour,
                     Area = room.Area,
@@ -227,10 +239,13 @@ namespace StudySpace.Service.Services
                     TypeOfRoom = type,
                     ListImages = listImageOfRoom,
                     Description = room.Description,
-                    Address = storeAddress,
+                    Address = store.Address,
+                    Longtitude = store.Longitude,
+                    Latitude = store.Latitude,
                     Aminities = listAminity,
                     Feedbacks = feedbackResult.Data as List<FeedbackResponseModel>,
-                    RelatedRoom = relatedRoomsResult.Data as List<RoomModel>
+                    RelatedRoom = relatedRoomsResult.Data as List<RoomModel>,
+                    Status = room.Status
                 };
 
                 return new BusinessResult(Const.SUCCESS_READ, Const.SUCCESS_READ_MSG, result);

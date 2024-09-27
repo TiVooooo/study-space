@@ -9,9 +9,9 @@ namespace StudySpace.API.Controllers
     {
         private readonly IRoomService _roomService;
 
-        public RoomController(IRoomService roomService) // Change here
+        public RoomController(IRoomService roomService)
         {
-            _roomService = roomService; // Use the injected service directly
+            _roomService = roomService;
         }
 
         [HttpGet]
@@ -28,7 +28,7 @@ namespace StudySpace.API.Controllers
             return Ok(result);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("detail/{id}")]
         public async Task<IActionResult> GetDetailRoom(int id)
         {
             return Ok(await _roomService.GetById(id));
