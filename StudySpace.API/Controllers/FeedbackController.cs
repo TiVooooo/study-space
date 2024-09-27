@@ -15,13 +15,12 @@ namespace StudySpace.API.Controllers
             _feedbackService =  feedbackService;
         }
 
-       /* [HttpPost]
+        [HttpPost]
         public async Task<IActionResult> CreateFeedback([FromForm] FeedbackModel feedbackRequest)
         {
-            //var feedback = _mapper.Map<FeedbackRequestModel>(feedbackRequest);
             var result = await _feedbackService.Save(feedbackRequest);
             return Ok(result);
-        }*/
+        }
     }
 
 }

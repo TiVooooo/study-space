@@ -12,7 +12,7 @@ using StudySpace.Service.Services;
 
 namespace StudySpace.API.Controllers
 {
-    [Route("/[controller]")]
+    [Route("/Stores")]
     [ApiController]
     public class StoresController : ControllerBase
     {
@@ -53,6 +53,14 @@ namespace StudySpace.API.Controllers
             {
                 return BadRequest(new { message = ex.Message });
             }
+        }
+
+
+        [HttpGet("address")]
+        public async Task<IActionResult> GettAllAddress() 
+        {
+            var result = await _storeService.GetAllAddress();
+            return Ok(result);
         }
 
         [Authorize]

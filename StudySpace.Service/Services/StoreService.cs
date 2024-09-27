@@ -25,6 +25,9 @@ namespace StudySpace.Service.Services
         Task<IBusinessResult> Login(string email, string password);
         Task<IBusinessResult> Logout(string token);
         DecodeTokenResponseDTO DecodeToken(string token);
+
+       Task<IBusinessResult> GetAllAddress();
+
     }
 
     public class StoreService : IStoreService
@@ -67,6 +70,22 @@ namespace StudySpace.Service.Services
             {
                 return new BusinessResult(-4, ex.Message);
             }
+        }
+
+        public async Task<IBusinessResult> GetAllAddress()
+        {
+            try
+            {
+                var address = _unitOfWork.StoreRepository.GetAll().Select(x => x.Address).Distinct().ToList();
+                address.Add("All");
+                return new BusinessResult(Const.SUCCESS_READ, Const.SUCCESS_READ_MSG,address);
+            }
+            catch (Exception ex)
+            {
+                return new BusinessResult(Const.ERROR_EXEPTION, ex.Message);
+
+            }
+
         }
 
         public async Task<IBusinessResult> GetAll()

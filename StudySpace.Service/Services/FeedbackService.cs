@@ -1,10 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using StudySpace.Common;
+using StudySpace.Data.Helper;
 using StudySpace.Data.Models;
 using StudySpace.Data.UnitOfWork;
 using StudySpace.Service.Base;
 using StudySpace.Service.BusinessModel;
+
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,7 +21,8 @@ namespace StudySpace.Service.Services
         Task<IBusinessResult> GetById(int id);
         Task<IBusinessResult> Update(Feedback acc);
         Task<IBusinessResult> DeleteById(int id);
-        //Task<IBusinessResult> Save(FeedbackModel acc);
+        Task<IBusinessResult> Save(FeedbackModel acc);
+        Task<IBusinessResult> GetFeedback(int id);
 
 
     }
@@ -26,11 +30,11 @@ namespace StudySpace.Service.Services
     public class FeedbackService : IFeedbackService
     {
         private readonly UnitOfWork _unitOfWork;
-
-        public FeedbackService()
+        private readonly IFirebaseService _firebaseService;
+        public FeedbackService(IFirebaseService firebaseService)
         {
             _unitOfWork ??= new UnitOfWork();
-
+            _firebaseService = firebaseService;
         }
 
         public async Task<IBusinessResult> DeleteById(int id)
@@ -88,6 +92,47 @@ namespace StudySpace.Service.Services
             }
         }
 
+        public async Task<IBusinessResult> GetFeedback(int roomId)
+        {
+            try
+            {
+                var bookings = _unitOfWork.BookingRepository.FindByCondition(b => b.Room.Id == roomId).ToList();
+
+                var bookingIds = bookings.Select(b => b.Id).ToList();
+
+                var feedbacks = _unitOfWork.FeedbackRepository.FindByCondition(f => bookingIds.Contains(f.Booking.Id)).ToList();
+
+                var list = new List<FeedbackResponseModel>();
+
+                if (feedbacks != null && feedbacks.Any())
+                {
+                    foreach (var item in feedbacks)
+                    {
+                        // Get images associated with each feedback
+                        var images = _unitOfWork.ImageFeedbackRepository.FindByCondition(i => i.FeedbackId == item.Id).Select(i => i.ImageUrl).ToList();
+
+                        var feedback = new FeedbackResponseModel
+                        {
+                            Avatar = item.User?.AvatarUrl, // Use null-conditional operator in case User is null
+                            ReviewText = item.ReviewText,
+                            Images = images
+                        };
+
+                        list.Add(feedback);
+                    }
+                    return new BusinessResult(Const.SUCCESS_READ, Const.SUCCESS_CREATE_MSG, list);
+                }
+                else
+                {
+                    return new BusinessResult(Const.FAIL_READ, Const.FAIL_READ_MSG);
+                }
+            }
+            catch (Exception ex)
+            {
+                return new BusinessResult(Const.ERROR_EXEPTION, ex.Message);
+            }
+        }
+
         public async Task<IBusinessResult> GetById(int id)
         {
             try
@@ -114,24 +159,23 @@ namespace StudySpace.Service.Services
         }
 
 
-    /*    public async Task<IBusinessResult> Save(FeedbackModel feedback)
+        public async Task<IBusinessResult> Save(FeedbackModel feedback)
         {
             try
             {
-                var checkHasBooking = _unitOfWork.BookingRepository.FindByCondition(b=> b.UserId ==  feedback.UserId && b.RoomId == feedback.BookingId).FirstOrDefault();
+                var checkHasBooking = _unitOfWork.BookingRepository.FindByCondition(b => b.UserId == feedback.UserId && b.RoomId == feedback.BookingId).FirstOrDefault();
                 if (checkHasBooking == null)
                 {
                     return new BusinessResult(Const.WARNING_NO_DATA, Const.WARNING_NO_DATA_MSG);
                 }
-                int newId = _unitOfWork.FeedbackRepository.Any()
-                    ? _unitOfWork.FeedbackRepository.Max(f => f.Id) + 1
-                     1;
+
                 var newFeedback = new Feedback
                 {
                     UserId = feedback.UserId,
                     BookingId = feedback.BookingId,
-                    ReviewDate= DateTime.Now,
-                    ReviewText = feedback.ReviewText
+                    ReviewDate = DateTime.Now,
+                    ReviewText = feedback.ReviewText,
+                    Rating = feedback.Rating
                 };
 
                 _unitOfWork.FeedbackRepository.PrepareCreate(newFeedback);
@@ -145,23 +189,27 @@ namespace StudySpace.Service.Services
                         {
                             Feedback = newFeedback
                         };
+                        var imagePath = FirebasePathName.RATING + Guid.NewGuid().ToString();
+                        var imageUploadResult = await _firebaseService.UploadImageToFirebaseAsync(file, imagePath);
+                        newFeedbackImage.ImageUrl = imageUploadResult;
                         _unitOfWork.ImageFeedbackRepository.PrepareCreate(newFeedbackImage);
                     }
 
                 }
+                _unitOfWork.FeedbackRepository.Save();
+                _unitOfWork.ImageFeedbackRepository.Save();
 
 
 
-               
-                    return new BusinessResult(Const.SUCCESS_CREATE, Const.SUCCESS_CREATE_MSG);
-           
+                return new BusinessResult(Const.SUCCESS_CREATE, Const.SUCCESS_CREATE_MSG);
+
             }
             catch (Exception ex)
             {
                 return new BusinessResult(-4, ex.Message);
             }
         }
-*/
+
         public async Task<IBusinessResult> Update(Feedback acc)
         {
             try

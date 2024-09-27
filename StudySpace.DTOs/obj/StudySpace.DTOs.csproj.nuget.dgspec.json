@@ -1,24 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\BINF\\Desktop\\study-space\\StudySpace.DTOs\\StudySpace.DTOs.csproj": {}
+    "C:\\Term8\\EXE201\\v5\\study-space\\StudySpace.DTOs\\StudySpace.DTOs.csproj": {}
   },
   "projects": {
-    "C:\\Users\\BINF\\Desktop\\study-space\\StudySpace.Data\\StudySpace.Data.csproj": {
+    "C:\\Term8\\EXE201\\v5\\study-space\\StudySpace.Data\\StudySpace.Data.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\BINF\\Desktop\\study-space\\StudySpace.Data\\StudySpace.Data.csproj",
+        "projectUniqueName": "C:\\Term8\\EXE201\\v5\\study-space\\StudySpace.Data\\StudySpace.Data.csproj",
         "projectName": "StudySpace.Data",
-        "projectPath": "C:\\Users\\BINF\\Desktop\\study-space\\StudySpace.Data\\StudySpace.Data.csproj",
-        "packagesPath": "C:\\Users\\BINF\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\BINF\\Desktop\\study-space\\StudySpace.Data\\obj\\",
+        "projectPath": "C:\\Term8\\EXE201\\v5\\study-space\\StudySpace.Data\\StudySpace.Data.csproj",
+        "packagesPath": "C:\\Users\\Tienvo\\.nuget\\packages\\",
+        "outputPath": "C:\\Term8\\EXE201\\v5\\study-space\\StudySpace.Data\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\BINF\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Users\\Tienvo\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -57,6 +53,22 @@
             "AutoMapper.Extensions.Microsoft.DependencyInjection": {
               "target": "Package",
               "version": "[12.0.1, )"
+            },
+            "Firebase.Auth": {
+              "target": "Package",
+              "version": "[1.0.0, )"
+            },
+            "FirebaseAdmin": {
+              "target": "Package",
+              "version": "[3.0.1, )"
+            },
+            "FirebaseStorage.net": {
+              "target": "Package",
+              "version": "[1.0.3, )"
+            },
+            "Google.Cloud.Storage.V1": {
+              "target": "Package",
+              "version": "[4.10.0, )"
             },
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
@@ -97,25 +109,21 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.303/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.302/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\BINF\\Desktop\\study-space\\StudySpace.DTOs\\StudySpace.DTOs.csproj": {
+    "C:\\Term8\\EXE201\\v5\\study-space\\StudySpace.DTOs\\StudySpace.DTOs.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\BINF\\Desktop\\study-space\\StudySpace.DTOs\\StudySpace.DTOs.csproj",
+        "projectUniqueName": "C:\\Term8\\EXE201\\v5\\study-space\\StudySpace.DTOs\\StudySpace.DTOs.csproj",
         "projectName": "StudySpace.DTOs",
-        "projectPath": "C:\\Users\\BINF\\Desktop\\study-space\\StudySpace.DTOs\\StudySpace.DTOs.csproj",
-        "packagesPath": "C:\\Users\\BINF\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\BINF\\Desktop\\study-space\\StudySpace.DTOs\\obj\\",
+        "projectPath": "C:\\Term8\\EXE201\\v5\\study-space\\StudySpace.DTOs\\StudySpace.DTOs.csproj",
+        "packagesPath": "C:\\Users\\Tienvo\\.nuget\\packages\\",
+        "outputPath": "C:\\Term8\\EXE201\\v5\\study-space\\StudySpace.DTOs\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\BINF\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Users\\Tienvo\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -130,8 +138,8 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\BINF\\Desktop\\study-space\\StudySpace.Data\\StudySpace.Data.csproj": {
-                "projectPath": "C:\\Users\\BINF\\Desktop\\study-space\\StudySpace.Data\\StudySpace.Data.csproj"
+              "C:\\Term8\\EXE201\\v5\\study-space\\StudySpace.Data\\StudySpace.Data.csproj": {
+                "projectPath": "C:\\Term8\\EXE201\\v5\\study-space\\StudySpace.Data\\StudySpace.Data.csproj"
               }
             }
           }
@@ -158,6 +166,18 @@
             "AutoMapper.Extensions.Microsoft.DependencyInjection": {
               "target": "Package",
               "version": "[12.0.1, )"
+            },
+            "FirebaseAdmin": {
+              "target": "Package",
+              "version": "[3.0.1, )"
+            },
+            "FirebaseAuthentication.net": {
+              "target": "Package",
+              "version": "[4.1.0, )"
+            },
+            "Google.Cloud.Storage.V1": {
+              "target": "Package",
+              "version": "[4.10.0, )"
             }
           },
           "imports": [
@@ -176,7 +196,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.303/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.302/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
