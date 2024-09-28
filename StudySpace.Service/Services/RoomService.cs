@@ -1,6 +1,10 @@
-﻿using Firebase.Auth;
-using StudySpace.Common;
+
 using StudySpace.Data.Helper;
+
+using AutoMapper;
+using Firebase.Auth;
+using StudySpace.Common;
+
 using StudySpace.Data.Models;
 using StudySpace.Data.Repository;
 using StudySpace.Data.UnitOfWork;
@@ -26,19 +30,24 @@ namespace StudySpace.Service.Services
         Task<IBusinessResult> SearchRooms(int pageNumber, int pageSize, string space, string location, string room, int person);
         Task<IBusinessResult> GetRoomWithCondition(string condition);
         Task<IBusinessResult> UnactiveRoom(int roomId);
+        Task<IBusinessResult> GetAllBookedRoomInUser(int userId);
+        Task<IBusinessResult> GetAllBookedRoomInSup(int supID);
+
     }
 
     public class RoomService : IRoomService
     {
         private readonly UnitOfWork _unitOfWork;
         private readonly IFeedbackService _feedbackService;
+        private readonly IMapper _mapper;
         private readonly IFirebaseService _firebaseService;
 
-        public RoomService(IFeedbackService feedbackService, IFirebaseService firebaseService)
+        public RoomService(IFeedbackService feedbackService, IFirebaseService firebaseService, IMapper mapper)
         {
             _unitOfWork ??= new UnitOfWork();
             _feedbackService = feedbackService;
             _firebaseService = firebaseService;
+            _mapper = mapper;
         }
 
         public async Task<IBusinessResult> DeleteById(int id)
@@ -109,7 +118,7 @@ namespace StudySpace.Service.Services
         {
             try
             {
-                var rooms = _unitOfWork.RoomRepository.FindByCondition(r=>r.Space.SpaceName.Equals(condition)).Take(3).ToList();
+                var rooms = _unitOfWork.RoomRepository.FindByCondition(r => r.Space.SpaceName.Equals(condition)).Take(3).ToList();
 
 
                 var list = new List<RoomModel>();
@@ -117,7 +126,7 @@ namespace StudySpace.Service.Services
                 foreach (var r in rooms)
                 {
                     var store = _unitOfWork.StoreRepository.GetById(r.StoreId);
-                    var amity = _unitOfWork.AmityRepository.FindByCondition(a => a.RoomId == r.Id).Select(a=>a.Type).FirstOrDefault();
+                    var amity = _unitOfWork.AmityRepository.FindByCondition(a => a.RoomId == r.Id).Select(a => a.Type).FirstOrDefault();
                     var roomModel = new RoomModel
                     {
                         RoomName = r.RoomName,
@@ -132,7 +141,7 @@ namespace StudySpace.Service.Services
                     list.Add(roomModel);
                 }
 
-               
+
 
                 if (!list.Any())
                 {
@@ -151,7 +160,8 @@ namespace StudySpace.Service.Services
         {
             try
             {
-                var rooms = _unitOfWork.RoomRepository.FindByCondition(x=>x.Status ==true).ToList();
+                var allRooms = await _unitOfWork.RoomRepository.GetAllAsync();
+                var rooms = allRooms.Where(x => x.Status == true).ToList();
 
                 if (!string.IsNullOrWhiteSpace(space) || !string.IsNullOrWhiteSpace(location) || !string.IsNullOrWhiteSpace(room) || person == 0)
                 {
@@ -166,24 +176,26 @@ namespace StudySpace.Service.Services
                 var totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
 
                 var pagedRooms = rooms.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
-
-                var list = pagedRooms.Select(r => new RoomModel
+                var list = new List<RoomModel>();
+                foreach (var r in pagedRooms)
                 {
-                    RoomName = r.RoomName,
-                    StoreName = r.Store?.Name,
-                    Capacity = r.Capacity,
-                    PricePerHour = r.PricePerHour,
-                    Description = r.Description,
-                    Status = r.Status,
-                    Area = r.Area,
-                    Type = r.Amities.Any() ? r.Amities.First().Type : null
-                }).ToList();
+                    var store = _unitOfWork.StoreRepository.GetById(r.StoreId);
+                    var amity = _unitOfWork.AmityRepository.FindByCondition(a => a.RoomId == r.Id).Select(a => a.Type).FirstOrDefault();
 
-
-                if (!list.Any())
-                {
-                    return new BusinessResult(Const.WARNING_NO_DATA, Const.WARNING_NO_DATA_MSG);
+                    var roomModel = new RoomModel
+                    {
+                        RoomName = r.RoomName,
+                        StoreName = store.Name,
+                        Capacity = r.Capacity,
+                        PricePerHour = r.PricePerHour,
+                        Description = r.Description,
+                        Status = r.Status,
+                        Area = r.Area,
+                        Type = amity
+                    };
+                    list.Add(roomModel);
                 }
+
 
                 var result = new GetAllRoomModel
                 {
@@ -199,7 +211,7 @@ namespace StudySpace.Service.Services
             }
         }
 
-     
+
 
         public async Task<IBusinessResult> GetById(int id)
         {
@@ -219,10 +231,9 @@ namespace StudySpace.Service.Services
                 var listAminity = _unitOfWork.AmityRepository.FindByCondition(a => a.RoomId == id).Select(a => a.Name).ToList();
                 var type = _unitOfWork.AmityRepository.FindByCondition(a => a.RoomId == id).Select(a => a.Type).FirstOrDefault();
 
-                var feedbackResult = await _feedbackService.GetFeedback(id);
 
                 var spaceName = _unitOfWork.SpaceRepository.GetById(room.SpaceId);
-                
+
 
                 var relatedRoomsResult = await GetRoomWithCondition(spaceName.SpaceName);
                 if (relatedRoomsResult == null || relatedRoomsResult.Data == null)
@@ -231,6 +242,7 @@ namespace StudySpace.Service.Services
                 }
 
                 var store = _unitOfWork.StoreRepository.FindByCondition(s => s.Id == room.StoreId).FirstOrDefault();
+
 
                 var result = new RoomDetailModel
                 {
@@ -247,7 +259,6 @@ namespace StudySpace.Service.Services
                     Longtitude = store.Longitude,
                     Latitude = store.Latitude,
                     Aminities = listAminity,
-                    Feedbacks = feedbackResult.Data as List<FeedbackResponseModel>,
                     RelatedRoom = relatedRoomsResult.Data as List<RoomModel>,
                     Status = room.Status
                 };
@@ -405,6 +416,7 @@ namespace StudySpace.Service.Services
             }
         }
 
+
         public async Task<IBusinessResult> UnactiveRoom(int roomId)
         {
             try
@@ -435,5 +447,88 @@ namespace StudySpace.Service.Services
             }
         }
 
+        public async Task<IBusinessResult> GetAllBookedRoomInUser(int userId)
+        {
+            try
+            {
+                var user = _unitOfWork.AccountRepository.GetById(userId);
+                var allRooms = await _unitOfWork.RoomRepository.GetAllAsync();
+
+                var listRoomID = _unitOfWork.BookingRepository.FindByCondition(b => b.UserId == userId).Select(b => b.RoomId).ToList();
+
+                var listRoom = allRooms.Where(r => listRoomID.Contains(r.Id)).ToList();
+
+                var result = new List<RoomModel>();
+
+
+                foreach (var room in listRoom)
+                {
+                    var r = _unitOfWork.RoomRepository.GetById(room.Id);
+                    var booking = _unitOfWork.BookingRepository.FindByCondition(b => b.RoomId == room.Id && b.UserId == userId).FirstOrDefault();
+
+                    var store = _unitOfWork.StoreRepository.GetById(r.StoreId);
+                    var amity = _unitOfWork.AmityRepository.FindByCondition(a => a.RoomId == r.Id).Select(a => a.Type).FirstOrDefault();
+
+                    var roomModel = new RoomModel
+                    {
+                        RoomName = r.RoomName,
+                        StoreName = store.Name,
+                        Capacity = r.Capacity,
+                        PricePerHour = r.PricePerHour,
+                        Description = r.Description,
+                        Status = booking.Status ?? false,
+                        Area = r.Area,
+                        Type = amity
+                    };
+                    result.Add(roomModel);
+                }
+                return new BusinessResult(Const.SUCCESS_READ, Const.SUCCESS_READ_MSG, result);
+
+            }
+            catch (Exception ex)
+            {
+                return new BusinessResult(Const.ERROR_EXEPTION, ex.Message);
+            }
+        }
+
+        public async Task<IBusinessResult> GetAllBookedRoomInSup(int supID)
+        {
+            try
+            {
+                var rooms = _unitOfWork.RoomRepository.FindByCondition(r => r.StoreId == supID && r.Bookings.Any()).ToList();
+                var result = new List<RoomModel>();
+
+                foreach (var room in rooms)
+                {
+                    var booking = _unitOfWork.BookingRepository.FindByCondition(b => b.RoomId == room.Id).FirstOrDefault();
+                    var store = _unitOfWork.StoreRepository.GetById(room.StoreId);
+                    var amity = _unitOfWork.AmityRepository.FindByCondition(a => a.RoomId == room.Id).Select(a => a.Type).FirstOrDefault();
+
+                    var roomModel = new RoomModel
+                    {
+                        RoomName = room.RoomName,
+                        StoreName = store.Name,
+                        Capacity = room.Capacity,
+                        PricePerHour = room.PricePerHour,
+                        Description = room.Description,
+                        Status = booking.Status ?? false,
+                        Area = room.Area,
+                        Type = amity
+                    };
+                    result.Add(roomModel);
+                }
+                return new BusinessResult(Const.FAIL_READ, Const.SUCCESS_READ_MSG, result);
+
+
+            }
+
+
+
+        }
+
+
+
+
     }
 }
+

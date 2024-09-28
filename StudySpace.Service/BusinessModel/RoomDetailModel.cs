@@ -39,7 +39,6 @@ namespace StudySpace.Service.BusinessModel
 
         public string Address { get; set; }
 
-        public List<FeedbackResponseModel> Feedbacks { get; set; }
 
 
         public List<RoomModel> RelatedRoom { get; set; }
