@@ -1,4 +1,5 @@
-﻿using StudySpace.Data.Base;
+﻿using Microsoft.EntityFrameworkCore;
+using StudySpace.Data.Base;
 using StudySpace.Data.Models;
 using System;
 using System.Collections.Generic;
@@ -15,5 +16,11 @@ namespace StudySpace.Data.Repository
         {
             _context = context;
         }
+
+        public async Task<UserRole> GetByNameAsync(string roleName)
+        {
+            return await _context.UserRoles.FirstOrDefaultAsync(r => r.RoleName.Equals(roleName, StringComparison.OrdinalIgnoreCase));
+        }
+
     }
 }

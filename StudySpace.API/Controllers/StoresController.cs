@@ -63,19 +63,5 @@ namespace StudySpace.API.Controllers
             return Ok(result);
         }
 
-        [Authorize]
-        [HttpPost("logout")]
-        public async Task<IActionResult> Logout()
-        {
-            var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
-            var result = await _storeService.Logout(token);
-
-            if (result.Status == 1)
-            {
-                return Ok(result);
-            }
-
-            return BadRequest(result.Message);
-        }
     }
 }

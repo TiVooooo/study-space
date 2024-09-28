@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using StudySpace.Common;
+using StudySpace.Data.Helper;
 using StudySpace.Data.Models;
 using StudySpace.Data.UnitOfWork;
 using StudySpace.DTOs.LoginDTO;
@@ -24,22 +26,28 @@ namespace StudySpace.Service.Services
         Task<IBusinessResult> GetById(int id);
       //  Task<IBusinessResult> Update(Account acc);
         Task<IBusinessResult> DeleteById(int id);
-        Task<IBusinessResult> Save(Account acc);
+        Task<IBusinessResult> Save(AccountRegistrationRequestModel acc);
         Task<IBusinessResult> Login(string email, string password);
-        Task<IBusinessResult> Logout(string token);
         DecodeTokenResponseDTO DecodeToken(string token);
+        Task<string> SendRegistrationEmailAsync(string email);
     }
 
     public class AccountService : IAccountService
     {
         private readonly UnitOfWork _unitOfWork;
+        private readonly IEmailService _emailService;
         private readonly IMapper _mapper;
         private readonly string _jwtSecret = "s3cr3tKeyF0rJWT@2024!MustBe32Char$";
+        private readonly string _confirmUrl;
+        private readonly IFirebaseService _firebaseService;
 
-        public AccountService(IMapper mapper)
+        public AccountService(IMapper mapper, IEmailService emailService, IConfiguration config, IFirebaseService firebaseService)
         {
             _unitOfWork ??= new UnitOfWork();
             _mapper = mapper;
+            _emailService = emailService;
+            _confirmUrl = config["ConfirmUrl"];
+            _firebaseService = firebaseService;
         }
 
         public async Task<IBusinessResult> DeleteById(int id)
@@ -123,21 +131,51 @@ namespace StudySpace.Service.Services
             }
         }
 
-
-
-        public async Task<IBusinessResult> Save(Account acc)
+        public async Task<IBusinessResult> Save(AccountRegistrationRequestModel model)
         {
             try
             {
-                int result = await _unitOfWork.AccountRepository.CreateAsync(acc);
+                var userRole = await _unitOfWork.AccountRepository.GetRole(model.RoleName);
+
+                if (userRole == null)
+                {
+                    return new BusinessResult(Const.FAIL_CREATE, "Role not found.");
+                }
+
+                var newAcc = new Account
+                {
+                    Name = model.Name,
+                    Email = model.Email,
+                    Password = model.Password,
+                    Phone = model.Phone,
+                    Address = model.Address,
+                    Gender = model.Gender,
+                    Dob = model.Dob,
+                    CreatedDate = DateTime.Now,
+                    IsActive = true,
+                    Wallet = 0,
+                    RoleId = userRole.Id
+                };
+
+                var imageUrl = model.File;
+                if(imageUrl != null )
+                {
+                    var imagePath = FirebasePathName.AVATAR + Guid.NewGuid().ToString();
+                    var imgUploadResult = await _firebaseService.UploadImageToFirebaseAsync(imageUrl, imagePath);
+                    newAcc.AvatarUrl = imgUploadResult;
+                    _unitOfWork.AccountRepository.PrepareCreate(newAcc);
+                }
+
+                int result = _unitOfWork.AccountRepository.Save();
+
                 if (result > 0)
                 {
                     return new BusinessResult(Const.SUCCESS_CREATE, Const.SUCCESS_CREATE_MSG);
-                }
-                else
+                } else
                 {
                     return new BusinessResult(Const.FAIL_CREATE, Const.FAIL_CREATE_MSG);
                 }
+
             }
             catch (Exception ex)
             {
@@ -263,9 +301,31 @@ namespace StudySpace.Service.Services
             };
         }
 
-        public async Task<IBusinessResult> Logout(string token)
+        public async Task<string> SendRegistrationEmailAsync(string email)
         {
-            return new BusinessResult(Const.SUCCESS_LOGOUT, Const.SUCCESS_LOGOUT_MSG);
+            var existedAcc = await _unitOfWork.AccountRepository.GetByEmailAsync(email);
+            if(existedAcc != null)
+            {
+                throw new InvalidOperationException("Email is already existed!");
+            }
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(_jwtSecret);
+
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new[] { new Claim(ClaimTypes.Email, email) }),
+                Expires = DateTime.UtcNow.AddHours(2),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            };
+
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            var jwtToken = tokenHandler.WriteToken(token);
+
+            var confirmLink = $"{_confirmUrl}?token={jwtToken}&email={email}";
+            await _emailService.SendMailAsync(email, confirmLink, $"30ph đéo bấm thì mất acc con ạ: {confirmLink}");
+
+            return jwtToken;
         }
     }
 }

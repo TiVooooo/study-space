@@ -10,15 +10,17 @@ using System.Text;
 using static StudySpace.Service.Configuration.ConfigurationModel;
 using Microsoft.OpenApi.Models;
 using StudySpace.Data.Helper;
+using System.Configuration;
+using StudySpace.Service.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowSpecificOrigins",
+    options.AddPolicy("AllowAnyOrigin",
         builder =>
         {
-            builder.WithOrigins("http://localhost:3000", "https://study-space-site.vercel.app/")
+            builder.AllowAnyOrigin()
                    .AllowAnyHeader()
                    .AllowAnyMethod();
         });
@@ -40,7 +42,6 @@ builder.Services.AddSwaggerGen(c =>
         Format = "binary"
     });
 });
-
 
 
 // JWT authentication configuration
@@ -70,6 +71,7 @@ builder.Services.AddScoped<IFeedbackService, FeedbackService>();
 builder.Services.AddScoped<IStoreService, StoreService>();
 builder.Services.AddScoped<IFirebaseService, FirebaseService>();
 builder.Services.AddScoped<ISpaceService, SpaceService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
 
 builder.Services.AddScoped<FirebasePathName>();
 
@@ -82,7 +84,10 @@ builder.Services.Configure<FirebaseConfiguration>(firebaseConfigSection);
 builder.Services.AddSingleton(firebaseConfig);
 
 
-
+// Email service configuration
+var emailConfig = builder.Configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>();
+builder.Services.AddSingleton(emailConfig);
+builder.Services.AddTransient<EmailService>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -98,7 +103,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseCors("AllowSpecificOrigins");
+app.UseCors("AllowAnyOrigin");
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();

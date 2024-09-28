@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using StudySpace.Data.Models;
 using StudySpace.DTOs.LoginDTO;
+using StudySpace.Service.BusinessModel;
 using StudySpace.Service.Services;
 
 namespace StudySpace.API.Controllers
@@ -70,19 +71,24 @@ namespace StudySpace.API.Controllers
             
         }
 
-        [Authorize]
-        [HttpPost("logout")]
-        public async Task<IActionResult> Logout()
+        [HttpPost("send-confirm-mail")]
+        public async Task<IActionResult> SendConfirmEmail([FromBody] string email)
         {
-            var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
-            var result = await _accService.Logout(token);
-
-            if (result.Status == 1)
+            try
             {
-                return Ok(result);
+                var token = await _accService.SendRegistrationEmailAsync(email);
+                return Ok(new { Message = "Confirm email sent.", Token = token });
+            } catch (Exception ex)
+            {
+                return BadRequest(new { Message = ex.Message });
             }
+        }
 
-            return BadRequest(result.Message);
+        [HttpPost]
+        public async Task<IActionResult> CreateAccount([FromForm] AccountRegistrationRequestModel model)
+        {
+            var result = await _accService.Save(model);
+            return Ok(result);
         }
     }
 }
