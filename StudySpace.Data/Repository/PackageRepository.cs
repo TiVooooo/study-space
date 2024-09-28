@@ -1,4 +1,5 @@
-﻿using StudySpace.Data.Base;
+﻿using Microsoft.EntityFrameworkCore;
+using StudySpace.Data.Base;
 using StudySpace.Data.Models;
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,14 @@ namespace StudySpace.Data.Repository
         public PackageRepository(EXE201_StudySpaceContext context)
         {
             _context = context;
+        }
+
+        public async Task<List<Package>> GetAllPackagesAsync()
+        {
+            return await _context.Packages
+                .Include(r => r.Transactions)
+                .Include(r => r.StorePackages)
+                .ToListAsync();
         }
     }
 }

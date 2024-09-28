@@ -63,5 +63,32 @@ namespace StudySpace.API.Controllers
             return Ok(result);
         }
 
+        [HttpPost("send-confirm-mail")]
+        public async Task<IActionResult> SendConfirmEmail([FromBody] string email)
+        {
+            try
+            {
+                var token = await _storeService.SendRegistrationEmailAsync(email);
+                return Ok(new { Message = "Confirm email sent.", Token = token });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
+        }
+
+        [HttpPut("unactive/{id}")]
+        public async Task<IActionResult> UnactiveStore(int id)
+        {
+            var result = await _storeService.UnactiveStore(id);
+            return Ok(result);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteStore(int id)
+        {
+            return Ok(await _storeService.DeleteById(id));
+        }
+
     }
 }

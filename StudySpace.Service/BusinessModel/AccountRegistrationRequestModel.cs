@@ -25,6 +25,5 @@ namespace StudySpace.Service.BusinessModel
 
         public DateTime? Dob { get; set; }
 
-        public IFormFile? File { get; set; }
     }
 }

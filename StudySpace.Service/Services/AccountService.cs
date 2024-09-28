@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Firebase.Auth;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using StudySpace.Common;
@@ -24,12 +25,13 @@ namespace StudySpace.Service.Services
     {
         Task<IBusinessResult> GetAll();
         Task<IBusinessResult> GetById(int id);
-      //  Task<IBusinessResult> Update(Account acc);
+        Task<IBusinessResult> Update(int id, UpdateAccountModel account);
         Task<IBusinessResult> DeleteById(int id);
-        Task<IBusinessResult> Save(AccountRegistrationRequestModel acc);
+        Task<IBusinessResult> Save(AccountRegistrationRequestModel model, string token);
         Task<IBusinessResult> Login(string email, string password);
         DecodeTokenResponseDTO DecodeToken(string token);
         Task<string> SendRegistrationEmailAsync(string email);
+        Task<IBusinessResult> UnactiveUser(int userId);
     }
 
     public class AccountService : IAccountService
@@ -131,10 +133,29 @@ namespace StudySpace.Service.Services
             }
         }
 
-        public async Task<IBusinessResult> Save(AccountRegistrationRequestModel model)
+        public async Task<IBusinessResult> Save(AccountRegistrationRequestModel model, string token)
         {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(_jwtSecret);
             try
             {
+                tokenHandler.ValidateToken(token, new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    ClockSkew = TimeSpan.Zero
+                }, out SecurityToken validatedToken);
+
+                var jwtToken = (JwtSecurityToken)validatedToken;
+                var email = jwtToken.Claims.FirstOrDefault(c => c.Type == "email")?.Value;
+
+                if(email == null)
+                {
+                    return new BusinessResult(Const.WARNING_INVALID_TOKEN, Const.WARNING_INVALID_TOKEN_MSG);
+                }
+
                 var userRole = await _unitOfWork.AccountRepository.GetRole(model.RoleName);
 
                 if (userRole == null)
@@ -142,6 +163,7 @@ namespace StudySpace.Service.Services
                     return new BusinessResult(Const.FAIL_CREATE, "Role not found.");
                 }
 
+               
                 var newAcc = new Account
                 {
                     Name = model.Name,
@@ -157,15 +179,7 @@ namespace StudySpace.Service.Services
                     RoleId = userRole.Id
                 };
 
-                var imageUrl = model.File;
-                if(imageUrl != null )
-                {
-                    var imagePath = FirebasePathName.AVATAR + Guid.NewGuid().ToString();
-                    var imgUploadResult = await _firebaseService.UploadImageToFirebaseAsync(imageUrl, imagePath);
-                    newAcc.AvatarUrl = imgUploadResult;
-                    _unitOfWork.AccountRepository.PrepareCreate(newAcc);
-                }
-
+                _unitOfWork.AccountRepository.PrepareCreate(newAcc);
                 int result = _unitOfWork.AccountRepository.Save();
 
                 if (result > 0)
@@ -177,31 +191,45 @@ namespace StudySpace.Service.Services
                 }
 
             }
+            catch (SecurityTokenExpiredException ex)
+            {
+                return new BusinessResult(-4, "Token has expired. Please request a new registration email.");
+            }
             catch (Exception ex)
             {
                 return new BusinessResult(-4, ex.Message);
             }
         }
 
-       /* public async Task<IBusinessResult> Update(int id, GetDetailUserModel acc)
+        public async Task<IBusinessResult> Update(int id, UpdateAccountModel account)
         {
             try
             {
                 var existedUser = await _unitOfWork.AccountRepository.GetByIdAsync(id);
 
-                if (existedUser != null)
+                if(existedUser == null)
                 {
-                    existedUser.Address = acc.Address;
-                    
+                    return new BusinessResult(Const.WARNING_NO_DATA, Const.WARNING_NO_DATA_MSG);
                 }
 
+                existedUser.Name = account.Name;
+                existedUser.Email = account.Email;
+                existedUser.Password = account.Password;
+                existedUser.Phone = account.Phone;
+                existedUser.Address = account.Address;
+                existedUser.Gender = account.Gender;
+                existedUser.Dob = account.Dob;
 
+                var imageUrl = account.AvatarUrl;
+                if (imageUrl != null)
+                {
+                    var imagePath = FirebasePathName.AVATAR + Guid.NewGuid().ToString();
+                    var imgUploadResult = await _firebaseService.UploadImageToFirebaseAsync(imageUrl, imagePath);
+                    existedUser.AvatarUrl = imgUploadResult;
+                    _unitOfWork.AccountRepository.PrepareCreate(existedUser);
+                }
 
-
-
-
-
-                int result = await _unitOfWork.AccountRepository.UpdateAsync(acc);
+                int result = await _unitOfWork.AccountRepository.UpdateAsync(existedUser);
 
                 if (result > 0)
                 {
@@ -217,7 +245,7 @@ namespace StudySpace.Service.Services
                 return new BusinessResult(-4, ex.Message);
             }
         }
-*/
+
         public async Task<IBusinessResult> Login(string email, string password)
         {
             var acc = await _unitOfWork.AccountRepository.GetByEmailAsync(email);
@@ -326,6 +354,35 @@ namespace StudySpace.Service.Services
             await _emailService.SendMailAsync(email, confirmLink, $"30ph đéo bấm thì mất acc con ạ: {confirmLink}");
 
             return jwtToken;
+        }
+
+        public async Task<IBusinessResult> UnactiveUser(int userId)
+        {
+            try
+            {
+                var userUnactive = await _unitOfWork.AccountRepository.GetByIdAsync(userId);
+
+                if (userUnactive == null)
+                {
+                    return new BusinessResult(Const.WARNING_NO_DATA, Const.WARNING_NO_DATA_MSG);
+                }
+
+                userUnactive.IsActive = false;
+
+                int result = await _unitOfWork.AccountRepository.UpdateAsync(userUnactive);
+
+                if (result > 0)
+                {
+                    return new BusinessResult(Const.SUCCESS_UNACTIVATE, Const.SUCCESS_UNACTIVATE_MSG);
+                }
+                else
+                {
+                    return new BusinessResult(Const.FAIL_UNACTIVATE, Const.FAIL_UNACTIVATE_MSG);
+                }
+            } catch (Exception ex)
+            {
+                return new BusinessResult(Const.ERROR_EXEPTION, ex.Message);
+            }
         }
     }
 }

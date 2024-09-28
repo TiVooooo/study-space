@@ -9,7 +9,7 @@ namespace StudySpace.API.Helper
         public MappingProfiles()
         {
             CreateMap<Account, GetDetailUserModel>();
-
+            CreateMap<Account, UpdateAccountModel>();
         }
     }
 }
