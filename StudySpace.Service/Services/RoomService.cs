@@ -280,12 +280,12 @@ namespace StudySpace.Service.Services
                 var storeExisted = _unitOfWork.StoreRepository.FindByCondition(c => c.Id == room.StoreId).FirstOrDefault();
                 var spaceExisted = _unitOfWork.SpaceRepository.FindByCondition(c => c.Id == room.SpaceId).FirstOrDefault();
 
-                if(storeExisted == null)
+                if (storeExisted == null)
                 {
                     return new BusinessResult(Const.WARNING_NO_DATA, "Unknown Store.");
                 }
 
-                if(spaceExisted == null)
+                if (spaceExisted == null)
                 {
                     return new BusinessResult(Const.WARNING_NO_DATA, "Unknown Space.");
                 }
@@ -357,7 +357,7 @@ namespace StudySpace.Service.Services
                     return new BusinessResult(Const.WARNING_NO_DATA, "Unknown Space.");
                 }
 
-                var updatedRoom = await _unitOfWork.RoomRepository.GetByIdAsync(roomId); 
+                var updatedRoom = await _unitOfWork.RoomRepository.GetByIdAsync(roomId);
                 if (updatedRoom == null)
                 {
                     return new BusinessResult(Const.WARNING_NO_DATA, "Room not found.");
@@ -518,16 +518,12 @@ namespace StudySpace.Service.Services
                     result.Add(roomModel);
                 }
                 return new BusinessResult(Const.FAIL_READ, Const.SUCCESS_READ_MSG, result);
-
-
             }
-
-
-
+            catch (Exception ex)
+            {
+                return new BusinessResult(Const.ERROR_EXEPTION, ex.Message);
+            }
         }
-
-
-
 
     }
 }

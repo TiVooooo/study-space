@@ -55,9 +55,10 @@ namespace StudySpace.API.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateRoom(int id, [FromForm]CreateRoomRequestModel model)
+        public async Task<IActionResult> UpdateRoom(int id, [FromForm] CreateRoomRequestModel model)
         {
             return Ok(await _roomService.Update(id, model));
+        }
 
         [HttpGet("user/{id}")]
         public async Task<IActionResult> GetBookedRoomInUser(int id)
