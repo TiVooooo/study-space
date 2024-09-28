@@ -16,10 +16,16 @@ namespace StudySpace.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateFeedback([FromForm] FeedbackModel feedbackRequest)
+        public async Task<IActionResult> CreateFeedback([FromForm] Service.BusinessModel.FeedbackRequestModel feedbackRequest)
         {
             var result = await _feedbackService.Save(feedbackRequest);
             return Ok(result);
+        }
+
+        [HttpGet("detail/room/{id}")]
+        public async Task<IActionResult> GetDetailFeedback(int id, int pageNumber, int pageSize)
+        {
+            return Ok(await _feedbackService.GetFeedback(id, pageNumber, pageSize));
         }
     }
 

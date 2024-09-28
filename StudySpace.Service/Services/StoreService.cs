@@ -205,7 +205,6 @@ namespace StudySpace.Service.Services
                     new Claim(ClaimTypes.StreetAddress, store.Address),
                     new Claim(ClaimTypes.Uri, store.ThumbnailUrl)
                 }),
-                //Expires = DateTime.UtcNow.AddHours(2),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
 

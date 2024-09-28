@@ -21,8 +21,8 @@ namespace StudySpace.Service.Services
         Task<IBusinessResult> GetById(int id);
         Task<IBusinessResult> Update(Feedback acc);
         Task<IBusinessResult> DeleteById(int id);
-        Task<IBusinessResult> Save(FeedbackModel acc);
-        Task<IBusinessResult> GetFeedback(int id);
+        Task<IBusinessResult> Save(FeedbackRequestModel acc);
+        Task<IBusinessResult> GetFeedback(int roomId, int pageNumber, int pageSize);
 
 
     }
@@ -92,15 +92,22 @@ namespace StudySpace.Service.Services
             }
         }
 
-        public async Task<IBusinessResult> GetFeedback(int roomId)
+        public async Task<IBusinessResult> GetFeedback(int roomId, int pageNumber, int pageSize)
         {
             try
             {
                 var bookings = _unitOfWork.BookingRepository.FindByCondition(b => b.Room.Id == roomId).ToList();
-
                 var bookingIds = bookings.Select(b => b.Id).ToList();
 
-                var feedbacks = _unitOfWork.FeedbackRepository.FindByCondition(f => bookingIds.Contains(f.Booking.Id)).ToList();
+                var totalFeedback = _unitOfWork.FeedbackRepository.FindByCondition(f => bookingIds.Contains(f.Booking.Id)).Count();
+
+                var totalPages = (int)Math.Ceiling((double)totalFeedback / pageSize);
+
+                var feedbacks = _unitOfWork.FeedbackRepository
+                    .FindByCondition(f => bookingIds.Contains(f.Booking.Id))
+                    .Skip((pageNumber - 1) * pageSize)
+                    .Take(pageSize)
+                    .ToList();
 
                 var list = new List<FeedbackResponseModel>();
 
@@ -108,19 +115,38 @@ namespace StudySpace.Service.Services
                 {
                     foreach (var item in feedbacks)
                     {
-                        // Get images associated with each feedback
-                        var images = _unitOfWork.ImageFeedbackRepository.FindByCondition(i => i.FeedbackId == item.Id).Select(i => i.ImageUrl).ToList();
+                        var images = _unitOfWork.ImageFeedbackRepository
+                            .FindByCondition(i => i.FeedbackId == item.Id)
+                            .Select(i => i.ImageUrl)
+                            .ToList();
+
+                        var user = _unitOfWork.AccountRepository.GetById(item.UserId ?? 0);
+                        var bookedDate = _unitOfWork.BookingRepository
+                            .FindByCondition(b => b.UserId == user.Id && b.RoomId == roomId)
+                            .Select(b => b.BookingDate)
+                            .FirstOrDefault();
 
                         var feedback = new FeedbackResponseModel
                         {
-                            Avatar = item.User?.AvatarUrl, // Use null-conditional operator in case User is null
+                            Avatar = user.AvatarUrl,
                             ReviewText = item.ReviewText,
-                            Images = images
+                            Images = images,
+                            BookingDate = bookedDate,
+                            Star = item.Rating,
+                            UserName = user.Name
                         };
 
                         list.Add(feedback);
+
+                       
                     }
-                    return new BusinessResult(Const.SUCCESS_READ, Const.SUCCESS_CREATE_MSG, list);
+                    var result = new FeedbackModel
+                    {
+                        FeedbackResponses = list,
+                        TotalPage = totalPages,
+                        TodalFeedback = totalFeedback
+                    };
+                    return new BusinessResult(Const.SUCCESS_READ, Const.SUCCESS_CREATE_MSG, result);
                 }
                 else
                 {
@@ -159,7 +185,7 @@ namespace StudySpace.Service.Services
         }
 
 
-        public async Task<IBusinessResult> Save(FeedbackModel feedback)
+        public async Task<IBusinessResult> Save(FeedbackRequestModel feedback)
         {
             try
             {
