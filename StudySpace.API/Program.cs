@@ -10,15 +10,17 @@ using System.Text;
 using static StudySpace.Service.Configuration.ConfigurationModel;
 using Microsoft.OpenApi.Models;
 using StudySpace.Data.Helper;
+using System.Configuration;
+using StudySpace.Service.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowSpecificOrigins",
+    options.AddPolicy("AllowAnyOrigin",
         builder =>
         {
-            builder.WithOrigins("http://localhost:3000", "https://study-space-site.vercel.app/")
+            builder.AllowAnyOrigin()
                    .AllowAnyHeader()
                    .AllowAnyMethod();
         });
@@ -40,7 +42,6 @@ builder.Services.AddSwaggerGen(c =>
         Format = "binary"
     });
 });
-
 
 
 // JWT authentication configuration

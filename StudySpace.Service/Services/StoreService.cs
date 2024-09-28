@@ -23,7 +23,6 @@ namespace StudySpace.Service.Services
         Task<IBusinessResult> DeleteById(int id);
         Task<IBusinessResult> Save(Store store);
         Task<IBusinessResult> Login(string email, string password);
-        Task<IBusinessResult> Logout(string token);
         DecodeTokenResponseDTO DecodeToken(string token);
 
        Task<IBusinessResult> GetAllAddress();
@@ -258,10 +257,6 @@ namespace StudySpace.Service.Services
             };
         }
 
-        public async Task<IBusinessResult> Logout(string token)
-        {
-            return new BusinessResult(Const.SUCCESS_LOGOUT, Const.SUCCESS_LOGOUT_MSG);
-        }
     }
 }
 

@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "cWd8wPCvD/Y=",
+  "dgSpecHash": "1ED3ozy5+RE=",
   "success": true,
-  "projectFilePath": "C:\\Users\\BINF\\Desktop\\study-space\\StudySpace.Data\\StudySpace.Data.csproj",
+  "projectFilePath": "C:\\Users\\BINF\\Desktop\\Term08\\EXE201\\study-space\\StudySpace.Data\\StudySpace.Data.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\BINF\\.nuget\\packages\\automapper\\12.0.1\\automapper.12.0.1.nupkg.sha512",
     "C:\\Users\\BINF\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\12.0.1\\automapper.extensions.microsoft.dependencyinjection.12.0.1.nupkg.sha512",
