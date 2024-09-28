@@ -1099,3 +1099,6 @@ C:\Users\BINF\Desktop\Term08\EXE201\study-space\StudySpace.API\bin\Debug\net8.0\
 C:\Users\BINF\Desktop\Term08\EXE201\study-space\StudySpace.API\bin\Debug\net8.0\System.ServiceModel.dll
 C:\Users\BINF\Desktop\Term08\EXE201\study-space\StudySpace.API\bin\Debug\net8.0\System.Management.dll
 C:\Users\BINF\Desktop\Term08\EXE201\study-space\StudySpace.API\bin\Debug\net8.0\runtimes\win\lib\net7.0\System.Management.dll
+C:\Users\BINF\Desktop\Term08\EXE201\study-space\StudySpace.API\bin\Debug\net8.0\BouncyCastle.Cryptography.dll
+C:\Users\BINF\Desktop\Term08\EXE201\study-space\StudySpace.API\bin\Debug\net8.0\MailKit.dll
+C:\Users\BINF\Desktop\Term08\EXE201\study-space\StudySpace.API\bin\Debug\net8.0\MimeKit.dll

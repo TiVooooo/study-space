@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("StudySpace.DTOs")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8d4dff06b3f3185527f20370c117f8b52c16ac1d")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+53043a407e7b9832657b072daada8f00a49ba1e0")]
 [assembly: System.Reflection.AssemblyProductAttribute("StudySpace.DTOs")]
 [assembly: System.Reflection.AssemblyTitleAttribute("StudySpace.DTOs")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

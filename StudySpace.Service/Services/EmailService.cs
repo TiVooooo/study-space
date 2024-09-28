@@ -1,4 +1,5 @@
-﻿using MimeKit;
+﻿using MailKit.Security;
+using MimeKit;
 using StudySpace.Service.Configuration;
 using System;
 using System.Collections.Generic;
@@ -39,7 +40,7 @@ namespace StudySpace.Service.Services
             using var smtpClient = new MailKit.Net.Smtp.SmtpClient();
             try
             {
-                await smtpClient.ConnectAsync(_config.SmtpServer, _config.SmtpPort, _config.UseSsl);
+                await smtpClient.ConnectAsync(_config.SmtpServer, _config.SmtpPort, SecureSocketOptions.StartTls);
                 await smtpClient.AuthenticateAsync(_config.SmtpUser, _config.SmtpPass);
 
                 await smtpClient.SendAsync(emailMessage);

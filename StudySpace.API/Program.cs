@@ -71,6 +71,7 @@ builder.Services.AddScoped<IFeedbackService, FeedbackService>();
 builder.Services.AddScoped<IStoreService, StoreService>();
 builder.Services.AddScoped<IFirebaseService, FirebaseService>();
 builder.Services.AddScoped<ISpaceService, SpaceService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
 
 builder.Services.AddScoped<FirebasePathName>();
 
@@ -83,7 +84,10 @@ builder.Services.Configure<FirebaseConfiguration>(firebaseConfigSection);
 builder.Services.AddSingleton(firebaseConfig);
 
 
-
+// Email service configuration
+var emailConfig = builder.Configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>();
+builder.Services.AddSingleton(emailConfig);
+builder.Services.AddTransient<EmailService>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
