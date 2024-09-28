@@ -3,7 +3,7 @@ using StudySpace.Service.Services;
 
 namespace StudySpace.API.Controllers
 {
-    [Route("space")]
+    [Route("Space")]
     [ApiController]
     public class SpaceController : ControllerBase
     {

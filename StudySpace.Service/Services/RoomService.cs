@@ -1,6 +1,10 @@
-﻿using AutoMapper;
+
+using StudySpace.Data.Helper;
+
+using AutoMapper;
 using Firebase.Auth;
 using StudySpace.Common;
+
 using StudySpace.Data.Models;
 using StudySpace.Data.Repository;
 using StudySpace.Data.UnitOfWork;
@@ -20,17 +24,14 @@ namespace StudySpace.Service.Services
     {
         Task<IBusinessResult> GetAll(int pageNumber, int pageSize);
         Task<IBusinessResult> GetById(int id);
-        Task<IBusinessResult> Update(Room space);
+        Task<IBusinessResult> Update(int roomId, CreateRoomRequestModel room);
         Task<IBusinessResult> DeleteById(int id);
-        Task<IBusinessResult> Save(Room space);
+        Task<IBusinessResult> Save(CreateRoomRequestModel room);
         Task<IBusinessResult> SearchRooms(int pageNumber, int pageSize, string space, string location, string room, int person);
         Task<IBusinessResult> GetRoomWithCondition(string condition);
-
+        Task<IBusinessResult> UnactiveRoom(int roomId);
         Task<IBusinessResult> GetAllBookedRoomInUser(int userId);
-
         Task<IBusinessResult> GetAllBookedRoomInSup(int supID);
-
-
 
     }
 
@@ -39,12 +40,13 @@ namespace StudySpace.Service.Services
         private readonly UnitOfWork _unitOfWork;
         private readonly IFeedbackService _feedbackService;
         private readonly IMapper _mapper;
+        private readonly IFirebaseService _firebaseService;
 
-
-        public RoomService(IFeedbackService feedbackService, IMapper mapper)
+        public RoomService(IFeedbackService feedbackService, IFirebaseService firebaseService, IMapper mapper)
         {
             _unitOfWork ??= new UnitOfWork();
             _feedbackService = feedbackService;
+            _firebaseService = firebaseService;
             _mapper = mapper;
         }
 
@@ -271,11 +273,58 @@ namespace StudySpace.Service.Services
 
 
 
-        public async Task<IBusinessResult> Save(Room space)
+        public async Task<IBusinessResult> Save(CreateRoomRequestModel room)
         {
             try
             {
-                int result = await _unitOfWork.RoomRepository.CreateAsync(space);
+                var storeExisted = _unitOfWork.StoreRepository.FindByCondition(c => c.Id == room.StoreId).FirstOrDefault();
+                var spaceExisted = _unitOfWork.SpaceRepository.FindByCondition(c => c.Id == room.SpaceId).FirstOrDefault();
+
+                if(storeExisted == null)
+                {
+                    return new BusinessResult(Const.WARNING_NO_DATA, "Unknown Store.");
+                }
+
+                if(spaceExisted == null)
+                {
+                    return new BusinessResult(Const.WARNING_NO_DATA, "Unknown Space.");
+                }
+
+                var newRoom = new Room
+                {
+                    SpaceId = room.SpaceId,
+                    RoomName = room.RoomName,
+                    StoreId = room.StoreId,
+                    Capacity = room.Capacity,
+                    PricePerHour = room.PricePerHour,
+                    Description = room.Description,
+                    Status = true,
+                    Area = room.Area,
+                    HouseRule = room.HouseRule
+                };
+
+                _unitOfWork.RoomRepository.PrepareCreate(newRoom);
+
+                var imageUrls = room.ImageRoom;
+                if (imageUrls != null)
+                {
+                    foreach (var image in imageUrls)
+                    {
+                        var newRoomImage = new ImageRoom
+                        {
+                            Room = newRoom
+                        };
+                        var imagePath = FirebasePathName.RATING + Guid.NewGuid().ToString();
+                        var imageUploadResult = await _firebaseService.UploadImageToFirebaseAsync(image, imagePath);
+                        newRoomImage.ImageUrl = imageUploadResult;
+                        _unitOfWork.ImageRoomRepository.PrepareCreate(newRoomImage);
+                    }
+
+                }
+                int result = await _unitOfWork.RoomRepository.SaveAsync();
+                await _unitOfWork.ImageRoomRepository.SaveAsync();
+
+
                 if (result > 0)
                 {
                     return new BusinessResult(Const.SUCCESS_CREATE, Const.SUCCESS_CREATE_MSG);
@@ -291,15 +340,70 @@ namespace StudySpace.Service.Services
             }
         }
 
-        public async Task<IBusinessResult> Update(Room space)
+        public async Task<IBusinessResult> Update(int roomId, CreateRoomRequestModel room)
         {
             try
             {
+                var storeExisted = _unitOfWork.StoreRepository.FindByCondition(c => c.Id == room.StoreId).FirstOrDefault();
+                var spaceExisted = _unitOfWork.SpaceRepository.FindByCondition(c => c.Id == room.SpaceId).FirstOrDefault();
 
-                int result = await _unitOfWork.RoomRepository.UpdateAsync(space);
+                if (storeExisted == null)
+                {
+                    return new BusinessResult(Const.WARNING_NO_DATA, "Unknown Store.");
+                }
+
+                if (spaceExisted == null)
+                {
+                    return new BusinessResult(Const.WARNING_NO_DATA, "Unknown Space.");
+                }
+
+                var updatedRoom = await _unitOfWork.RoomRepository.GetByIdAsync(roomId); 
+                if (updatedRoom == null)
+                {
+                    return new BusinessResult(Const.WARNING_NO_DATA, "Room not found.");
+                }
+
+                updatedRoom.SpaceId = room.SpaceId;
+                updatedRoom.RoomName = room.RoomName;
+                updatedRoom.StoreId = room.StoreId;
+                updatedRoom.Capacity = room.Capacity;
+                updatedRoom.PricePerHour = room.PricePerHour;
+                updatedRoom.Description = room.Description;
+                updatedRoom.Status = true;
+                updatedRoom.Area = room.Area;
+                updatedRoom.HouseRule = room.HouseRule;
+
+                _unitOfWork.RoomRepository.PrepareUpdate(updatedRoom);
+
+                var imageUrls = room.ImageRoom;
+                if (imageUrls != null)
+                {
+                    var existingImages = _unitOfWork.ImageRoomRepository.FindByCondition(i => i.RoomId == roomId).ToList();
+                    foreach (var imageUrl in existingImages)
+                    {
+                        _unitOfWork.ImageRoomRepository.PrepareRemove(imageUrl);
+                    }
+
+                    foreach (var image in imageUrls)
+                    {
+                        var newRoomImage = new ImageRoom
+                        {
+                            Room = updatedRoom
+                        };
+                        var imagePath = FirebasePathName.RATING + Guid.NewGuid().ToString();
+                        var imageUploadResult = await _firebaseService.UploadImageToFirebaseAsync(image, imagePath);
+                        newRoomImage.ImageUrl = imageUploadResult;
+                        _unitOfWork.ImageRoomRepository.PrepareCreate(newRoomImage);
+                    }
+
+                }
+                int result = await _unitOfWork.RoomRepository.SaveAsync();
+                await _unitOfWork.ImageRoomRepository.SaveAsync();
+
+
                 if (result > 0)
                 {
-                    return new BusinessResult(Const.FAIL_UDATE, Const.SUCCESS_UDATE_MSG);
+                    return new BusinessResult(Const.SUCCESS_UDATE, Const.SUCCESS_UDATE_MSG);
                 }
                 else
                 {
@@ -309,6 +413,37 @@ namespace StudySpace.Service.Services
             catch (Exception ex)
             {
                 return new BusinessResult(-4, ex.Message);
+            }
+        }
+
+
+        public async Task<IBusinessResult> UnactiveRoom(int roomId)
+        {
+            try
+            {
+                var roomUnactive = await _unitOfWork.RoomRepository.GetByIdAsync(roomId);
+
+                if (roomUnactive == null)
+                {
+                    return new BusinessResult(Const.WARNING_NO_DATA, Const.WARNING_NO_DATA_MSG);
+                }
+
+                roomUnactive.Status = false;
+
+                int result = await _unitOfWork.RoomRepository.UpdateAsync(roomUnactive);
+
+                if (result > 0)
+                {
+                    return new BusinessResult(Const.SUCCESS_UNACTIVATE, Const.SUCCESS_UNACTIVATE_MSG);
+                }
+                else
+                {
+                    return new BusinessResult(Const.FAIL_UNACTIVATE, Const.FAIL_UNACTIVATE_MSG);
+                }
+            }
+            catch (Exception ex)
+            {
+                return new BusinessResult(Const.ERROR_EXEPTION, ex.Message);
             }
         }
 
@@ -383,16 +518,14 @@ namespace StudySpace.Service.Services
                     result.Add(roomModel);
                 }
                 return new BusinessResult(Const.FAIL_READ, Const.SUCCESS_READ_MSG, result);
-            }
-            catch (Exception ex)
-            {
-                return new BusinessResult(Const.ERROR_EXEPTION, ex.Message);
+
 
             }
 
 
 
         }
+
 
 
 

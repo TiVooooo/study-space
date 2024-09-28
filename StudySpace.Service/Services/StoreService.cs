@@ -1,4 +1,6 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using AutoMapper;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using StudySpace.Common;
 using StudySpace.Data.Models;
 using StudySpace.Data.UnitOfWork;
@@ -24,20 +26,27 @@ namespace StudySpace.Service.Services
         Task<IBusinessResult> Save(Store store);
         Task<IBusinessResult> Login(string email, string password);
         DecodeTokenResponseDTO DecodeToken(string token);
-
-       Task<IBusinessResult> GetAllAddress();
-
+        Task<string> SendRegistrationEmailAsync(string email);
+        Task<IBusinessResult> GetAllAddress();
+        Task<IBusinessResult> UnactiveStore(int storeID);
     }
 
     public class StoreService : IStoreService
     {
         private readonly UnitOfWork _unitOfWork;
+        private readonly IEmailService _emailService;
+        private readonly string _confirmUrl;
+        private readonly IMapper _mapper;
         private readonly string _jwtSecret = "s3cr3tKeyF0rJWT@2024!MustBe32Char$";
+        private readonly IFirebaseService _firebaseService;
 
-        public StoreService()
+        public StoreService(IMapper mapper, IEmailService emailService, IConfiguration config, IFirebaseService firebaseService)
         {
             _unitOfWork ??= new UnitOfWork();
-
+            _mapper = mapper;
+            _emailService = emailService;
+            _confirmUrl = config["ConfirmUrl"];
+            _firebaseService = firebaseService;
         }
 
         public async Task<IBusinessResult> DeleteById(int id)
@@ -256,6 +265,62 @@ namespace StudySpace.Service.Services
             };
         }
 
+        public async Task<string> SendRegistrationEmailAsync(string email)
+        {
+            var existedAcc = await _unitOfWork.StoreRepository.GetByEmailAsync(email);
+            if (existedAcc != null)
+            {
+                throw new InvalidOperationException("Email is already existed!");
+            }
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(_jwtSecret);
+
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new[] { new Claim(ClaimTypes.Email, email) }),
+                Expires = DateTime.UtcNow.AddHours(2),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            };
+
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            var jwtToken = tokenHandler.WriteToken(token);
+
+            var confirmLink = $"{_confirmUrl}?token={jwtToken}&email={email}";
+            await _emailService.SendMailAsync(email, confirmLink, $"30ph đéo bấm thì mất acc con ạ: {confirmLink}");
+
+            return jwtToken;
+        }
+
+        public async Task<IBusinessResult> UnactiveStore(int storeID)
+        {
+            try
+            {
+                var storeUnactive = await _unitOfWork.StoreRepository.GetByIdAsync(storeID);
+
+                if (storeUnactive == null)
+                {
+                    return new BusinessResult(Const.WARNING_NO_DATA, Const.WARNING_NO_DATA_MSG);
+                }
+
+                storeUnactive.IsActive = false;
+
+                int result = await _unitOfWork.StoreRepository.UpdateAsync(storeUnactive);
+
+                if (result > 0)
+                {
+                    return new BusinessResult(Const.SUCCESS_UNACTIVATE, Const.SUCCESS_UNACTIVATE_MSG);
+                }
+                else
+                {
+                    return new BusinessResult(Const.FAIL_UNACTIVATE, Const.FAIL_UNACTIVATE_MSG);
+                }
+            }
+            catch (Exception ex)
+            {
+                return new BusinessResult(Const.ERROR_EXEPTION, ex.Message);
+            }
+        }
     }
 }
 

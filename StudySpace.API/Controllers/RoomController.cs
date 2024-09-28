@@ -1,9 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using StudySpace.Service.BusinessModel;
 using StudySpace.Service.Services;
 
 namespace StudySpace.API.Controllers
 {
-    [Route("/room")]
+    [Route("/Room")]
     [ApiController]
     public class RoomController : ControllerBase
     {
@@ -34,6 +35,30 @@ namespace StudySpace.API.Controllers
             return Ok(await _roomService.GetById(id));
         }
 
+        [HttpPost]
+        public async Task<IActionResult> CreateRoom(CreateRoomRequestModel model)
+        {
+            var result = await _roomService.Save(model);
+            return Ok(result);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteRoom(int id)
+        {
+            return Ok(await _roomService.DeleteById(id));
+        }
+
+        [HttpPut("unactive/{id}")]
+        public async Task<IActionResult> UnactiveRoom(int id)
+        {
+            return Ok(await _roomService.UnactiveRoom(id));
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateRoom(int id, [FromForm]CreateRoomRequestModel model)
+        {
+            return Ok(await _roomService.Update(id, model));
+
         [HttpGet("user/{id}")]
         public async Task<IActionResult> GetBookedRoomInUser(int id)
         {
@@ -44,6 +69,7 @@ namespace StudySpace.API.Controllers
         public async Task<IActionResult> GetBookedRoomInSup(int id)
         {
             return Ok(await _roomService.GetAllBookedRoomInSup(id));
+
         }
     }
 }

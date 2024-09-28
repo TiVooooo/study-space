@@ -7,9 +7,8 @@ using System.Threading.Tasks;
 
 namespace StudySpace.Service.BusinessModel
 {
-    public class GetDetailUserModel
+    public class UpdateAccountModel
     {
-        public string RoleName { get; set; }
 
         public string Name { get; set; }
 
@@ -25,10 +24,6 @@ namespace StudySpace.Service.BusinessModel
 
         public DateTime Dob { get; set; }
 
-        public bool IsActive { get; set; }
-
-        public double Wallet { get; set; }
-
-        public string AvatarUrl { get; set; }
+        public IFormFile? AvatarUrl { get; set; }
     }
 }

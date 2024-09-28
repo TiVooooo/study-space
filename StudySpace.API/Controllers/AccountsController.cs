@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -85,9 +86,30 @@ namespace StudySpace.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateAccount([FromForm] AccountRegistrationRequestModel model)
+        public async Task<IActionResult> CreateAccount([FromBody] AccountRegistrationRequestModel model, [FromQuery] string token)
         {
-            var result = await _accService.Save(model);
+            var result = await _accService.Save(model, token);
+            return Ok(result);
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateAccount([FromQuery]int id,  [FromForm] UpdateAccountModel model)
+        {
+            var result = await _accService.Update(id, model);
+            return Ok(result);
+        }
+
+        [HttpPut("unactive/{id}")]
+        public async Task<IActionResult> UnactiveAccount(int id)
+        {
+            var result = await _accService.UnactiveUser(id);
+            return Ok(result);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var result = await _accService.DeleteById(id);
             return Ok(result);
         }
     }

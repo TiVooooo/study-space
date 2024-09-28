@@ -17,6 +17,8 @@ namespace StudySpace.Common
         // Warning
         public static int WARNING_NO_DATA = 4;
         public static string WARNING_NO_DATA_MSG = "No data";
+        public static int WARNING_INVALID_TOKEN = 4;
+        public static string WARNING_INVALID_TOKEN_MSG = "Invalid Token";
         #endregion
 
 
@@ -34,6 +36,8 @@ namespace StudySpace.Common
         public static string SUCCESS_LOGIN_MSG = "Login success";
         public static int SUCCESS_LOGOUT = 1;
         public static string SUCCESS_LOGOUT_MSG = "Logout success";
+        public static int SUCCESS_UNACTIVATE = 1;
+        public static string SUCCESS_UNACTIVATE_MSG = "Unactivate success";
         #endregion
 
 
@@ -49,6 +53,8 @@ namespace StudySpace.Common
         public static string FAIL_DELETE_MSG = "Delete data fail";
         public static int FAIL_LOGIN = 0;
         public static string FAIL_LOGIN_MSG = "Invalid email or password.";
+        public static int FAIL_UNACTIVATE = 0;
+        public static string FAIL_UNACTIVATE_MSG = "Unactivate fail.";
         #endregion
 
 

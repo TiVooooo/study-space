@@ -28,5 +28,6 @@ namespace StudySpace.Data.Repository
                 .Include(r=>r.Space)
                 .ToListAsync();
         }
+
     }
 }
