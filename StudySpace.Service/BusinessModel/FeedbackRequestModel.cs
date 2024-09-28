@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace StudySpace.Service.BusinessModel
 {
-    public class FeedbackModel
+    public class FeedbackRequestModel
     {
         public int UserId { get; set; }
 

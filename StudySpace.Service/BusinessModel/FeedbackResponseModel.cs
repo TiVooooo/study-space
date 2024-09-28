@@ -7,6 +7,14 @@ using System.Threading.Tasks;
 
 namespace StudySpace.Service.BusinessModel
 {
+    public class FeedbackModel
+    {
+        public int TotalPage { get; set; }
+        
+        public int TodalFeedback { get; set; }
+        public List<FeedbackResponseModel> FeedbackResponses { get; set; }
+    }
+
     public class FeedbackResponseModel
     {
         public string Avatar {  get; set; }
@@ -16,6 +24,12 @@ namespace StudySpace.Service.BusinessModel
 
 
         public List<string>? Images { get; set; }
+
+
+        public DateTime? BookingDate { get; set; }
+
+        public int? Star {  get; set; }  
+        public string UserName { get; set; }
 
     }
 }
