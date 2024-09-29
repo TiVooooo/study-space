@@ -191,7 +191,7 @@ namespace StudySpace.Service.Services
             try
             {
                 var spaces = _unitOfWork.SpaceRepository.GetAll().Select(s=>s.SpaceName).Distinct().ToList();
-                spaces.Add("All");
+                spaces.Insert(0,"All");
                 return new BusinessResult(Const.SUCCESS_READ,Const.SUCCESS_READ_MSG, spaces);
             }
             catch (Exception ex)

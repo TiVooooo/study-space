@@ -5,15 +5,15 @@ using System.Collections.Generic;
 
 namespace StudySpace.Data.Models;
 
-public partial class ImageRoom
+public partial class RoomAmity
 {
-    public int Id { get; set; }
+    public int RoomId { get; set; }
 
-    public int? RoomId { get; set; }
+    public int AmitiesId { get; set; }
 
-    public string ImageUrl { get; set; }
+    public int? Quantity { get; set; }
 
-    public bool? Status { get; set; }
+    public virtual Amity Amities { get; set; }
 
     public virtual Room Room { get; set; }
 }

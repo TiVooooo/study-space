@@ -19,6 +19,8 @@ public partial class Feedback
 
     public DateTime? ReviewDate { get; set; }
 
+    public bool? Status { get; set; }
+
     public virtual Booking Booking { get; set; }
 
     public virtual ICollection<ImageFeedback> ImageFeedbacks { get; set; } = new List<ImageFeedback>();
