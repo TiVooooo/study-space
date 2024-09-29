@@ -47,6 +47,10 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[RoomAmities]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[Space]",
          "ObjectType": 0
       },

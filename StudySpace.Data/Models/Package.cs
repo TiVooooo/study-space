@@ -17,6 +17,8 @@ public partial class Package
 
     public double? Duration { get; set; }
 
+    public bool? Status { get; set; }
+
     public virtual ICollection<StorePackage> StorePackages { get; set; } = new List<StorePackage>();
 
     public virtual ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();

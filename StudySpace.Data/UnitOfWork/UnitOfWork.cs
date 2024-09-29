@@ -25,7 +25,7 @@ namespace StudySpace.Data.UnitOfWork
         private StoreRepository _storeRepository;
         private TransactionRepository _transactionRepository;
         private UserRoleRepository _userRoleRepository;
-
+        private RoomAminitiesRepository _roomAminitiesRepository;
         public UnitOfWork()
         {
             _unitOfWorkContext ??= new EXE201_StudySpaceContext();
@@ -128,6 +128,14 @@ namespace StudySpace.Data.UnitOfWork
             get
             {
                 return _transactionRepository ??= new TransactionRepository(_unitOfWorkContext);
+            }
+        }
+
+        public RoomAminitiesRepository RoomAminitiesRepository
+        {
+            get
+            {
+                return _roomAminitiesRepository ??= new RoomAminitiesRepository(_unitOfWorkContext);
             }
         }
 

@@ -22,17 +22,17 @@ namespace StudySpace.API.Controllers
             return Ok(result);
         }
 
-        [HttpGet("Check")]
+        [HttpGet("available")]
         public async Task<IActionResult> FilterRoom(int pageNumber, int pageSize, string space, string location, string room, int person)
         {
             var result = await _roomService.SearchRooms(pageNumber, pageSize, space, location, room, person);
             return Ok(result);
         }
 
-        [HttpGet("detail/{id}")]
-        public async Task<IActionResult> GetDetailRoom(int id)
+        [HttpGet("detail/{roomId}")]
+        public async Task<IActionResult> GetDetailRoom(int roomId)
         {
-            return Ok(await _roomService.GetById(id));
+            return Ok(await _roomService.GetById(roomId));
         }
 
         [HttpPost]
@@ -48,7 +48,7 @@ namespace StudySpace.API.Controllers
             return Ok(await _roomService.DeleteById(id));
         }
 
-        [HttpPut("unactive/{id}")]
+        [HttpPut("status/{id}")]
         public async Task<IActionResult> UnactiveRoom(int id)
         {
             return Ok(await _roomService.UnactiveRoom(id));
@@ -60,16 +60,16 @@ namespace StudySpace.API.Controllers
             return Ok(await _roomService.Update(id, model));
         }
 
-        [HttpGet("user/{id}")]
-        public async Task<IActionResult> GetBookedRoomInUser(int id)
+        [HttpGet("user/{userId}")]
+        public async Task<IActionResult> GetBookedRoomInUser(int userId)
         {
-            return Ok(await _roomService.GetAllBookedRoomInUser(id));
+            return Ok(await _roomService.GetAllBookedRoomInUser(userId));
         }
 
-        [HttpGet("supplier/{id}")]
-        public async Task<IActionResult> GetBookedRoomInSup(int id)
+        [HttpGet("supplier/{supplierId}")]
+        public async Task<IActionResult> GetBookedRoomInSup(int supplierId)
         {
-            return Ok(await _roomService.GetAllBookedRoomInSup(id));
+            return Ok(await _roomService.GetAllBookedRoomInSup(supplierId));
 
         }
     }

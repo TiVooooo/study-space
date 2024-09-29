@@ -23,7 +23,6 @@ namespace StudySpace.Data.Repository
         {
             return await _context.Rooms
                 .Include(r => r.Store)
-                .Include(r => r.Amities)
                 .Include(r => r.ImageRooms)
                 .Include(r=>r.Space)
                 .ToListAsync();

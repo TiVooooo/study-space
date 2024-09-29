@@ -13,5 +13,7 @@ public partial class ImageFeedback
 
     public string ImageUrl { get; set; }
 
+    public bool? Status { get; set; }
+
     public virtual Feedback Feedback { get; set; }
 }

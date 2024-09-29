@@ -9,8 +9,6 @@ public partial class Amity
 {
     public int Id { get; set; }
 
-    public int? RoomId { get; set; }
-
     public string Name { get; set; }
 
     public string Type { get; set; }
@@ -21,5 +19,5 @@ public partial class Amity
 
     public string Description { get; set; }
 
-    public virtual Room Room { get; set; }
+    public virtual ICollection<RoomAmity> RoomAmities { get; set; } = new List<RoomAmity>();
 }

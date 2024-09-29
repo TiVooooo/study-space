@@ -84,17 +84,29 @@ namespace StudySpace.Service.Services
         {
             try
             {
-                var address = _unitOfWork.StoreRepository.GetAll().Select(x => x.Address).Distinct().ToList();
-                address.Add("All");
-                return new BusinessResult(Const.SUCCESS_READ, Const.SUCCESS_READ_MSG,address);
+                var addresses = _unitOfWork.StoreRepository.GetAll()
+                    .Select(x => x.Address)
+                    .Distinct()
+                    .ToList();
+
+                var districts = addresses.Select(address =>
+                {
+                    var parts = address.Split(',');
+                    return parts.Length > 1 ? parts[1].Trim() : string.Empty; 
+                })
+                .Distinct() 
+                .ToList();
+
+                districts.Insert(0, "All");
+
+                return new BusinessResult(Const.SUCCESS_READ, Const.SUCCESS_READ_MSG, districts);
             }
             catch (Exception ex)
             {
                 return new BusinessResult(Const.ERROR_EXEPTION, ex.Message);
-
             }
-
         }
+
 
         public async Task<IBusinessResult> GetAll()
         {
