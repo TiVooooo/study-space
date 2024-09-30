@@ -36,7 +36,7 @@ namespace StudySpace.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateRoom(CreateRoomRequestModel model)
+        public async Task<IActionResult> CreateRoom([FromForm]CreateRoomRequestModel model)
         {
             var result = await _roomService.Save(model);
             return Ok(result);
