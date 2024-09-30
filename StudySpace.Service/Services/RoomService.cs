@@ -212,7 +212,7 @@ namespace StudySpace.Service.Services
             }
         }
 
-        public async Task<IBusinessResult> FilterRoom ( string price, Double[]? priceRange, string[]? utilities)
+        public async Task<IBusinessResult> FilterRoom(string price, Double[]? priceRange, string[]? utilities)
         {
             try
             {
@@ -230,13 +230,6 @@ namespace StudySpace.Service.Services
                 }
                 else if (utilities != null && utilities.Any() && !utilities.Contains("all"))
                 {
-                    /*foreach (var amity in filterModel.SelectedUtilities)
-                    { 
-                        var ami = _unitOfWork.AmityRepository.FindByCondition(x=>x.Name.Equals(amity)).FirstOrDefault();
-                        var listRoom = _unitOfWork.RoomAminitiesRepository.FindByCondition(x => x.AmitiesId == ami.Id).ToList();
-                        
-                    }*/
-
                     var selectedAmitiesIds = _unitOfWork.AmityRepository
                 .FindByCondition(x => utilities.Contains(x.Name))
                 .Select(x => x.Id)
@@ -245,7 +238,7 @@ namespace StudySpace.Service.Services
 
                     foreach (var id in selectedAmitiesIds)
                     {
-                        var r = _unitOfWork.RoomAminitiesRepository.FindByCondition(x=>x.AmitiesId  == id).FirstOrDefault();
+                        var r = _unitOfWork.RoomAminitiesRepository.FindByCondition(x => x.AmitiesId == id).FirstOrDefault();
                         listR.Add(_unitOfWork.RoomRepository.GetById(r.RoomId));
                     }
 
@@ -607,7 +600,7 @@ namespace StudySpace.Service.Services
             }
         }
 
-       
+
     }
 }
 
