@@ -8,10 +8,10 @@ namespace StudySpace.Service.BusinessModel
 {
     public class FilterModel
     {
-        public string Location { get; set; }
-        public string Space { get; set; }
-        public string Room { get; set; }
-        public string Person {get; set; }
+        public string PriceSort { get; set; }
+        public string RatingSort { get; set; }
+        public List<string> SelectedUtilities { get; set; }
+        public Double[]? PriceRange {get; set; }
 
     }
 }

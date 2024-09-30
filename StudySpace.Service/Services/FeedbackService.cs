@@ -24,6 +24,9 @@ namespace StudySpace.Service.Services
         Task<IBusinessResult> Save(FeedbackRequestModel acc);
         Task<IBusinessResult> GetFeedback(int roomId, int pageNumber, int pageSize);
 
+        Task<IBusinessResult> GetFeedbackWithoutPaging(int roomId);
+
+
 
     }
 
@@ -147,6 +150,65 @@ namespace StudySpace.Service.Services
                         TodalFeedback = totalFeedback
                     };
                     return new BusinessResult(Const.SUCCESS_READ, Const.SUCCESS_CREATE_MSG, result);
+                }
+                else
+                {
+                    return new BusinessResult(Const.FAIL_READ, Const.FAIL_READ_MSG);
+                }
+            }
+            catch (Exception ex)
+            {
+                return new BusinessResult(Const.ERROR_EXEPTION, ex.Message);
+            }
+        }
+
+
+
+        public async Task<IBusinessResult> GetFeedbackWithoutPaging(int roomId)
+        {
+            try
+            {
+                var bookings = _unitOfWork.BookingRepository.FindByCondition(b => b.Room.Id == roomId).ToList();
+                var bookingIds = bookings.Select(b => b.Id).ToList();
+
+                var feedbacks = _unitOfWork.FeedbackRepository
+                    .FindByCondition(f => bookingIds.Contains(f.Booking.Id))
+                    
+                    .ToList();
+
+                var list = new List<FeedbackResponseModel>();
+
+                if (feedbacks != null && feedbacks.Any())
+                {
+                    foreach (var item in feedbacks)
+                    {
+                        var images = _unitOfWork.ImageFeedbackRepository
+                            .FindByCondition(i => i.FeedbackId == item.Id)
+                            .Select(i => i.ImageUrl)
+                            .ToList();
+
+                        var user = _unitOfWork.AccountRepository.GetById(item.UserId ?? 0);
+                        var bookedDate = _unitOfWork.BookingRepository
+                            .FindByCondition(b => b.UserId == user.Id && b.RoomId == roomId)
+                            .Select(b => b.BookingDate)
+                            .FirstOrDefault();
+
+                        var feedback = new FeedbackResponseModel
+                        {
+                            Avatar = user.AvatarUrl,
+                            ReviewText = item.ReviewText,
+                            Images = images,
+                            BookingDate = bookedDate,
+                            Star = item.Rating,
+                            UserName = user.Name
+                        };
+
+                        list.Add(feedback);
+
+
+                    }
+                    
+                    return new BusinessResult(Const.SUCCESS_READ, Const.SUCCESS_CREATE_MSG, list);
                 }
                 else
                 {
