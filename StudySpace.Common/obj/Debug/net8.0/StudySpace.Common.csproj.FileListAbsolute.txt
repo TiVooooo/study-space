@@ -1,0 +1,16 @@
+C:\Users\BINF\Desktop\study-space\StudySpace.Common\bin\Debug\net8.0\StudySpace.Common.deps.json
+C:\Users\BINF\Desktop\study-space\StudySpace.Common\bin\Debug\net8.0\StudySpace.Common.dll
+C:\Users\BINF\Desktop\study-space\StudySpace.Common\bin\Debug\net8.0\StudySpace.Common.pdb
+C:\Users\BINF\Desktop\study-space\StudySpace.Common\bin\Debug\net8.0\StudySpace.Data.dll
+C:\Users\BINF\Desktop\study-space\StudySpace.Common\bin\Debug\net8.0\StudySpace.Data.pdb
+C:\Users\BINF\Desktop\study-space\StudySpace.Common\obj\Debug\net8.0\StudySpace.Common.csproj.AssemblyReference.cache
+C:\Users\BINF\Desktop\study-space\StudySpace.Common\obj\Debug\net8.0\StudySpace.Common.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\BINF\Desktop\study-space\StudySpace.Common\obj\Debug\net8.0\StudySpace.Common.AssemblyInfoInputs.cache
+C:\Users\BINF\Desktop\study-space\StudySpace.Common\obj\Debug\net8.0\StudySpace.Common.AssemblyInfo.cs
+C:\Users\BINF\Desktop\study-space\StudySpace.Common\obj\Debug\net8.0\StudySpace.Common.csproj.CoreCompileInputs.cache
+C:\Users\BINF\Desktop\study-space\StudySpace.Common\obj\Debug\net8.0\StudySpace.Common.sourcelink.json
+C:\Users\BINF\Desktop\study-space\StudySpace.Common\obj\Debug\net8.0\StudySpa.20B255E9.Up2Date
+C:\Users\BINF\Desktop\study-space\StudySpace.Common\obj\Debug\net8.0\StudySpace.Common.dll
+C:\Users\BINF\Desktop\study-space\StudySpace.Common\obj\Debug\net8.0\refint\StudySpace.Common.dll
+C:\Users\BINF\Desktop\study-space\StudySpace.Common\obj\Debug\net8.0\StudySpace.Common.pdb
+C:\Users\BINF\Desktop\study-space\StudySpace.Common\obj\Debug\net8.0\ref\StudySpace.Common.dll
