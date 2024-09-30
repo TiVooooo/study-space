@@ -15,6 +15,8 @@ namespace StudySpace.Service.BusinessModel
 
         public int StoreId { get; set; }
 
+        public string Type { get; set; }
+
         public int Capacity { get; set; }
 
         public double PricePerHour { get; set; }
@@ -24,6 +26,11 @@ namespace StudySpace.Service.BusinessModel
         public double Area { get; set; }
 
         public string HouseRule { get; set; }
+
         public List<IFormFile>? ImageRoom { get; set; }
+
+        public int AmityId { get; set; }
+        public int Quantity { get; set; }
     }
+
 }

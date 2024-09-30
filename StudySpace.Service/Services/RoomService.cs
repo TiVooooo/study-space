@@ -374,6 +374,7 @@ namespace StudySpace.Service.Services
                     StoreId = room.StoreId,
                     Capacity = room.Capacity,
                     PricePerHour = room.PricePerHour,
+                    Type = room.Type,
                     Description = room.Description,
                     Status = true,
                     Area = room.Area,
@@ -381,7 +382,29 @@ namespace StudySpace.Service.Services
                 };
 
                 _unitOfWork.RoomRepository.PrepareCreate(newRoom);
+                int result = await _unitOfWork.RoomRepository.SaveAsync();
 
+                var amityRoom = new RoomAmity
+                {
+                    RoomId = newRoom.Id,
+                    AmitiesId = room.AmityId,
+                    Quantity = room.Quantity
+                };
+                _unitOfWork.RoomAminitiesRepository.PrepareCreate(amityRoom);
+                await _unitOfWork.RoomAminitiesRepository.SaveAsync();
+
+                var amity = _unitOfWork.AmityRepository.GetById(room.AmityId);
+                if(amity.Quantity >= room.Quantity)
+                {
+                    amity.Quantity -= room.Quantity;
+                } else
+                {
+                    return new BusinessResult(Const.FAIL_CREATE, "There is not enough Amity in stock!");
+                }
+
+                _unitOfWork.AmityRepository.PrepareUpdate(amity);
+                await _unitOfWork.AmityRepository.SaveAsync();
+                
                 var imageUrls = room.ImageRoom;
                 if (imageUrls != null)
                 {
@@ -398,7 +421,6 @@ namespace StudySpace.Service.Services
                     }
 
                 }
-                int result = await _unitOfWork.RoomRepository.SaveAsync();
                 await _unitOfWork.ImageRoomRepository.SaveAsync();
 
 
@@ -505,7 +527,7 @@ namespace StudySpace.Service.Services
                     return new BusinessResult(Const.WARNING_NO_DATA, Const.WARNING_NO_DATA_MSG);
                 }
 
-                roomUnactive.Status = false;
+                roomUnactive.Status = !roomUnactive.Status;
 
                 int result = await _unitOfWork.RoomRepository.UpdateAsync(roomUnactive);
 

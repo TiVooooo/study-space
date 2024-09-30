@@ -33,7 +33,7 @@ namespace StudySpace.API.Controllers
         }
 
 
-        [HttpPost("login")]
+        [HttpPost("login-authen")]
         public async Task<IActionResult> Login([FromBody] LoginRequestDTO model)
         {
             var result = await _accService.Login(model.Email, model.Password);
@@ -46,7 +46,7 @@ namespace StudySpace.API.Controllers
             return BadRequest(result.Message);
         }
 
-        [HttpPost("decode")]
+        [HttpPost("token-decode")]
         public IActionResult Decode([FromBody] string token)
         {
             if (string.IsNullOrEmpty(token))
@@ -72,7 +72,7 @@ namespace StudySpace.API.Controllers
             
         }
 
-        [HttpPost("send-confirm-mail")]
+        [HttpPost("email-sending-confirmation")]
         public async Task<IActionResult> SendConfirmEmail([FromBody] string email)
         {
             try
@@ -92,14 +92,14 @@ namespace StudySpace.API.Controllers
             return Ok(result);
         }
 
-        [HttpPut]
-        public async Task<IActionResult> UpdateAccount([FromQuery]int id,  [FromForm] UpdateAccountModel model)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateAccount(int id,  [FromForm] UpdateAccountModel model)
         {
             var result = await _accService.Update(id, model);
             return Ok(result);
         }
 
-        [HttpPut("unactive/{id}")]
+        [HttpPut("status/{id}")]
         public async Task<IActionResult> UnactiveAccount(int id)
         {
             var result = await _accService.UnactiveUser(id);
@@ -111,6 +111,12 @@ namespace StudySpace.API.Controllers
         {
             var result = await _accService.DeleteById(id);
             return Ok(result);
+        }
+
+        [HttpGet("total-accounts")]
+        public async Task<IActionResult> GetAllAccounts()
+        {
+            return Ok(await _accService.CalculateTotalAccountsByRoleAndStatus());
         }
     }
 }
