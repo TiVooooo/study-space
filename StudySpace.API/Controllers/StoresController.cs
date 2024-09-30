@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using StudySpace.Data.Models;
 using StudySpace.DTOs.LoginDTO;
+using StudySpace.Service.Base;
+using StudySpace.Service.BusinessModel;
 using StudySpace.Service.Services;
 
 namespace StudySpace.API.Controllers
@@ -23,7 +25,7 @@ namespace StudySpace.API.Controllers
             _storeService ??= storeService;
         }
 
-        [HttpPost("login")]
+        [HttpPost("login-authen")]
         public async Task<IActionResult> Login([FromBody] LoginRequestDTO model)
         {
             var result = await _storeService.Login(model.Email, model.Password);
@@ -36,7 +38,7 @@ namespace StudySpace.API.Controllers
             return BadRequest(result.Message);
         }
 
-        [HttpPost("decode")]
+        [HttpPost("token-decode")]
         public IActionResult Decode([FromBody] string token)
         {
             if (string.IsNullOrEmpty(token))
@@ -63,7 +65,7 @@ namespace StudySpace.API.Controllers
             return Ok(result);
         }
 
-        [HttpPost("send-confirm-mail")]
+        [HttpPost("email-sending-confirmation")]
         public async Task<IActionResult> SendConfirmEmail([FromBody] string email)
         {
             try
@@ -77,7 +79,7 @@ namespace StudySpace.API.Controllers
             }
         }
 
-        [HttpPut("unactive/{id}")]
+        [HttpPut("status/{id}")]
         public async Task<IActionResult> UnactiveStore(int id)
         {
             var result = await _storeService.UnactiveStore(id);
@@ -90,5 +92,22 @@ namespace StudySpace.API.Controllers
             return Ok(await _storeService.DeleteById(id));
         }
 
+        [HttpPost]
+        public async Task<IActionResult> SignUp([FromBody] StoreRegistrationRequestModel model, [FromQuery] string token)
+        {
+            return Ok(await _storeService.Save(model, token));
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateStore(int id, [FromForm] UpdateStoreModel model)
+        {
+            return Ok(await _storeService.Update(id, model));
+        }
+
+        [HttpGet("total-stores")]
+        public async Task<IActionResult> SumTotalStores()
+        {
+            return Ok(await _storeService.CalculateTotalStoresByRoleAndStatus());
+        }
     }
 }

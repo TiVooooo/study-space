@@ -32,6 +32,7 @@ namespace StudySpace.Service.Services
         DecodeTokenResponseDTO DecodeToken(string token);
         Task<string> SendRegistrationEmailAsync(string email);
         Task<IBusinessResult> UnactiveUser(int userId);
+        Task<IBusinessResult> CalculateTotalAccountsByRoleAndStatus();
     }
 
     public class AccountService : IAccountService
@@ -368,7 +369,7 @@ namespace StudySpace.Service.Services
                     return new BusinessResult(Const.WARNING_NO_DATA, Const.WARNING_NO_DATA_MSG);
                 }
 
-                userUnactive.IsActive = false;
+                userUnactive.IsActive = !userUnactive.IsActive;
 
                 int result = await _unitOfWork.AccountRepository.UpdateAsync(userUnactive);
 
@@ -385,5 +386,47 @@ namespace StudySpace.Service.Services
                 return new BusinessResult(Const.ERROR_EXEPTION, ex.Message);
             }
         }
+
+        public async Task<IBusinessResult> CalculateTotalAccountsByRoleAndStatus()
+        {
+            try
+            {
+                var admins = _unitOfWork.AccountRepository
+                    .FindByCondition(a => a.Role.RoleName == "Admin")
+                    .ToList();
+
+                var activeUsers = _unitOfWork.AccountRepository
+                    .FindByCondition(a => a.Role.RoleName == "User" && a.IsActive == true)
+                    .ToList();
+
+                var inactiveUsers = _unitOfWork.AccountRepository
+                    .FindByCondition(a => a.Role.RoleName == "User" && a.IsActive == false)
+                    .ToList();
+
+                int totalAdmins = admins.Count;
+                int totalActiveUsers = activeUsers.Count;
+                int totalInactiveUsers = inactiveUsers.Count;
+
+                int totalUserAccounts = totalActiveUsers + totalInactiveUsers;
+
+                int totalAccounts = totalAdmins + totalUserAccounts;
+
+                var response = new
+                {
+                    TotalAdmins = totalAdmins,
+                    TotalActiveUsers = totalActiveUsers,
+                    TotalInactiveUsers = totalInactiveUsers,
+                    TotalUserAccounts = totalUserAccounts,
+                    TotalAccounts = totalAccounts
+                };
+
+                return new BusinessResult(Const.SUCCESS_READ, Const.SUCCESS_READ_MSG, response);
+            }
+            catch (Exception ex)
+            {
+                return new BusinessResult(Const.ERROR_EXEPTION, ex.Message);
+            }
+        }
+
     }
 }

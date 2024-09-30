@@ -505,7 +505,7 @@ namespace StudySpace.Service.Services
                     return new BusinessResult(Const.WARNING_NO_DATA, Const.WARNING_NO_DATA_MSG);
                 }
 
-                roomUnactive.Status = false;
+                roomUnactive.Status = !roomUnactive.Status;
 
                 int result = await _unitOfWork.RoomRepository.UpdateAsync(roomUnactive);
 

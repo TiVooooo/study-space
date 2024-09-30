@@ -2,11 +2,13 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using StudySpace.Common;
+using StudySpace.Data.Helper;
 using StudySpace.Data.Models;
 using StudySpace.Data.UnitOfWork;
 using StudySpace.DTOs.LoginDTO;
 using StudySpace.DTOs.TokenDTO;
 using StudySpace.Service.Base;
+using StudySpace.Service.BusinessModel;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -21,14 +23,15 @@ namespace StudySpace.Service.Services
     {
         Task<IBusinessResult> GetAll();
         Task<IBusinessResult> GetById(int id);
-        Task<IBusinessResult> Update(Store store);
+        Task<IBusinessResult> Update(int storeId, UpdateStoreModel model);
         Task<IBusinessResult> DeleteById(int id);
-        Task<IBusinessResult> Save(Store store);
+        Task<IBusinessResult> Save(StoreRegistrationRequestModel model, string token);
         Task<IBusinessResult> Login(string email, string password);
         DecodeTokenResponseDTO DecodeToken(string token);
         Task<string> SendRegistrationEmailAsync(string email);
         Task<IBusinessResult> GetAllAddress();
         Task<IBusinessResult> UnactiveStore(int storeID);
+        Task<IBusinessResult> CalculateTotalStoresByRoleAndStatus();
     }
 
     public class StoreService : IStoreService
@@ -158,11 +161,54 @@ namespace StudySpace.Service.Services
         }
 
 
-        public async Task<IBusinessResult> Save(Store store)
+        public async Task<IBusinessResult> Save(StoreRegistrationRequestModel model, string token)
         {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(_jwtSecret);
             try
             {
-                int result = await _unitOfWork.StoreRepository.CreateAsync(store);
+                tokenHandler.ValidateToken(token, new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    ClockSkew = TimeSpan.Zero
+                }, out SecurityToken validatedToken);
+
+                var jwtToken = (JwtSecurityToken)validatedToken;
+                var email = jwtToken.Claims.FirstOrDefault(c => c.Type == "email")?.Value;
+
+                if (email == null)
+                {
+                    return new BusinessResult(Const.WARNING_INVALID_TOKEN, Const.WARNING_INVALID_TOKEN_MSG);
+                }
+
+                var newStore = new Store
+                {
+                    ThumbnailUrl = "https://scontent.fsgn3-1.fna.fbcdn.net/v/t39.30808-6/460988998_122109837560414676_6957837609958495355_n.jpg?_nc_cat=104&ccb=1-7&_nc_sid=6ee11a&_nc_eui2=AeGxasUF1_cqgAkICzwV6pNWkrJeYIPbAnySsl5gg9sCfLwS-qjG0dNHVAW1YSj7J_zUqzbG21mFXwWepYn1e5mA&_nc_ohc=FUj7X_J07FIQ7kNvgFT9YnZ&_nc_zt=23&_nc_ht=scontent.fsgn3-1.fna&oh=00_AYDEwjSOMughY8zhvOx1jvo0-dGrxz80SlsqrENQ4edGNQ&oe=67009BD9",
+                    Longitude = 0,
+                    Latitude = 0,
+                    Description = model.Description,
+                    Status = true,
+                    IsApproved = false,
+                    Name = model.Name,
+                    Email = model.Email,
+                    Password = model.Password,
+                    Address = model.Address,
+                    Phone = model.Phone,
+                    CreateDate = DateTime.Now,
+                    OpenTime = model.OpenTime,
+                    CloseTime = model.CloseTime,
+                    IsOverNight = model.IsOverNight,
+                    IsActive = true,
+                    TaxNumber = "-1",
+                    PostalNumber = "-1",
+                };
+
+                _unitOfWork.StoreRepository.PrepareCreate(newStore);
+                int result = _unitOfWork.AccountRepository.Save();
+
                 if (result > 0)
                 {
                     return new BusinessResult(Const.SUCCESS_CREATE, Const.SUCCESS_CREATE_MSG);
@@ -171,6 +217,11 @@ namespace StudySpace.Service.Services
                 {
                     return new BusinessResult(Const.FAIL_CREATE, Const.FAIL_CREATE_MSG);
                 }
+
+            }
+            catch (SecurityTokenExpiredException ex)
+            {
+                return new BusinessResult(-4, "Token has expired. Please request a new registration email.");
             }
             catch (Exception ex)
             {
@@ -178,12 +229,38 @@ namespace StudySpace.Service.Services
             }
         }
 
-        public async Task<IBusinessResult> Update(Store store)
+        public async Task<IBusinessResult> Update(int storeId, UpdateStoreModel model)
         {
             try
             {
+                var existedStore = await _unitOfWork.StoreRepository.GetByIdAsync(storeId);
 
-                int result = await _unitOfWork.StoreRepository.UpdateAsync(store);
+                if (existedStore == null)
+                {
+                    return new BusinessResult(Const.WARNING_NO_DATA, Const.WARNING_NO_DATA_MSG);
+                }
+
+                existedStore.Description = model.Description;
+                existedStore.Name = model.Name;
+                existedStore.Email = model.Email;
+                existedStore.Password = model.Password;
+                existedStore.Address = model.Address;
+                existedStore.Phone = model.Phone;
+                existedStore.OpenTime = model.OpenTime;
+                existedStore.CloseTime = model.CloseTime;
+                existedStore.IsOverNight = model.IsOverNight;
+
+                var imageUrl = model.ThumbnailUrl;
+                if (imageUrl != null)
+                {
+                    var imagePath = FirebasePathName.AVATAR + Guid.NewGuid().ToString();
+                    var imgUploadResult = await _firebaseService.UploadImageToFirebaseAsync(imageUrl, imagePath);
+                    existedStore.ThumbnailUrl = imgUploadResult;
+                    _unitOfWork.StoreRepository.PrepareCreate(existedStore);
+                }
+
+                int result = await _unitOfWork.StoreRepository.UpdateAsync(existedStore);
+
                 if (result > 0)
                 {
                     return new BusinessResult(Const.FAIL_UDATE, Const.SUCCESS_UDATE_MSG);
@@ -315,7 +392,7 @@ namespace StudySpace.Service.Services
                     return new BusinessResult(Const.WARNING_NO_DATA, Const.WARNING_NO_DATA_MSG);
                 }
 
-                storeUnactive.IsActive = false;
+                storeUnactive.IsActive = !storeUnactive.IsActive;
 
                 int result = await _unitOfWork.StoreRepository.UpdateAsync(storeUnactive);
 
@@ -327,6 +404,39 @@ namespace StudySpace.Service.Services
                 {
                     return new BusinessResult(Const.FAIL_UNACTIVATE, Const.FAIL_UNACTIVATE_MSG);
                 }
+            }
+            catch (Exception ex)
+            {
+                return new BusinessResult(Const.ERROR_EXEPTION, ex.Message);
+            }
+        }
+
+        public async Task<IBusinessResult> CalculateTotalStoresByRoleAndStatus()
+        {
+            try
+            {
+                var activeStores = _unitOfWork.StoreRepository
+                    .FindByCondition(a => a.IsActive == true)
+                    .ToList();
+
+                var inactiveStores = _unitOfWork.AccountRepository
+                    .FindByCondition(a => a.IsActive == false)
+                    .ToList();
+
+
+                int totalActiveStores = activeStores.Count;
+                int totalInactiveStores = inactiveStores.Count;
+     
+                int totalAccounts = totalActiveStores + totalInactiveStores;
+
+                var response = new
+                {
+                    TotalActiveStores = totalActiveStores,
+                    TotalInactiveStores = totalInactiveStores,
+                    TotalStores = totalAccounts
+                };
+
+                return new BusinessResult(Const.SUCCESS_READ, Const.SUCCESS_READ_MSG, response);
             }
             catch (Exception ex)
             {
