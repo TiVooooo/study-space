@@ -72,5 +72,16 @@ namespace StudySpace.API.Controllers
             return Ok(await _roomService.GetAllBookedRoomInSup(supplierId));
 
         }
+
+
+        [HttpGet("filter/{price}")]
+        public async Task<IActionResult> FilterRoom(
+            [FromRoute] string price
+            , [FromQuery] Double[]? priceRange,
+            [FromQuery] string[]? utilities)
+        {
+            return Ok(await _roomService.FilterRoom(price,priceRange,utilities));
+        }
+
     }
 }
