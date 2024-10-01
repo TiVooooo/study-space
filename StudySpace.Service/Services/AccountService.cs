@@ -316,7 +316,7 @@ namespace StudySpace.Service.Services
             var address = jwtToken.Claims.FirstOrDefault(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/streetaddress")?.Value;
             var gender = jwtToken.Claims.FirstOrDefault(c => c.Type == "gender")?.Value;
             var roleName = jwtToken.Claims.FirstOrDefault(c => c.Type == "role")?.Value;
-            var avaUrl = jwtToken.Claims.FirstOrDefault(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/uri")?.Value;
+            //var avaUrl = jwtToken.Claims.FirstOrDefault(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/uri")?.Value;
 
             //var expiration = jwtToken.ValidTo;
 
@@ -329,7 +329,7 @@ namespace StudySpace.Service.Services
                 Address = address,
                 Gender = gender,
                 RoleName = roleName,
-                avaURL = avaUrl,
+                //avaURL = avaUrl,
                 //Expiration = expiration
             };
         }
