@@ -27,6 +27,12 @@ namespace StudySpace.API.Controllers
         {
             return Ok(await _feedbackService.GetFeedback(id, pageNumber, pageSize));
         }
+
+        [HttpGet("all/supplier/{supplierId}")]
+        public async Task<IActionResult> GetAllFeedbackOfStore([FromRoute]int supplierId)
+        {
+            return Ok(await _feedbackService.GetAllFeedbackOfStore(supplierId));
+        }
     }
 
 }

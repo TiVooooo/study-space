@@ -26,9 +26,9 @@ namespace StudySpace.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> GetAll()
         {
-            var result = await _accService.GetAll();
+            var result = await _accService.GetAllUser();
             return Ok(result);
         }
 
@@ -71,6 +71,8 @@ namespace StudySpace.API.Controllers
                 return Ok(await _accService.GetById(id));
             
         }
+
+    
 
         [HttpPost("email-sending-confirmation")]
         public async Task<IActionResult> SendConfirmEmail([FromBody] string email)

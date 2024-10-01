@@ -383,26 +383,32 @@ namespace StudySpace.Service.Services
 
                 _unitOfWork.RoomRepository.PrepareCreate(newRoom);
                 int result = await _unitOfWork.RoomRepository.SaveAsync();
+                foreach (var item in room.Amities)
+                {
 
-                var amityRoom = new RoomAmity
-                {
-                    RoomId = newRoom.Id,
-                    AmitiesId = room.AmityId,
-                    Quantity = room.Quantity
-                };
-                _unitOfWork.RoomAminitiesRepository.PrepareCreate(amityRoom);
-                await _unitOfWork.RoomAminitiesRepository.SaveAsync();
+                    var amity = _unitOfWork.AmityRepository.GetById(item.AmityId);
+                    if (amity.Quantity >= item.Quantity)
+                    {
+                        amity.Quantity -= item.Quantity;
+                    }
+                    else
+                    {
+                        return new BusinessResult(Const.FAIL_CREATE, "There is not enough Amity in stock!");
+                    }
 
-                var amity = _unitOfWork.AmityRepository.GetById(room.AmityId);
-                if(amity.Quantity >= room.Quantity)
-                {
-                    amity.Quantity -= room.Quantity;
-                } else
-                {
-                    return new BusinessResult(Const.FAIL_CREATE, "There is not enough Amity in stock!");
+                    _unitOfWork.AmityRepository.PrepareUpdate(amity);
+                    var amityRoom = new RoomAmity
+                    {
+                        RoomId = newRoom.Id,
+                        AmitiesId = item.AmityId,
+                        Quantity = item.Quantity
+                    };
+                    _unitOfWork.RoomAminitiesRepository.PrepareCreate(amityRoom);
+                    await _unitOfWork.RoomAminitiesRepository.SaveAsync();
+
+                   
                 }
-
-                _unitOfWork.AmityRepository.PrepareUpdate(amity);
+                
                 await _unitOfWork.AmityRepository.SaveAsync();
                 
                 var imageUrls = room.ImageRoom;
@@ -473,6 +479,36 @@ namespace StudySpace.Service.Services
                 updatedRoom.HouseRule = room.HouseRule;
 
                 _unitOfWork.RoomRepository.PrepareUpdate(updatedRoom);
+
+/*
+                foreach (var item in room.Amities)
+                {
+
+                    var amity = _unitOfWork.AmityRepository.GetById(item.AmityId);
+                    if (amity.Quantity >= item.Quantity)
+                    {
+                        amity.Quantity -= item.Quantity;
+                    }
+                    else
+                    {
+                        return new BusinessResult(Const.FAIL_CREATE, "There is not enough Amity in stock!");
+                    }
+
+                    _unitOfWork.AmityRepository.PrepareUpdate(amity);
+                    var amityRoom = new RoomAmity
+                    {
+                        RoomId = newRoom.Id,
+                        AmitiesId = item.AmityId,
+                        Quantity = item.Quantity
+                    };
+                    _unitOfWork.RoomAminitiesRepository.PrepareCreate(amityRoom);
+                    await _unitOfWork.RoomAminitiesRepository.SaveAsync();
+
+
+                }*/
+
+                await _unitOfWork.AmityRepository.SaveAsync();
+
 
                 var imageUrls = room.ImageRoom;
                 if (imageUrls != null)

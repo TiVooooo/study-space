@@ -11,6 +11,8 @@ namespace StudySpace.API.Helper
             CreateMap<Account, GetDetailUserModel>();
 
             CreateMap<Room,RoomModel>();
+            CreateMap<Account, UserModel>()
+            .ForMember(dest => dest.RoleName, opt => opt.MapFrom(src => src.Role.RoleName));
 
         }
     }

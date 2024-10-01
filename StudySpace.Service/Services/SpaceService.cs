@@ -157,34 +157,60 @@ namespace StudySpace.Service.Services
             }
         }
 
-        public async Task<IBusinessResult> GetSpacePopular()
+
+
+        public async Task<IBusinessResult> GetHighestRoomPriceBySpaceId(int spaceId)
         {
             try
             {
-                var spaces = _unitOfWork.SpaceRepository.FindByCondition(s => s.SpaceName.Equals("Coffee Space") || s.SpaceName.Equals("Library Space") || s.SpaceName.Equals("Meeting Room"))
-                    .Select(s => new SpacePopularModel
-                    {
-                        Description = s.Description,
-                        Status = s.Status,
-                        Type = s.SpaceName,
-                        PricePerHour = s.Rooms.Where(r => r.PricePerHour>0)
-                                              .OrderBy(r => r.PricePerHour)
-                                              .Select(r => r.PricePerHour)
-                                              .FirstOrDefault()
-                    })
+                // Fetch the space with its rooms and get the highest PricePerHour
+                var highestPrice = await _unitOfWork.RoomRepository
+                    .FindByConditionv2(r => r.SpaceId == spaceId && r.PricePerHour.HasValue)
+                    .MaxAsync(r => r.PricePerHour.Value); // Get the maximum PricePerHour
 
-
-                    .ToList();
-                return new BusinessResult(Const.SUCCESS_READ, Const.SUCCESS_READ_MSG, spaces);
-
-
+                return new BusinessResult(Const.SUCCESS_READ, Const.SUCCESS_READ_MSG, highestPrice);
             }
             catch (Exception ex)
             {
                 return new BusinessResult(Const.ERROR_EXEPTION, ex.Message);
             }
-
         }
+
+
+        public async Task<IBusinessResult> GetSpacePopular()
+        {
+            try
+            {
+                var spaces = _unitOfWork.SpaceRepository
+                    .FindByCondition(s => s.SpaceName == "Coffee Space" || s.SpaceName == "Library Space" || s.SpaceName == "Meeting Room")
+                    .ToList(); // Load all spaces first
+
+                var spacePopularList = new List<SpacePopularModel>();
+
+                foreach (var space in spaces)
+                {
+                    var highestPriceResult = await GetHighestRoomPriceBySpaceId(space.Id);
+                    double highestPrice = highestPriceResult.Data != null ? (double)highestPriceResult.Data : 0;
+
+                    var spacePopular = new SpacePopularModel
+                    {
+                        Description = space.Description,
+                        Status = space.Status,
+                        Type = space.SpaceName,
+                        PricePerHour = highestPrice
+                    };
+
+                    spacePopularList.Add(spacePopular);
+                }
+
+                return new BusinessResult(Const.SUCCESS_READ, Const.SUCCESS_READ_MSG, spacePopularList);
+            }
+            catch (Exception ex)
+            {
+                return new BusinessResult(Const.ERROR_EXEPTION, ex.Message);
+            }
+        }
+
 
         public async Task<IBusinessResult> GetAllSpace()
         {

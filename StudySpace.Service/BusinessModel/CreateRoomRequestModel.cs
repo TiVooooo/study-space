@@ -29,8 +29,14 @@ namespace StudySpace.Service.BusinessModel
 
         public List<IFormFile>? ImageRoom { get; set; }
 
-        public int AmityId { get; set; }
-        public int Quantity { get; set; }
+        public List<Amities> Amities { get; set; }
     }
+
+
+    public class Amities
+    {
+            public int AmityId { get; set; }
+            public int Quantity { get; set; }
+        }
 
 }
