@@ -11,7 +11,7 @@ namespace StudySpace.Service.BusinessModel
     public class SpacePopularModel
     {
 
-        public double? PricePerHour { get; set; }
+        public double PricePerHour { get; set; }
 
         public string Description { get; set; }
 

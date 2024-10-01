@@ -19,5 +19,11 @@ namespace StudySpace.API.Controllers
         {
             return Ok(await _bookingService.CalculateTotalBooking());
         }
+
+        [HttpGet("all/{supplierId}")]
+        public async Task<IActionResult> GetALlBooingInSup([FromRoute] int supplierId)
+        {
+            return Ok(await _bookingService.GetAllBookingInSup(supplierId));
+        }
     }
 }

@@ -24,8 +24,8 @@ namespace StudySpace.Service.Services
         Task<IBusinessResult> Save(FeedbackRequestModel acc);
         Task<IBusinessResult> GetFeedback(int roomId, int pageNumber, int pageSize);
 
-        Task<IBusinessResult> GetFeedbackWithoutPaging(int roomId);
 
+        Task<IBusinessResult> GetAllFeedbackOfStore(int storeId);
 
 
     }
@@ -162,9 +162,7 @@ namespace StudySpace.Service.Services
             }
         }
 
-
-
-        public async Task<IBusinessResult> GetFeedbackWithoutPaging(int roomId)
+        public List<FeedbackResponseModel> GetFeedbackWithoutPaging(int roomId)
         {
             try
             {
@@ -173,7 +171,7 @@ namespace StudySpace.Service.Services
 
                 var feedbacks = _unitOfWork.FeedbackRepository
                     .FindByCondition(f => bookingIds.Contains(f.Booking.Id))
-                    
+
                     .ToList();
 
                 var list = new List<FeedbackResponseModel>();
@@ -207,19 +205,49 @@ namespace StudySpace.Service.Services
 
 
                     }
-                    
-                    return new BusinessResult(Const.SUCCESS_READ, Const.SUCCESS_CREATE_MSG, list);
+
+                    return list;
                 }
                 else
                 {
-                    return new BusinessResult(Const.FAIL_READ, Const.FAIL_READ_MSG);
+                    return null;
                 }
             }
             catch (Exception ex)
             {
-                return new BusinessResult(Const.ERROR_EXEPTION, ex.Message);
+                throw ex;
             }
         }
+
+
+
+        public async Task<IBusinessResult> GetAllFeedbackOfStore(int storeId)
+        {
+            try
+            {
+                var store = _unitOfWork.StoreRepository.GetById(storeId);
+                if (store == null) 
+                {
+                    return new BusinessResult(Const.FAIL_READ, Const.FAIL_READ_MSG);
+                }
+
+                var list = new List<FeedbackResponseModel>();
+
+                var listRoom = _unitOfWork.RoomRepository.FindByCondition(x=>x.StoreId == storeId).ToList();
+                foreach (var item in listRoom) 
+                {
+                    var fbRoom = (GetFeedbackWithoutPaging(item.Id));
+                    list.AddRange(fbRoom);
+                }
+                return new BusinessResult(Const.SUCCESS_CREATE, Const.SUCCESS_CREATE_MSG,list);
+            }
+            catch (Exception ex)
+            {
+                return new BusinessResult(-4, ex.Message);
+
+            }
+        }
+       
 
         public async Task<IBusinessResult> GetById(int id)
         {

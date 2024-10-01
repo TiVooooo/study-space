@@ -33,6 +33,9 @@ namespace StudySpace.Service.Services
         Task<string> SendRegistrationEmailAsync(string email);
         Task<IBusinessResult> UnactiveUser(int userId);
         Task<IBusinessResult> CalculateTotalAccountsByRoleAndStatus();
+
+        Task<IBusinessResult> GetAllUser();
+
     }
 
     public class AccountService : IAccountService
@@ -427,6 +430,50 @@ namespace StudySpace.Service.Services
                 return new BusinessResult(Const.ERROR_EXEPTION, ex.Message);
             }
         }
+
+        public async Task<IBusinessResult> GetAllUser()
+        {
+            try
+            {
+                var users = _unitOfWork.AccountRepository.GetAll();
+                var result = new List<UserModel>();
+                foreach (var user in users)
+                {
+                    var role = _unitOfWork.UserRoleRepository.GetById(user.RoleId ??0);
+                    var userModel = new UserModel
+                    {
+                        AvatarUrl = user.AvatarUrl,
+                        Email = user.Email,
+                        Name = user.Name,
+                        Phone = user.Phone,
+                        RoleName = role.RoleName
+                    };
+                    result.Add(userModel);
+                }
+                return new BusinessResult(Const.SUCCESS_READ, Const.SUCCESS_READ_MSG, result);
+            }
+            catch (Exception ex)
+            {
+                return new BusinessResult(Const.ERROR_EXEPTION, ex.Message);
+
+            }
+        }
+
+        public async Task<IBusinessResult> GetAllUserv2()
+        {
+            try
+            {
+                var users = _unitOfWork.AccountRepository.GetAll();
+                var result = _mapper.Map<List<UserModel>>(users);
+                return new BusinessResult(Const.SUCCESS_READ, Const.SUCCESS_READ_MSG, result);
+            }
+            catch (Exception ex)
+            {
+                return new BusinessResult(Const.ERROR_EXEPTION, ex.Message);
+
+            }
+        }
+
 
     }
 }
