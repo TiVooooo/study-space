@@ -188,6 +188,7 @@ namespace StudySpace.Service.Services
 
                     var roomModel = new RoomModel
                     {
+                        RoomId = r.Id,
                         RoomName = r.RoomName,
                         StoreName = store.Name,
                         Capacity = r.Capacity ?? 0,
@@ -288,7 +289,8 @@ namespace StudySpace.Service.Services
                         Area = r.Area ?? 0,
                         Type = r.Type,
                         Address = store.Address,
-                        Image = imageEntity.ImageUrl
+                        Image = imageEntity.ImageUrl,
+                        RoomId = r.Id
                     };
                     list.Add(roomModel);
                 }

@@ -15,6 +15,7 @@ namespace StudySpace.Service.BusinessModel
 
     public class RoomModel
     {
+        public int RoomId { get; set; }
         public string RoomName { get; set; }
 
         public string StoreName { get; set; }
