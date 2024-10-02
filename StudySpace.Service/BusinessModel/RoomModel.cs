@@ -30,5 +30,9 @@ namespace StudySpace.Service.BusinessModel
         public double Area { get; set; }
 
         public string Type { get; set; }
+
+        public string Image {  get; set; }
+
+        public string Address { get; set; }
     }
 }
