@@ -14,7 +14,7 @@ namespace StudySpace.API.Controllers
             _bookingService = bookingService;
         }
 
-        [HttpGet("total-bookings")]
+        [HttpGet("dashboard/admin/total-bookings")]
         public async Task<IActionResult> CalculateBookings()
         {
             return Ok(await _bookingService.CalculateTotalBooking());
