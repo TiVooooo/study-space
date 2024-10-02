@@ -33,7 +33,7 @@ namespace StudySpace.Service.Services
         Task<IBusinessResult> GetAllBookedRoomInUser(int userId);
         Task<IBusinessResult> GetAllBookedRoomInSup(int supID);
 
-        Task<IBusinessResult> FilterRoom(string price, Double[]? priceRange, string[]? utilities);
+        Task<IBusinessResult> FilterRoom(int pageNumber, int pageSize,string price, Double[]? priceRange, string[]? utilities, string space, string location, string room, int person);
 
 
     }
@@ -162,7 +162,7 @@ namespace StudySpace.Service.Services
         {
             try
             {
-                var allRooms = await _unitOfWork.RoomRepository.GetAllAsync();
+                var allRooms = await _unitOfWork.RoomRepository.GetAllRoomsAsync();
                 var rooms = allRooms.Where(x => x.Status == true).ToList();
 
                 if (!string.IsNullOrWhiteSpace(space) || !string.IsNullOrWhiteSpace(location) || !string.IsNullOrWhiteSpace(room) || person == 0)
@@ -182,6 +182,9 @@ namespace StudySpace.Service.Services
                 foreach (var r in pagedRooms)
                 {
                     var store = _unitOfWork.StoreRepository.GetById(r.StoreId ?? 0);
+                    var imageEntity = _unitOfWork.ImageRoomRepository.FindByCondition(ie => ie.RoomId == r.Id).FirstOrDefault();
+
+
 
                     var roomModel = new RoomModel
                     {
@@ -192,7 +195,9 @@ namespace StudySpace.Service.Services
                         Description = r.Description,
                         Status = r.Status ?? false,
                         Area = r.Area ?? 0,
-                        Type = r.Type
+                        Type = r.Type,
+                        Address = store.Address,
+                        Image = imageEntity.ImageUrl
                     };
                     list.Add(roomModel);
                 }
@@ -212,11 +217,30 @@ namespace StudySpace.Service.Services
             }
         }
 
-        public async Task<IBusinessResult> FilterRoom(string price, Double[]? priceRange, string[]? utilities)
+         
+
+        public async Task<IBusinessResult> FilterRoom(int pageNumber, int pageSize,string price, Double[]? priceRange, string[]? utilities, string space, string location, string room, int person)
         {
             try
             {
-                var rooms = _unitOfWork.RoomRepository.GetAll();
+                //var rooms = _unitOfWork.RoomRepository.GetAll();
+                var pagedRooms = await _unitOfWork.RoomRepository.GetAllRoomsAsync();
+
+            //    var rooms = allRooms.Where(x => x.Status == true).ToList();
+
+                if (!string.IsNullOrWhiteSpace(space) || !string.IsNullOrWhiteSpace(location) || !string.IsNullOrWhiteSpace(room) || person == 0)
+                {
+                    pagedRooms = pagedRooms.Where(r =>
+                        (space.Equals("All") || (r.Space != null && r.Space.SpaceName.Contains(space, StringComparison.OrdinalIgnoreCase))) &&
+                        (location.Equals("All") || (r.Store != null && r.Store.Address.Contains(location, StringComparison.OrdinalIgnoreCase))) &&
+                        (r.Capacity >= person)
+                    ).ToList();
+                }
+
+                var totalCount = pagedRooms.Count;
+                var totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
+
+                var rooms = pagedRooms.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
 
                 rooms = rooms.Where(r => r.PricePerHour >= priceRange[0] && r.PricePerHour <= priceRange[1]).ToList();
 
@@ -228,7 +252,7 @@ namespace StudySpace.Service.Services
                 {
                     rooms = rooms.OrderBy(x => x.PricePerHour).ToList();
                 }
-                else if (utilities != null && utilities.Any() && !utilities.Contains("all"))
+                else if (utilities != null && utilities.Any() && !utilities.Contains("All"))
                 {
                     var selectedAmitiesIds = _unitOfWork.AmityRepository
                 .FindByCondition(x => utilities.Contains(x.Name))
@@ -251,6 +275,7 @@ namespace StudySpace.Service.Services
                 foreach (var r in rooms)
                 {
                     var store = _unitOfWork.StoreRepository.GetById(r.StoreId ?? 0);
+                    var imageEntity = _unitOfWork.ImageRoomRepository.FindByCondition(ie => ie.RoomId == r.Id).FirstOrDefault();
 
                     var roomModel = new RoomModel
                     {
@@ -261,7 +286,9 @@ namespace StudySpace.Service.Services
                         Description = r.Description,
                         Status = r.Status ?? false,
                         Area = r.Area ?? 0,
-                        Type = r.Type
+                        Type = r.Type,
+                        Address = store.Address,
+                        Image = imageEntity.ImageUrl
                     };
                     list.Add(roomModel);
                 }
@@ -270,7 +297,7 @@ namespace StudySpace.Service.Services
                 var result = new GetAllRoomModel
                 {
                     Rooms = list,
-                    TotalCount = 0
+                    TotalCount = totalPages
                 };
                 return new BusinessResult(Const.SUCCESS_READ, Const.SUCCESS_READ_MSG, result);
 
