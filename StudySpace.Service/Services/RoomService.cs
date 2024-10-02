@@ -328,7 +328,7 @@ namespace StudySpace.Service.Services
 
                 var listImageOfRoom = _unitOfWork.ImageRoomRepository.FindByCondition(i => i.RoomId == id).Select(i => i.ImageUrl).ToList();
 
-                var listAminityRoom = _unitOfWork.RoomAminitiesRepository.FindByCondition(a => a.RoomId == id).Select(a => a.AmitiesId);
+                var listAminityRoom = _unitOfWork.RoomAminitiesRepository.FindByCondition(a => a.RoomId == id).Select(a => a.AmitiesId).ToList();
 
                 var listAminity = new List<string>();
 

@@ -65,6 +65,12 @@ namespace StudySpace.API.Controllers
             return Ok(result);
         }
 
+        [HttpGet("detail/{id}")]
+        public async Task<IActionResult> GetDeatailUser(int id)
+        {
+            return Ok(await _storeService.GetById(id));
+        }
+
         [HttpPost("email-sending-confirmation")]
         public async Task<IActionResult> SendConfirmEmail([FromBody] string email)
         {

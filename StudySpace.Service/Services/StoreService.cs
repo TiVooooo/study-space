@@ -9,6 +9,7 @@ using StudySpace.DTOs.LoginDTO;
 using StudySpace.DTOs.TokenDTO;
 using StudySpace.Service.Base;
 using StudySpace.Service.BusinessModel;
+using StudySpace.Service.Helper;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -194,7 +195,7 @@ namespace StudySpace.Service.Services
                     IsApproved = false,
                     Name = model.Name,
                     Email = model.Email,
-                    Password = model.Password,
+                    Password = PasswordHashHelper.HashPassword(model.Password),
                     Address = model.Address,
                     Phone = model.Phone,
                     CreateDate = DateTime.Now,
@@ -240,15 +241,33 @@ namespace StudySpace.Service.Services
                     return new BusinessResult(Const.WARNING_NO_DATA, Const.WARNING_NO_DATA_MSG);
                 }
 
-                existedStore.Description = model.Description;
-                existedStore.Name = model.Name;
-                existedStore.Email = model.Email;
-                existedStore.Password = model.Password;
-                existedStore.Address = model.Address;
-                existedStore.Phone = model.Phone;
-                existedStore.OpenTime = model.OpenTime;
-                existedStore.CloseTime = model.CloseTime;
-                existedStore.IsOverNight = model.IsOverNight;
+                existedStore.Description = string.IsNullOrEmpty(model.Description) ? existedStore.Description : model.Description;
+                existedStore.Name = string.IsNullOrEmpty(model.Name) ? existedStore.Name : model.Name;
+
+                if (!string.IsNullOrEmpty(model.Password))
+                {
+                    var isPassword = PasswordHashHelper.VerifyPassword(model.Password, existedStore.Password);
+
+                    if (!isPassword)
+                    {
+                        return new BusinessResult(Const.FAIL_UDATE, "Current password is incorrect!");
+                    }
+
+                    if (!string.IsNullOrEmpty(model.NewPassword) && model.NewPassword == model.ConfirmPassword)
+                    {
+                        existedStore.Password = PasswordHashHelper.HashPassword(model.NewPassword);
+                    }
+                    else
+                    {
+                        return new BusinessResult(Const.FAIL_UDATE, "New password and Confirm password does not match !");
+                    }
+                }
+
+                existedStore.Address = string.IsNullOrEmpty(model.Address) ? existedStore.Address : model.Address;
+                existedStore.Phone = string.IsNullOrEmpty(model.Phone) ? existedStore.Phone : model.Phone;
+                existedStore.OpenTime = model.OpenTime ?? existedStore.OpenTime;
+                existedStore.CloseTime = model.CloseTime ?? existedStore.CloseTime;
+                existedStore.IsOverNight = model.IsOverNight ?? existedStore.IsOverNight;
 
                 var imageUrl = model.ThumbnailUrl;
                 if (imageUrl != null)
@@ -280,7 +299,7 @@ namespace StudySpace.Service.Services
         {
             var store = await _unitOfWork.StoreRepository.GetByEmailAsync(email);
 
-            if (store == null || store.Password != password)
+            if (store == null || !PasswordHashHelper.VerifyPassword(password, store.Password))
             {
                 return new BusinessResult(Const.FAIL_LOGIN, Const.FAIL_LOGIN_MSG);
             }

@@ -10,6 +10,7 @@ using StudySpace.DTOs.LoginDTO;
 using StudySpace.DTOs.TokenDTO;
 using StudySpace.Service.Base;
 using StudySpace.Service.BusinessModel;
+using StudySpace.Service.Helper;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -123,8 +124,6 @@ namespace StudySpace.Service.Services
                 }
                 else
                 {
-                    
-
                     var userModel = _mapper.Map<GetDetailUserModel>(obj);
                     var roleName = _unitOfWork.UserRoleRepository.FindByCondition(r=>r.Id == obj.RoleId).Select(r=>r.RoleName).FirstOrDefault();
                     userModel.RoleName = roleName;
@@ -172,7 +171,7 @@ namespace StudySpace.Service.Services
                 {
                     Name = model.Name,
                     Email = model.Email,
-                    Password = model.Password,
+                    Password = PasswordHashHelper.HashPassword(model.Password),
                     Phone = model.Phone,
                     Address = model.Address,
                     Gender = model.Gender,
@@ -217,13 +216,28 @@ namespace StudySpace.Service.Services
                     return new BusinessResult(Const.WARNING_NO_DATA, Const.WARNING_NO_DATA_MSG);
                 }
 
-                existedUser.Name = account.Name;
-                existedUser.Email = account.Email;
-                existedUser.Password = account.Password;
-                existedUser.Phone = account.Phone;
-                existedUser.Address = account.Address;
-                existedUser.Gender = account.Gender;
-                existedUser.Dob = account.Dob;
+                existedUser.Name = string.IsNullOrEmpty(account.Name) ? existedUser.Name : account.Name;
+
+                if (!string.IsNullOrEmpty(account.Password))
+                {
+                    var isPassword = PasswordHashHelper.VerifyPassword(account.Password, existedUser.Password);
+
+                    if (!isPassword)
+                    {
+                        return new BusinessResult(Const.FAIL_UDATE, "Current password is incorrect!");
+                    }
+
+                    if(!string.IsNullOrEmpty(account.NewPassword) && account.NewPassword == account.ConfirmPassword)
+                    {
+                        existedUser.Password = PasswordHashHelper.HashPassword(account.NewPassword);
+                    } else
+                    {
+                        return new BusinessResult(Const.FAIL_UDATE, "New password and Confirm password does not match !");
+                    }
+                }
+
+                existedUser.Phone = string.IsNullOrEmpty(account.Phone) ? existedUser.Phone : account.Phone;
+                existedUser.Address = string.IsNullOrEmpty (account.Address) ? existedUser.Address : account.Address;
 
                 var imageUrl = account.AvatarUrl;
                 if (imageUrl != null)
@@ -255,7 +269,7 @@ namespace StudySpace.Service.Services
         {
             var acc = await _unitOfWork.AccountRepository.GetByEmailAsync(email);
 
-            if (acc == null || acc.Password != password)
+            if (acc == null || !PasswordHashHelper.VerifyPassword(password, acc.Password))
             {
                 return new BusinessResult(Const.FAIL_LOGIN, Const.FAIL_LOGIN_MSG);
             }
