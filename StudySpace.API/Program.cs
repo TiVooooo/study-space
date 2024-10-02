@@ -76,6 +76,7 @@ builder.Services.AddScoped<IPackageService, PackageService>();
 builder.Services.AddScoped<IAmityService, AmityService>();
 builder.Services.AddScoped<ITransactionService, TransactionService>();
 builder.Services.AddScoped<IBookingService, BookingService>();
+builder.Services.AddScoped<IDashboardService, DashboardService>();
 
 builder.Services.AddScoped<FirebasePathName>();
 

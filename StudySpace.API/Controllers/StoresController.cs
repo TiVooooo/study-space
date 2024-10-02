@@ -109,11 +109,5 @@ namespace StudySpace.API.Controllers
         {
             return Ok(await _storeService.Update(id, model));
         }
-
-        [HttpGet("dashboard/admin/total-stores")]
-        public async Task<IActionResult> SumTotalStores()
-        {
-            return Ok(await _storeService.CalculateTotalStoresByRoleAndStatus());
-        }
     }
 }

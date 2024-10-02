@@ -32,7 +32,6 @@ namespace StudySpace.Service.Services
         Task<string> SendRegistrationEmailAsync(string email);
         Task<IBusinessResult> GetAllAddress();
         Task<IBusinessResult> UnactiveStore(int storeID);
-        Task<IBusinessResult> CalculateTotalStoresByRoleAndStatus();
     }
 
     public class StoreService : IStoreService
@@ -310,6 +309,11 @@ namespace StudySpace.Service.Services
             var accountId = store.Id.ToString() ?? throw new ArgumentNullException("Store ID cannot be null");
             var accountRole = "Store";
 
+            var packagedList = _unitOfWork.StorePackageRepository
+                    .FindByCondition(c => c.StoreId == store.Id && c.Status == true).ToList();
+
+            bool isPackaged = packagedList.Count > 0;
+
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new[]
@@ -327,10 +331,14 @@ namespace StudySpace.Service.Services
             var token = tokenHandler.CreateToken(tokenDescriptor);
             var jwtToken = tokenHandler.WriteToken(token);
 
-            return new BusinessResult(Const.SUCCESS_LOGIN, Const.SUCCESS_LOGIN_MSG, new LoginResponseDTO
+            return new BusinessResult(Const.SUCCESS_LOGIN, Const.SUCCESS_LOGIN_MSG, new
             {
-                Token = jwtToken,
-                RoleName = accountRole
+                LoginInformation = new LoginResponseDTO
+                {
+                    Token = jwtToken,
+                    RoleName = accountRole
+                },
+                IsPackaged = isPackaged
             });
         }
 
@@ -487,38 +495,6 @@ namespace StudySpace.Service.Services
             }
         }
 
-        public async Task<IBusinessResult> CalculateTotalStoresByRoleAndStatus()
-        {
-            try
-            {
-                var activeStores = _unitOfWork.StoreRepository
-                    .FindByCondition(a => a.IsActive == true)
-                    .ToList();
-
-                var inactiveStores = _unitOfWork.AccountRepository
-                    .FindByCondition(a => a.IsActive == false)
-                    .ToList();
-
-
-                int totalActiveStores = activeStores.Count;
-                int totalInactiveStores = inactiveStores.Count;
-     
-                int totalAccounts = totalActiveStores + totalInactiveStores;
-
-                var response = new
-                {
-                    TotalActiveStores = totalActiveStores,
-                    TotalInactiveStores = totalInactiveStores,
-                    TotalStores = totalAccounts
-                };
-
-                return new BusinessResult(Const.SUCCESS_READ, Const.SUCCESS_READ_MSG, response);
-            }
-            catch (Exception ex)
-            {
-                return new BusinessResult(Const.ERROR_EXEPTION, ex.Message);
-            }
-        }
     }
 }
 

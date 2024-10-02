@@ -111,11 +111,5 @@ namespace StudySpace.API.Controllers
             var result = await _accService.DeleteById(id);
             return Ok(result);
         }
-
-        [HttpGet("dashboard/admin/total-accounts")]
-        public async Task<IActionResult> GetAllAccounts()
-        {
-            return Ok(await _accService.CalculateTotalAccountsByRoleAndStatus());
-        }
     }
 }

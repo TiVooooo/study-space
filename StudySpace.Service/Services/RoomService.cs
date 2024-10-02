@@ -92,22 +92,45 @@ namespace StudySpace.Service.Services
 
                 var pagedRooms = rooms.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
 
-                var list = pagedRooms.Select(r => new RoomModel
-                {
-                    RoomName = r.RoomName,
-                    StoreName = r.Store?.Name,
-                    Capacity = r.Capacity ?? 0,
-                    PricePerHour = r.PricePerHour ?? 0,
-                    Description = r.Description,
-                    Status = r.Status ?? false,
-                    Area = r.Area ?? 0,
-                    Type = r.Type
-                }).ToList();
-
-                if (!list.Any())
+                if (!pagedRooms.Any())
                 {
                     return new BusinessResult(Const.WARNING_NO_DATA, Const.WARNING_NO_DATA_MSG);
                 }
+
+                var roomIds = pagedRooms.Select(r => r.Id).ToList();
+                var bookings = _unitOfWork.BookingRepository
+                    .FindByCondition(b => roomIds.Contains(b.RoomId.Value))
+                    .ToList();
+
+                var stores = _unitOfWork.StoreRepository
+                    .FindByCondition(s => roomIds.Contains(s.Id))
+                    .ToList();
+
+                var imageEntities = _unitOfWork.ImageRoomRepository
+                    .FindByCondition(ie => roomIds.Contains(ie.RoomId.Value))
+                    .ToList();
+
+                var list = pagedRooms.Select(room =>
+                {
+                    var booking = bookings.FirstOrDefault(b => b.RoomId == room.Id);
+                    var store = stores.FirstOrDefault(s => s.Id == room.StoreId);
+                    var imageEntity = imageEntities.FirstOrDefault(ie => ie.RoomId == room.Id);
+
+                    return new RoomModel
+                    {
+                        RoomId = room.Id,
+                        RoomName = room.RoomName,
+                        StoreName = store?.Name ?? "N/A",
+                        Capacity = room.Capacity ?? 0,
+                        PricePerHour = room.PricePerHour ?? 0,
+                        Description = room.Description,
+                        Status = booking?.Status ?? false,
+                        Area = room.Area ?? 0,
+                        Type = room.Type,
+                        Address = store?.Address ?? "N/A",
+                        Image = imageEntity?.ImageUrl ?? "N/A"
+                    };
+                }).ToList();
 
                 return new BusinessResult(Const.SUCCESS_READ, Const.SUCCESS_READ_MSG, list);
             }
@@ -184,8 +207,6 @@ namespace StudySpace.Service.Services
                     var store = _unitOfWork.StoreRepository.GetById(r.StoreId ?? 0);
                     var imageEntity = _unitOfWork.ImageRoomRepository.FindByCondition(ie => ie.RoomId == r.Id).FirstOrDefault();
 
-
-
                     var roomModel = new RoomModel
                     {
                         RoomId = r.Id,
@@ -217,8 +238,6 @@ namespace StudySpace.Service.Services
                 return new BusinessResult(Const.ERROR_EXEPTION, ex.Message);
             }
         }
-
-         
 
         public async Task<IBusinessResult> FilterRoom(int pageNumber, int pageSize,string price, Double[]? priceRange, string[]? utilities, string space, string location, string room, int person)
         {
@@ -280,6 +299,7 @@ namespace StudySpace.Service.Services
 
                     var roomModel = new RoomModel
                     {
+                        RoomId = r.Id,
                         RoomName = r.RoomName,
                         StoreName = store.Name,
                         Capacity = r.Capacity ?? 0,
@@ -289,8 +309,7 @@ namespace StudySpace.Service.Services
                         Area = r.Area ?? 0,
                         Type = r.Type,
                         Address = store.Address,
-                        Image = imageEntity.ImageUrl,
-                        RoomId = r.Id
+                        Image = imageEntity.ImageUrl
                     };
                     list.Add(roomModel);
                 }
@@ -312,8 +331,6 @@ namespace StudySpace.Service.Services
             }
 
         }
-
-
 
         public async Task<IBusinessResult> GetById(int id)
         {
@@ -376,8 +393,6 @@ namespace StudySpace.Service.Services
                 return new BusinessResult(-4, ex.Message);
             }
         }
-
-
 
         public async Task<IBusinessResult> Save(CreateRoomRequestModel room)
         {
@@ -580,7 +595,6 @@ namespace StudySpace.Service.Services
             }
         }
 
-
         public async Task<IBusinessResult> UnactiveRoom(int roomId)
         {
             try
@@ -631,9 +645,11 @@ namespace StudySpace.Service.Services
                     var booking = _unitOfWork.BookingRepository.FindByCondition(b => b.RoomId == room.Id && b.UserId == userId).FirstOrDefault();
 
                     var store = _unitOfWork.StoreRepository.GetById(r.StoreId ?? 0);
+                    var imageEntity = _unitOfWork.ImageRoomRepository.FindByCondition(ie => ie.RoomId == r.Id).FirstOrDefault();
 
                     var roomModel = new RoomModel
                     {
+                        RoomId = r.Id,
                         RoomName = r.RoomName,
                         StoreName = store.Name,
                         Capacity = r.Capacity ?? 0,
@@ -641,7 +657,9 @@ namespace StudySpace.Service.Services
                         Description = r.Description,
                         Status = booking.Status ?? false,
                         Area = r.Area ?? 0,
-                        Type = r.Type
+                        Type = r.Type,
+                        Address = store.Address,
+                        Image = imageEntity.ImageUrl
                     };
                     result.Add(roomModel);
                 }
@@ -658,28 +676,63 @@ namespace StudySpace.Service.Services
         {
             try
             {
-                var rooms = _unitOfWork.RoomRepository.FindByCondition(r => r.StoreId == supID && r.Bookings.Any()).ToList();
-                var result = new List<RoomModel>();
+                var rooms = await _unitOfWork.RoomRepository.GetSupRoomAsync();
 
-                foreach (var room in rooms)
+                var filteredRooms = rooms
+                    .Where(r => r.StoreId == supID && r.Bookings.Any())
+                    .ToList();
+
+                var result = new List<RoomSupModel>();
+
+                foreach (var room in filteredRooms)
                 {
-                    var booking = _unitOfWork.BookingRepository.FindByCondition(b => b.RoomId == room.Id).FirstOrDefault();
-                    var store = _unitOfWork.StoreRepository.GetById(room.StoreId ?? 0);
+                    var booking = room.Bookings.FirstOrDefault();
+                    var store = room.Store;
+                    var imageEntity = _unitOfWork.ImageRoomRepository.FindByCondition(ie => ie.RoomId == room.Id).FirstOrDefault();
 
-                    var roomModel = new RoomModel
+                    var amitiesInRoom = new List<AmitiesInRoom>();
+
+                    foreach (var roomAmity in room.RoomAmities)
                     {
+                        if (roomAmity.Amities != null)
+                        {
+                            var amityInRoom = new AmitiesInRoom
+                            {
+                                Id = roomAmity.Amities.Id,
+                                Name = roomAmity.Amities.Name,
+                                Type = roomAmity.Amities.Type,
+                                Status = roomAmity.Amities.Status ?? false,
+                                Quantity = roomAmity.Quantity ?? 0,
+                                Description = roomAmity.Amities.Description
+                            };
+                            amitiesInRoom.Add(amityInRoom);
+                        }
+                    }
+
+                    var roomModel = new RoomSupModel
+                    {
+                        RoomId = room.Id,
                         RoomName = room.RoomName,
                         StoreName = store.Name,
                         Capacity = room.Capacity ?? 0,
                         PricePerHour = room.PricePerHour ?? 0,
                         Description = room.Description,
-                        Status = booking.Status ?? false,
+                        Status = booking?.Status ?? false,
                         Area = room.Area ?? 0,
-                        Type = room.Type
+                        Type = room.Type,
+                        Address = store.Address,
+                        Image = imageEntity?.ImageUrl,
+                        AmitiesInRoom = amitiesInRoom
                     };
                     result.Add(roomModel);
                 }
-                return new BusinessResult(Const.FAIL_READ, Const.SUCCESS_READ_MSG, result);
+
+                if (!result.Any())
+                {
+                    return new BusinessResult(Const.WARNING_NO_DATA, "No booked rooms found for this supplier.");
+                }
+
+                return new BusinessResult(Const.SUCCESS_READ, Const.SUCCESS_READ_MSG, result);
             }
             catch (Exception ex)
             {

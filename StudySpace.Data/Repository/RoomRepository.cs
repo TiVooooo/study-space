@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using StudySpace.Data.Base;
 using StudySpace.Data.Models;
+using StudySpace.Data.UnitOfWork;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,6 +32,16 @@ namespace StudySpace.Data.Repository
         public IQueryable<Room> FindByConditionv2(Expression<Func<Room, bool>> expression)
         {
             return _context.Rooms.Where(expression);
+        }
+
+        public async Task<List<Room>> GetSupRoomAsync()
+        {
+            return await _context.Rooms
+            .Include(r => r.Bookings)       
+            .Include(r => r.Store)          
+            .Include(r => r.RoomAmities)    
+                .ThenInclude(ra => ra.Amities) 
+            .ToListAsync();
         }
 
     }
