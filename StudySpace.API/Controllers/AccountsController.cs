@@ -69,10 +69,7 @@ namespace StudySpace.API.Controllers
         public async Task<IActionResult> GetDeatailUser(int id)
         {
                 return Ok(await _accService.GetById(id));
-            
         }
-
-    
 
         [HttpPost("email-sending-confirmation")]
         public async Task<IActionResult> SendConfirmEmail([FromBody] string email)
@@ -115,7 +112,7 @@ namespace StudySpace.API.Controllers
             return Ok(result);
         }
 
-        [HttpGet("total-accounts")]
+        [HttpGet("dashboard/admin/total-accounts")]
         public async Task<IActionResult> GetAllAccounts()
         {
             return Ok(await _accService.CalculateTotalAccountsByRoleAndStatus());

@@ -166,7 +166,7 @@ namespace StudySpace.Service.Services
                 // Fetch the space with its rooms and get the highest PricePerHour
                 var highestPrice = await _unitOfWork.RoomRepository
                     .FindByConditionv2(r => r.SpaceId == spaceId && r.PricePerHour.HasValue)
-                    .MaxAsync(r => r.PricePerHour.Value); // Get the maximum PricePerHour
+                    .MinAsync(r => r.PricePerHour.Value); // Get the maximum PricePerHour
 
                 return new BusinessResult(Const.SUCCESS_READ, Const.SUCCESS_READ_MSG, highestPrice);
             }
@@ -197,7 +197,7 @@ namespace StudySpace.Service.Services
                         Description = space.Description,
                         Status = space.Status,
                         Type = space.SpaceName,
-                        PricePerHour = highestPrice
+                        MinimumPricePerHour = highestPrice
                     };
 
                     spacePopularList.Add(spacePopular);
