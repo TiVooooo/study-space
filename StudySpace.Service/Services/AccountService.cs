@@ -370,7 +370,67 @@ namespace StudySpace.Service.Services
             var jwtToken = tokenHandler.WriteToken(token);
 
             var confirmLink = $"{_confirmUrl}?token={jwtToken}&email={email}";
-            await _emailService.SendMailAsync(email, confirmLink, $"30ph đéo bấm thì mất acc con ạ: {confirmLink}");
+
+
+            var subject = "Chỉ còn một bước nữa để hoàn tất đăng ký của bạn!";
+            var body = $@"
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <title>Xác nhận đăng ký</title>
+    <style>
+        body {{
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }}
+        .container {{
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }}
+        .header {{
+            text-align: center;
+            color: #333;
+        }}
+        .btn {{
+            display: inline-block;
+            margin: 20px 0;
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+        }}
+        .footer {{
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.9em;
+            color: #777;
+        }}
+    </style>
+</head>
+<body>
+    <div class='container'>
+        <h1 class='header'>Chào mừng bạn đến với StudySpace!</h1>
+        <p>Cảm ơn bạn đã đăng ký tài khoản của chúng tôi. Để hoàn tất quá trình đăng ký, vui lòng nhấp vào liên kết dưới đây:</p>
+        <a href='{confirmLink}' class='btn'>Xác nhận tài khoản</a>
+        <p>Nếu bạn không thực hiện yêu cầu này, vui lòng bỏ qua email này.</p>
+        <p>Trân trọng,<br>Đội ngũ StudySpace</p>
+    </div>
+    <div class='footer'>
+        <p>Bạn nhận được email này vì đã đăng ký tài khoản trên StudySpace.</p>
+    </div>
+</body>
+</html>
+";
+
+
+            await _emailService.SendMailAsync(email, subject, body);
 
             return jwtToken;
         }
