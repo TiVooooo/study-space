@@ -243,10 +243,8 @@ namespace StudySpace.Service.Services
         {
             try
             {
-                //var rooms = _unitOfWork.RoomRepository.GetAll();
                 var pagedRooms = await _unitOfWork.RoomRepository.GetAllRoomsAsync();
 
-            //    var rooms = allRooms.Where(x => x.Status == true).ToList();
 
                 if (!string.IsNullOrWhiteSpace(space) || !string.IsNullOrWhiteSpace(location) || !string.IsNullOrWhiteSpace(room) || person == 0)
                 {
@@ -262,7 +260,12 @@ namespace StudySpace.Service.Services
 
                 var rooms = pagedRooms.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
 
+                if (priceRange[0] != 0 && priceRange[1] != 0)
+                {
                 rooms = rooms.Where(r => r.PricePerHour >= priceRange[0] && r.PricePerHour <= priceRange[1]).ToList();
+
+                }
+
 
                 if (price.Equals("highest"))
                 {
