@@ -11,6 +11,7 @@ namespace StudySpace.Service.BusinessModel
     {
         public List<RoomModel> Rooms { get; set; }
         public int TotalCount { get; set; }
+        public int TotalAvailable {  get; set; }
     }
 
     public class RoomModel

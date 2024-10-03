@@ -33,6 +33,18 @@ namespace StudySpace.API.Controllers
         {
             return Ok(await _feedbackService.GetAllFeedbackOfStore(supplierId));
         }
+
+        [HttpGet("all/room/{id}")]
+        public async Task<IActionResult> GetAllFeedbacks(int id)
+        {
+            return Ok(await _feedbackService.GetAllImageFeedbackOfRoom(id));
+        }
+
+        [HttpGet("detail/{id}")]
+        public async Task<IActionResult> GetFeedbackDetail(int id)
+        {
+            return Ok(await _feedbackService.GetById(id));
+        }
     }
 
 }

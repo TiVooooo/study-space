@@ -32,9 +32,7 @@ namespace StudySpace.Service.Services
         Task<IBusinessResult> UnactiveRoom(int roomId);
         Task<IBusinessResult> GetAllBookedRoomInUser(int userId);
         Task<IBusinessResult> GetAllBookedRoomInSup(int supID);
-
         Task<IBusinessResult> FilterRoom(int pageNumber, int pageSize, string price, Double[]? priceRange, string[]? utilities, string space, string location, string room, int person);
-
 
     }
 
@@ -227,6 +225,7 @@ namespace StudySpace.Service.Services
 
                 var result = new GetAllRoomModel
                 {
+                    TotalAvailable = list.Count,
                     Rooms = list,
                     TotalCount = totalPages
                 };
@@ -335,6 +334,7 @@ namespace StudySpace.Service.Services
 
                 var result = new GetAllRoomModel
                 {
+                    TotalAvailable = list.Count,
                     Rooms = list,
                     TotalCount = totalPages
                 };
@@ -347,7 +347,6 @@ namespace StudySpace.Service.Services
             }
         }
 
-
         public async Task<IBusinessResult> GetById(int id)
         {
             try
@@ -358,8 +357,22 @@ namespace StudySpace.Service.Services
                     return new BusinessResult(Const.WARNING_NO_DATA, Const.WARNING_NO_DATA_MSG);
                 }
 
+                var bookedSlots = _unitOfWork.BookingRepository.FindByCondition(b => b.RoomId == id && b.Status == true)
+                                                               .GroupBy(b => b.BookingDate.Value.Date)
+                                                               .Select(date => new BookedSlots
+                                                               {
+                                                                   Date = date.Key.ToString("yyyy-MM-dd"),
+                                                                   Slots = date.Select(b => new Slots
+                                                                   {
+                                                                       Start = b.StartTime.HasValue ? b.StartTime.Value.ToString("HH:mm") : null,
+                                                                       End = b.EndTime.HasValue ? b.EndTime.Value.ToString("HH:mm") : null
+                                                                   }).ToList()
+                                                               }).ToList();
 
                 var listImageOfRoom = _unitOfWork.ImageRoomRepository.FindByCondition(i => i.RoomId == id).Select(i => i.ImageUrl).ToList();
+
+                var imageMenu = listImageOfRoom.FirstOrDefault(i => i.Contains("MENU"));
+                var listOtherImage = listImageOfRoom.Where(i => !i.Contains("MENU")).ToList();
 
                 var listAminityRoom = _unitOfWork.RoomAminitiesRepository.FindByCondition(a => a.RoomId == id).Select(a => a.AmitiesId).ToList();
 
@@ -382,6 +395,11 @@ namespace StudySpace.Service.Services
 
                 var store = _unitOfWork.StoreRepository.FindByCondition(s => s.Id == room.StoreId).FirstOrDefault();
 
+                var imageBuBuBu = new ListImages
+                {
+                    ImageMenu = imageMenu,
+                    ImageList = listOtherImage
+                };
 
                 var result = new RoomDetailModel
                 {
@@ -390,16 +408,19 @@ namespace StudySpace.Service.Services
                     Capacity = room.Capacity ?? 0,
                     PricePerHour = room.PricePerHour ?? 0,
                     Area = room.Area ?? 0,
-                    HouseRule = room.HouseRule,
+                    ListImages = imageBuBuBu,
+                    HouseRule = room.HouseRule?.Split(new[] { '.' }, StringSplitOptions.RemoveEmptyEntries)
+                                                .Select(part => part.Trim())
+                                                .ToArray(),
                     TypeOfRoom = room.Type,
-                    ListImages = listImageOfRoom,
                     Description = room.Description,
                     Address = store.Address,
                     Longtitude = store.Longitude,
                     Latitude = store.Latitude,
                     Aminities = listAminity,
                     RelatedRoom = relatedRoomsResult.Data as List<RoomModel>,
-                    Status = room.Status ?? false
+                    Status = room.Status ?? false,
+                    BookedSlots = bookedSlots
                 };
 
                 return new BusinessResult(Const.SUCCESS_READ, Const.SUCCESS_READ_MSG, result);
@@ -465,13 +486,23 @@ namespace StudySpace.Service.Services
                     };
                     _unitOfWork.RoomAminitiesRepository.PrepareCreate(amityRoom);
                     await _unitOfWork.RoomAminitiesRepository.SaveAsync();
-
-
                 }
 
                 await _unitOfWork.AmityRepository.SaveAsync();
 
                 var imageUrls = room.ImageRoom;
+                if(room.ImageMenu != null)
+                {
+                    var newMenuImage = new ImageRoom
+                    {
+                        Room = newRoom
+                    };
+                    var imgPath = FirebasePathName.MENU + Guid.NewGuid().ToString();
+                    var imgUploadRes = await _firebaseService.UploadImageToFirebaseAsync(room.ImageMenu, imgPath);
+                    newMenuImage.ImageUrl = imgUploadRes;
+                    _unitOfWork.ImageRoomRepository.PrepareCreate(newMenuImage);
+                }
+
                 if (imageUrls != null)
                 {
                     foreach (var image in imageUrls)
@@ -573,7 +604,7 @@ namespace StudySpace.Service.Services
                 var imageUrls = room.ImageRoom;
                 if (imageUrls != null)
                 {
-                    var existingImages = _unitOfWork.ImageRoomRepository.FindByCondition(i => i.RoomId == roomId).ToList();
+                    var existingImages = _unitOfWork.ImageRoomRepository.FindByCondition(i => i.RoomId == roomId && !i.ImageUrl.Contains("MENU")).ToList();
                     foreach (var imageUrl in existingImages)
                     {
                         _unitOfWork.ImageRoomRepository.PrepareRemove(imageUrl);
@@ -590,8 +621,26 @@ namespace StudySpace.Service.Services
                         newRoomImage.ImageUrl = imageUploadResult;
                         _unitOfWork.ImageRoomRepository.PrepareCreate(newRoomImage);
                     }
-
                 }
+
+                if (room.ImageMenu != null)
+                {
+                    var existingMenuImages = _unitOfWork.ImageRoomRepository.FindByCondition(i => i.RoomId == roomId && i.ImageUrl.Contains("MENU")).ToList();
+                    foreach (var imageUrl in existingMenuImages)
+                    {
+                        _unitOfWork.ImageRoomRepository.PrepareRemove(imageUrl);
+                    }
+
+                    var newMenuImage = new ImageRoom
+                    {
+                        Room = updatedRoom
+                    };
+                    var imgPath = FirebasePathName.MENU + Guid.NewGuid().ToString();
+                    var imgUploadRes = await _firebaseService.UploadImageToFirebaseAsync(room.ImageMenu, imgPath);
+                    newMenuImage.ImageUrl = imgUploadRes;
+                    _unitOfWork.ImageRoomRepository.PrepareCreate(newMenuImage);
+                }
+
                 int result = await _unitOfWork.RoomRepository.SaveAsync();
                 await _unitOfWork.ImageRoomRepository.SaveAsync();
 

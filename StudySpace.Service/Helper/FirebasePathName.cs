@@ -14,6 +14,6 @@ namespace StudySpace.Data.Helper
         public static string SERVICE_STATION = "SERVICE_STATION/";
         public static string AVATAR = "AVATAR/";
         public static string AVATAR_DEFAULT = "AVATAR_DEFAULT/";
-
+        public static string MENU = "MENU/";
     }
 }

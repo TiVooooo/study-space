@@ -23,11 +23,8 @@ namespace StudySpace.Service.Services
         Task<IBusinessResult> DeleteById(int id);
         Task<IBusinessResult> Save(FeedbackRequestModel acc);
         Task<IBusinessResult> GetFeedback(int roomId, int pageNumber, int pageSize);
-
-
         Task<IBusinessResult> GetAllFeedbackOfStore(int storeId);
-
-
+        Task<IBusinessResult> GetAllImageFeedbackOfRoom(int storeId);
     }
 
     public class FeedbackService : IFeedbackService
@@ -219,8 +216,6 @@ namespace StudySpace.Service.Services
             }
         }
 
-
-
         public async Task<IBusinessResult> GetAllFeedbackOfStore(int storeId)
         {
             try
@@ -248,16 +243,13 @@ namespace StudySpace.Service.Services
             }
         }
        
-
         public async Task<IBusinessResult> GetById(int id)
         {
             try
             {
                 #region Business rule
                 #endregion
-
-
-                var obj = await _unitOfWork.FeedbackRepository.GetByIdAsync(id);
+                var obj = await _unitOfWork.FeedbackRepository.GetFeedbackByIdAsync(id);
 
                 if (obj == null)
                 {
@@ -265,7 +257,19 @@ namespace StudySpace.Service.Services
                 }
                 else
                 {
-                    return new BusinessResult(Const.SUCCESS_READ, Const.SUCCESS_READ_MSG, obj);
+                    var feedbackDetails = new FeedbackDetailModel
+                    {
+                        FeedbackId = id,
+                        Status = obj.Status,
+                        Star = obj.Rating,
+                        UserName = obj.User.Name,
+                        UserAvaUrl = obj.User.AvatarUrl,
+                        ReviewText = obj.ReviewText,
+                        BookingDate = obj.Booking.BookingDate,
+                        FeedbackImages = obj.ImageFeedbacks.Select(img => img.ImageUrl).ToList()
+                    };
+
+                    return new BusinessResult(Const.SUCCESS_READ, Const.SUCCESS_READ_MSG, feedbackDetails);
                 }
             }
             catch (Exception ex)
@@ -273,7 +277,6 @@ namespace StudySpace.Service.Services
                 return new BusinessResult(-4, ex.Message);
             }
         }
-
 
         public async Task<IBusinessResult> Save(FeedbackRequestModel feedback)
         {
@@ -344,6 +347,42 @@ namespace StudySpace.Service.Services
             catch (Exception ex)
             {
                 return new BusinessResult(-4, ex.Message);
+            }
+        }
+
+        public async Task<IBusinessResult> GetAllImageFeedbackOfRoom(int roomId)
+        {
+            try
+            {
+                var feedbackImages = await _unitOfWork.FeedbackRepository.GetFeedbacksByRoomIdAsync(roomId);
+                if(feedbackImages.Count == 0)
+                {
+                    return new BusinessResult(Const.WARNING_NO_DATA, Const.WARNING_NO_DATA_MSG);
+                }
+
+                var imageFeedbackList = feedbackImages.Select(f => new ImageFeedbackModel
+                {
+                    FeedbackId = f.Id,
+                    UserId = f.UserId ?? 0,
+                    UserAvatarUrl = f.User?.AvatarUrl,
+                    UserName = f.User?.Name ?? "Unknown",
+                    FeedbackImage = f.ImageFeedbacks.Select(img => img.ImageUrl).ToList()
+                }).ToList();
+
+                var averageStar = Math.Round(feedbackImages.Average(f => f.Rating ?? 0), 1);
+
+                var feedbackTong = new FeedbackBu
+                {
+                    AverageStar = averageStar,
+                    ImageFeedbackModels = imageFeedbackList
+                };
+
+                return new BusinessResult(Const.SUCCESS_READ, Const.SUCCESS_READ_MSG, feedbackTong);
+            }
+            catch (Exception ex)
+            {
+                return new BusinessResult(-4, ex.Message);
+
             }
         }
     }
