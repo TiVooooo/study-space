@@ -1,4 +1,4 @@
-
+﻿
 using StudySpace.Data.Helper;
 
 using AutoMapper;
@@ -243,29 +243,21 @@ namespace StudySpace.Service.Services
         {
             try
             {
-                var pagedRooms = await _unitOfWork.RoomRepository.GetAllRoomsAsync();
-
+                var rooms = await _unitOfWork.RoomRepository.GetAllRoomsAsync();
 
                 if (!string.IsNullOrWhiteSpace(space) || !string.IsNullOrWhiteSpace(location) || !string.IsNullOrWhiteSpace(room) || person == 0)
                 {
-                    pagedRooms = pagedRooms.Where(r =>
+                    rooms = rooms.Where(r =>
                         (space.Equals("All") || (r.Space != null && r.Space.SpaceName.Contains(space, StringComparison.OrdinalIgnoreCase))) &&
                         (location.Equals("All") || (r.Store != null && r.Store.Address.Contains(location, StringComparison.OrdinalIgnoreCase))) &&
                         (r.Capacity >= person)
                     ).ToList();
                 }
 
-                var totalCount = pagedRooms.Count;
-                var totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
-
-                var rooms = pagedRooms.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
-
-                if (priceRange[0] != 0 && priceRange[1] != 0)
+                if (priceRange[1] != 0)
                 {
                     rooms = rooms.Where(r => r.PricePerHour >= priceRange[0] && r.PricePerHour <= priceRange[1]).ToList();
-
                 }
-
 
                 if (price.Equals("highest"))
                 {
@@ -275,22 +267,21 @@ namespace StudySpace.Service.Services
                 {
                     rooms = rooms.OrderBy(x => x.PricePerHour).ToList();
                 }
-                else if (utilities != null && utilities.Any() && !utilities.Contains("All"))
+
+                if (utilities != null && utilities.Any() && !utilities.Contains("All"))
                 {
                     var selectedAmitiesIds = _unitOfWork.AmityRepository
-                .FindByCondition(x => utilities.Contains(x.Name))
-                .Select(x => x.Id)
-                .ToList();
-                    var listR = new List<Room>();
+                        .FindByCondition(x => utilities.Contains(x.Name))
+                        .Select(x => x.Id)
+                        .ToList();
 
-                    // First, get all rooms that have any of the selected amenities
+                    var listR = new List<Room>();
                     var roomsWithSelectedAmenities = _unitOfWork.RoomAminitiesRepository
                         .FindByCondition(x => selectedAmitiesIds.Contains(x.AmitiesId))
                         .Select(x => x.RoomId)
                         .Distinct()
                         .ToList();
 
-                    // Now, filter rooms to only include those that have all the selected amenities
                     foreach (var roomId in roomsWithSelectedAmenities)
                     {
                         var amenitiesInRoom = _unitOfWork.RoomAminitiesRepository
@@ -298,8 +289,9 @@ namespace StudySpace.Service.Services
                             .Select(x => x.AmitiesId)
                             .ToList();
 
-                        // Check if all selected amenities are present in this room
-                        if (selectedAmitiesIds.All(id => amenitiesInRoom.Contains(id)))
+                        bool hasAllAmenities = selectedAmitiesIds.All(id => amenitiesInRoom.Contains(id));
+
+                        if (hasAllAmenities)
                         {
                             var roomNe = _unitOfWork.RoomRepository.GetById(roomId);
                             listR.Add(roomNe);
@@ -307,9 +299,13 @@ namespace StudySpace.Service.Services
                     }
 
                     rooms = rooms.Where(r => listR.Any(lr => lr.Id == r.Id)).ToList();
-
                 }
 
+                // Tính tổng số lượng phòng sau khi lọc
+                var totalRooms = rooms.Count;
+
+                // Sử dụng Skip và Take để phân trang
+                rooms = rooms.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
 
                 var list = new List<RoomModel>();
                 foreach (var r in rooms)
@@ -334,23 +330,23 @@ namespace StudySpace.Service.Services
                     list.Add(roomModel);
                 }
 
+                // Tính tổng số trang
+                var totalPages = (int)Math.Ceiling((double)totalRooms / pageSize);
 
                 var result = new GetAllRoomModel
                 {
                     Rooms = list,
                     TotalCount = totalPages
                 };
+
                 return new BusinessResult(Const.SUCCESS_READ, Const.SUCCESS_READ_MSG, result);
-
-
             }
             catch (Exception ex)
             {
                 return new BusinessResult(Const.ERROR_EXEPTION, ex.Message);
-
             }
-
         }
+
 
         public async Task<IBusinessResult> GetById(int id)
         {
