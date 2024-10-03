@@ -33,7 +33,7 @@ namespace StudySpace.Service.Services
         Task<IBusinessResult> GetAllBookedRoomInUser(int userId);
         Task<IBusinessResult> GetAllBookedRoomInSup(int supID);
 
-        Task<IBusinessResult> FilterRoom(int pageNumber, int pageSize,string price, Double[]? priceRange, string[]? utilities, string space, string location, string room, int person);
+        Task<IBusinessResult> FilterRoom(int pageNumber, int pageSize, string price, Double[]? priceRange, string[]? utilities, string space, string location, string room, int person);
 
 
     }
@@ -239,7 +239,7 @@ namespace StudySpace.Service.Services
             }
         }
 
-        public async Task<IBusinessResult> FilterRoom(int pageNumber, int pageSize,string price, Double[]? priceRange, string[]? utilities, string space, string location, string room, int person)
+        public async Task<IBusinessResult> FilterRoom(int pageNumber, int pageSize, string price, Double[]? priceRange, string[]? utilities, string space, string location, string room, int person)
         {
             try
             {
@@ -262,7 +262,7 @@ namespace StudySpace.Service.Services
 
                 if (priceRange[0] != 0 && priceRange[1] != 0)
                 {
-                rooms = rooms.Where(r => r.PricePerHour >= priceRange[0] && r.PricePerHour <= priceRange[1]).ToList();
+                    rooms = rooms.Where(r => r.PricePerHour >= priceRange[0] && r.PricePerHour <= priceRange[1]).ToList();
 
                 }
 
@@ -283,10 +283,27 @@ namespace StudySpace.Service.Services
                 .ToList();
                     var listR = new List<Room>();
 
-                    foreach (var id in selectedAmitiesIds)
+                    // First, get all rooms that have any of the selected amenities
+                    var roomsWithSelectedAmenities = _unitOfWork.RoomAminitiesRepository
+                        .FindByCondition(x => selectedAmitiesIds.Contains(x.AmitiesId))
+                        .Select(x => x.RoomId)
+                        .Distinct()
+                        .ToList();
+
+                    // Now, filter rooms to only include those that have all the selected amenities
+                    foreach (var roomId in roomsWithSelectedAmenities)
                     {
-                        var r = _unitOfWork.RoomAminitiesRepository.FindByCondition(x => x.AmitiesId == id).FirstOrDefault();
-                        listR.Add(_unitOfWork.RoomRepository.GetById(r.RoomId));
+                        var amenitiesInRoom = _unitOfWork.RoomAminitiesRepository
+                            .FindByCondition(x => x.RoomId == roomId)
+                            .Select(x => x.AmitiesId)
+                            .ToList();
+
+                        // Check if all selected amenities are present in this room
+                        if (selectedAmitiesIds.All(id => amenitiesInRoom.Contains(id)))
+                        {
+                            var roomNe = _unitOfWork.RoomRepository.GetById(roomId);
+                            listR.Add(roomNe);
+                        }
                     }
 
                     rooms = rooms.Where(r => listR.Any(lr => lr.Id == r.Id)).ToList();
@@ -453,11 +470,11 @@ namespace StudySpace.Service.Services
                     _unitOfWork.RoomAminitiesRepository.PrepareCreate(amityRoom);
                     await _unitOfWork.RoomAminitiesRepository.SaveAsync();
 
-                   
+
                 }
-                
+
                 await _unitOfWork.AmityRepository.SaveAsync();
-                
+
                 var imageUrls = room.ImageRoom;
                 if (imageUrls != null)
                 {
@@ -527,32 +544,32 @@ namespace StudySpace.Service.Services
 
                 _unitOfWork.RoomRepository.PrepareUpdate(updatedRoom);
 
-/*
-                foreach (var item in room.Amities)
-                {
+                /*
+                                foreach (var item in room.Amities)
+                                {
 
-                    var amity = _unitOfWork.AmityRepository.GetById(item.AmityId);
-                    if (amity.Quantity >= item.Quantity)
-                    {
-                        amity.Quantity -= item.Quantity;
-                    }
-                    else
-                    {
-                        return new BusinessResult(Const.FAIL_CREATE, "There is not enough Amity in stock!");
-                    }
+                                    var amity = _unitOfWork.AmityRepository.GetById(item.AmityId);
+                                    if (amity.Quantity >= item.Quantity)
+                                    {
+                                        amity.Quantity -= item.Quantity;
+                                    }
+                                    else
+                                    {
+                                        return new BusinessResult(Const.FAIL_CREATE, "There is not enough Amity in stock!");
+                                    }
 
-                    _unitOfWork.AmityRepository.PrepareUpdate(amity);
-                    var amityRoom = new RoomAmity
-                    {
-                        RoomId = newRoom.Id,
-                        AmitiesId = item.AmityId,
-                        Quantity = item.Quantity
-                    };
-                    _unitOfWork.RoomAminitiesRepository.PrepareCreate(amityRoom);
-                    await _unitOfWork.RoomAminitiesRepository.SaveAsync();
+                                    _unitOfWork.AmityRepository.PrepareUpdate(amity);
+                                    var amityRoom = new RoomAmity
+                                    {
+                                        RoomId = newRoom.Id,
+                                        AmitiesId = item.AmityId,
+                                        Quantity = item.Quantity
+                                    };
+                                    _unitOfWork.RoomAminitiesRepository.PrepareCreate(amityRoom);
+                                    await _unitOfWork.RoomAminitiesRepository.SaveAsync();
 
 
-                }*/
+                                }*/
 
                 await _unitOfWork.AmityRepository.SaveAsync();
 
