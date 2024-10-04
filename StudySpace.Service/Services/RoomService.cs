@@ -150,7 +150,6 @@ namespace StudySpace.Service.Services
             {
                 var rooms = _unitOfWork.RoomRepository.FindByCondition(r => r.Space.SpaceName.Equals(condition)).Take(3).ToList();
 
-
                 var list = new List<RoomModel>();
 
                 foreach (var r in rooms)
@@ -161,20 +160,20 @@ namespace StudySpace.Service.Services
                     var roomModel = new RoomModel
                     {
                         RoomName = r.RoomName,
-                        StoreName = store.Name,
+                        StoreName = store?.Name ?? "Unknown",  // Check if store is null
                         Capacity = r.Capacity ?? 0,
                         PricePerHour = r.PricePerHour ?? 0,
                         Description = r.Description,
                         Status = r.Status ?? false,
                         Area = r.Area ?? 0,
                         Type = r.Type,
-                        Address = store.Address,
-                        Image = imageEntity.ImageUrl
+                        Address = store?.Address ?? "Unknown",  // Check if store is null
+                        Image = imageEntity?.ImageUrl, // Check if imageEntity is null
+                        isOvernight = store?.IsOverNight
                     };
+
                     list.Add(roomModel);
                 }
-
-
 
                 if (!list.Any())
                 {
@@ -188,6 +187,7 @@ namespace StudySpace.Service.Services
                 return new BusinessResult(Const.ERROR_EXEPTION, ex.Message);
             }
         }
+
 
         public async Task<IBusinessResult> SearchRooms(int pageNumber, int pageSize, string space, string location, string room, int person)
         {

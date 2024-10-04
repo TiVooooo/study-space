@@ -360,7 +360,9 @@ namespace StudySpace.Service.Services
                     return new BusinessResult(Const.WARNING_NO_DATA, Const.WARNING_NO_DATA_MSG);
                 }
 
-                var imageFeedbackList = feedbackImages.Select(f => new ImageFeedbackModel
+                var imageFeedbackList = feedbackImages
+                    .Where(f => f.ImageFeedbacks != null && f.ImageFeedbacks.Any())
+                    .Select(f => new ImageFeedbackModel
                 {
                     FeedbackId = f.Id,
                     UserId = f.UserId ?? 0,
