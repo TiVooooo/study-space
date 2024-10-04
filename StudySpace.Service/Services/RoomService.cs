@@ -370,7 +370,7 @@ namespace StudySpace.Service.Services
                 }
 
                 var bookedSlots = _unitOfWork.BookingRepository.FindByCondition(b => b.RoomId == id && b.Status == true)
-                                                               .GroupBy(b => b.BookingDate.Value.Date)
+                                                               .GroupBy(b => b.StartTime.Value.Date)
                                                                .Select(date => new BookedSlots
                                                                {
                                                                    Date = date.Key.ToString("yyyy-MM-dd"),
