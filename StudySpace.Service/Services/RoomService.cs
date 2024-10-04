@@ -335,7 +335,7 @@ namespace StudySpace.Service.Services
                         Area = r.Area ?? 0,
                         Type = r.Type,
                         Address = store.Address,
-                        Image = imageEntity.ImageUrl,
+                        Image = imageEntity.ImageUrl ?? "default_image_url_here",
                         isOvernight = store.IsOverNight
                     };
                     list.Add(roomModel);
@@ -346,7 +346,7 @@ namespace StudySpace.Service.Services
 
                 var result = new GetAllRoomModel
                 {
-                    TotalAvailable = list.Count,
+                    TotalAvailable = totalRooms,
                     Rooms = list,
                     TotalCount = totalPages
                 };
