@@ -36,5 +36,7 @@ namespace StudySpace.Service.BusinessModel
         public string Image {  get; set; }
 
         public string Address { get; set; }
+
+        public bool? isOvernight { get; set; }
     }
 }

@@ -1,24 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "D:\\study-space\\StudySpace.Service\\StudySpace.Service.csproj": {}
+    "C:\\Term8\\EXE201\\v11\\study-space\\StudySpace.Service\\StudySpace.Service.csproj": {}
   },
   "projects": {
-    "D:\\study-space\\StudySpace.Common\\StudySpace.Common.csproj": {
+    "C:\\Term8\\EXE201\\v11\\study-space\\StudySpace.Common\\StudySpace.Common.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\study-space\\StudySpace.Common\\StudySpace.Common.csproj",
+        "projectUniqueName": "C:\\Term8\\EXE201\\v11\\study-space\\StudySpace.Common\\StudySpace.Common.csproj",
         "projectName": "StudySpace.Common",
-        "projectPath": "D:\\study-space\\StudySpace.Common\\StudySpace.Common.csproj",
-        "packagesPath": "C:\\Users\\BINF\\.nuget\\packages\\",
-        "outputPath": "D:\\study-space\\StudySpace.Common\\obj\\",
+        "projectPath": "C:\\Term8\\EXE201\\v11\\study-space\\StudySpace.Common\\StudySpace.Common.csproj",
+        "packagesPath": "C:\\Users\\Tienvo\\.nuget\\packages\\",
+        "outputPath": "C:\\Term8\\EXE201\\v11\\study-space\\StudySpace.Common\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\BINF\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Users\\Tienvo\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -33,8 +29,8 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "D:\\study-space\\StudySpace.Data\\StudySpace.Data.csproj": {
-                "projectPath": "D:\\study-space\\StudySpace.Data\\StudySpace.Data.csproj"
+              "C:\\Term8\\EXE201\\v11\\study-space\\StudySpace.Data\\StudySpace.Data.csproj": {
+                "projectPath": "C:\\Term8\\EXE201\\v11\\study-space\\StudySpace.Data\\StudySpace.Data.csproj"
               }
             }
           }
@@ -91,25 +87,21 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.303/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.302/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "D:\\study-space\\StudySpace.Data\\StudySpace.Data.csproj": {
+    "C:\\Term8\\EXE201\\v11\\study-space\\StudySpace.Data\\StudySpace.Data.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\study-space\\StudySpace.Data\\StudySpace.Data.csproj",
+        "projectUniqueName": "C:\\Term8\\EXE201\\v11\\study-space\\StudySpace.Data\\StudySpace.Data.csproj",
         "projectName": "StudySpace.Data",
-        "projectPath": "D:\\study-space\\StudySpace.Data\\StudySpace.Data.csproj",
-        "packagesPath": "C:\\Users\\BINF\\.nuget\\packages\\",
-        "outputPath": "D:\\study-space\\StudySpace.Data\\obj\\",
+        "projectPath": "C:\\Term8\\EXE201\\v11\\study-space\\StudySpace.Data\\StudySpace.Data.csproj",
+        "packagesPath": "C:\\Users\\Tienvo\\.nuget\\packages\\",
+        "outputPath": "C:\\Term8\\EXE201\\v11\\study-space\\StudySpace.Data\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\BINF\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Users\\Tienvo\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -204,25 +196,21 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.303/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.302/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "D:\\study-space\\StudySpace.DTOs\\StudySpace.DTOs.csproj": {
+    "C:\\Term8\\EXE201\\v11\\study-space\\StudySpace.DTOs\\StudySpace.DTOs.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\study-space\\StudySpace.DTOs\\StudySpace.DTOs.csproj",
+        "projectUniqueName": "C:\\Term8\\EXE201\\v11\\study-space\\StudySpace.DTOs\\StudySpace.DTOs.csproj",
         "projectName": "StudySpace.DTOs",
-        "projectPath": "D:\\study-space\\StudySpace.DTOs\\StudySpace.DTOs.csproj",
-        "packagesPath": "C:\\Users\\BINF\\.nuget\\packages\\",
-        "outputPath": "D:\\study-space\\StudySpace.DTOs\\obj\\",
+        "projectPath": "C:\\Term8\\EXE201\\v11\\study-space\\StudySpace.DTOs\\StudySpace.DTOs.csproj",
+        "packagesPath": "C:\\Users\\Tienvo\\.nuget\\packages\\",
+        "outputPath": "C:\\Term8\\EXE201\\v11\\study-space\\StudySpace.DTOs\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\BINF\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Users\\Tienvo\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -237,8 +225,8 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "D:\\study-space\\StudySpace.Data\\StudySpace.Data.csproj": {
-                "projectPath": "D:\\study-space\\StudySpace.Data\\StudySpace.Data.csproj"
+              "C:\\Term8\\EXE201\\v11\\study-space\\StudySpace.Data\\StudySpace.Data.csproj": {
+                "projectPath": "C:\\Term8\\EXE201\\v11\\study-space\\StudySpace.Data\\StudySpace.Data.csproj"
               }
             }
           }
@@ -295,25 +283,21 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.303/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.302/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "D:\\study-space\\StudySpace.Service\\StudySpace.Service.csproj": {
+    "C:\\Term8\\EXE201\\v11\\study-space\\StudySpace.Service\\StudySpace.Service.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\study-space\\StudySpace.Service\\StudySpace.Service.csproj",
+        "projectUniqueName": "C:\\Term8\\EXE201\\v11\\study-space\\StudySpace.Service\\StudySpace.Service.csproj",
         "projectName": "StudySpace.Service",
-        "projectPath": "D:\\study-space\\StudySpace.Service\\StudySpace.Service.csproj",
-        "packagesPath": "C:\\Users\\BINF\\.nuget\\packages\\",
-        "outputPath": "D:\\study-space\\StudySpace.Service\\obj\\",
+        "projectPath": "C:\\Term8\\EXE201\\v11\\study-space\\StudySpace.Service\\StudySpace.Service.csproj",
+        "packagesPath": "C:\\Users\\Tienvo\\.nuget\\packages\\",
+        "outputPath": "C:\\Term8\\EXE201\\v11\\study-space\\StudySpace.Service\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\BINF\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Users\\Tienvo\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -328,14 +312,14 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "D:\\study-space\\StudySpace.Common\\StudySpace.Common.csproj": {
-                "projectPath": "D:\\study-space\\StudySpace.Common\\StudySpace.Common.csproj"
+              "C:\\Term8\\EXE201\\v11\\study-space\\StudySpace.Common\\StudySpace.Common.csproj": {
+                "projectPath": "C:\\Term8\\EXE201\\v11\\study-space\\StudySpace.Common\\StudySpace.Common.csproj"
               },
-              "D:\\study-space\\StudySpace.Data\\StudySpace.Data.csproj": {
-                "projectPath": "D:\\study-space\\StudySpace.Data\\StudySpace.Data.csproj"
+              "C:\\Term8\\EXE201\\v11\\study-space\\StudySpace.Data\\StudySpace.Data.csproj": {
+                "projectPath": "C:\\Term8\\EXE201\\v11\\study-space\\StudySpace.Data\\StudySpace.Data.csproj"
               },
-              "D:\\study-space\\StudySpace.DTOs\\StudySpace.DTOs.csproj": {
-                "projectPath": "D:\\study-space\\StudySpace.DTOs\\StudySpace.DTOs.csproj"
+              "C:\\Term8\\EXE201\\v11\\study-space\\StudySpace.DTOs\\StudySpace.DTOs.csproj": {
+                "projectPath": "C:\\Term8\\EXE201\\v11\\study-space\\StudySpace.DTOs\\StudySpace.DTOs.csproj"
               }
             }
           }
@@ -392,7 +376,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.303/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.302/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

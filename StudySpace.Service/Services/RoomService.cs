@@ -16,6 +16,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using static System.Net.Mime.MediaTypeNames;
+using Newtonsoft.Json;
 
 namespace StudySpace.Service.Services
 {
@@ -26,8 +27,13 @@ namespace StudySpace.Service.Services
         Task<IBusinessResult> GetById(int id);
         Task<IBusinessResult> Update(int roomId, CreateRoomRequestModel room);
         Task<IBusinessResult> DeleteById(int id);
-        Task<IBusinessResult> Save(CreateRoomRequestModel room);
-        Task<IBusinessResult> SearchRooms(int pageNumber, int pageSize, string space, string location, string room, int person);
+
+
+
+       Task<IBusinessResult> Save(CreateRoomRequestModel room);
+
+
+          Task<IBusinessResult> SearchRooms(int pageNumber, int pageSize, string space, string location, string room, int person);
         Task<IBusinessResult> GetRoomWithCondition(string condition);
         Task<IBusinessResult> UnactiveRoom(int roomId);
         Task<IBusinessResult> GetAllBookedRoomInUser(int userId);
@@ -150,6 +156,8 @@ namespace StudySpace.Service.Services
                 foreach (var r in rooms)
                 {
                     var store = _unitOfWork.StoreRepository.GetById(r.StoreId ?? 0);
+                    var imageEntity = _unitOfWork.ImageRoomRepository.FindByCondition(ie => ie.RoomId == r.Id).FirstOrDefault();
+
                     var roomModel = new RoomModel
                     {
                         RoomName = r.RoomName,
@@ -159,7 +167,9 @@ namespace StudySpace.Service.Services
                         Description = r.Description,
                         Status = r.Status ?? false,
                         Area = r.Area ?? 0,
-                        Type = r.Type
+                        Type = r.Type,
+                        Address = store.Address,
+                        Image = imageEntity.ImageUrl
                     };
                     list.Add(roomModel);
                 }
@@ -217,7 +227,8 @@ namespace StudySpace.Service.Services
                         Area = r.Area ?? 0,
                         Type = r.Type,
                         Address = store.Address,
-                        Image = imageEntity.ImageUrl
+                        Image = imageEntity.ImageUrl,
+                        isOvernight = store.IsOverNight
                     };
                     list.Add(roomModel);
                 }
@@ -324,7 +335,8 @@ namespace StudySpace.Service.Services
                         Area = r.Area ?? 0,
                         Type = r.Type,
                         Address = store.Address,
-                        Image = imageEntity.ImageUrl
+                        Image = imageEntity.ImageUrl,
+                        isOvernight = store.IsOverNight
                     };
                     list.Add(roomModel);
                 }
@@ -420,7 +432,10 @@ namespace StudySpace.Service.Services
                     Aminities = listAminity,
                     RelatedRoom = relatedRoomsResult.Data as List<RoomModel>,
                     Status = room.Status ?? false,
-                    BookedSlots = bookedSlots
+                    BookedSlots = bookedSlots,
+                    isOvernight = store.IsOverNight ?? false,
+                    StartTime = store.OpenTime?.TimeOfDay,
+                    EndTime = store.CloseTime?.TimeOfDay,
                 };
 
                 return new BusinessResult(Const.SUCCESS_READ, Const.SUCCESS_READ_MSG, result);
@@ -535,6 +550,9 @@ namespace StudySpace.Service.Services
                 return new BusinessResult(-4, ex.Message);
             }
         }
+
+        
+
 
         public async Task<IBusinessResult> Update(int roomId, CreateRoomRequestModel room)
         {
