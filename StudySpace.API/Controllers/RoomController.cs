@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using StudySpace.Common;
 using StudySpace.Service.BusinessModel;
 using StudySpace.Service.Services;
 
@@ -41,6 +43,9 @@ namespace StudySpace.API.Controllers
             var result = await _roomService.Save(model);
             return Ok(result);
         }
+
+        
+
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteRoom(int id)

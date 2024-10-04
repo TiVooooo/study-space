@@ -26,6 +26,12 @@ namespace StudySpace.Service.BusinessModel
 
         public double? Latitude { get; set; }
 
+        public bool isOvernight { get; set; }
+
+        public TimeSpan? StartTime { get; set; }
+
+        public TimeSpan? EndTime { get; set; }
+
         public string[] HouseRule { get; set; }
 
         public string TypeOfRoom { get; set; }
@@ -40,6 +46,7 @@ namespace StudySpace.Service.BusinessModel
 
         public List<BookedSlots> BookedSlots { get; set; }
 
+       
     }
 
     public class ListImages
