@@ -43,6 +43,7 @@ namespace StudySpace.Service.Services
         private readonly IMapper _mapper;
         private readonly string _jwtSecret = "s3cr3tKeyF0rJWT@2024!MustBe32Char$";
         private readonly string _confirmUrl;
+        private readonly string _frontendUrl = "";
         private readonly IFirebaseService _firebaseService;
 
         public AccountService(IMapper mapper, IEmailService emailService, IConfiguration config, IFirebaseService firebaseService)
@@ -135,6 +136,27 @@ namespace StudySpace.Service.Services
 
         public async Task<IBusinessResult> Save(AccountRegistrationRequestModel model, string token)
         {
+            var existedAcc = await _unitOfWork.AccountRepository.GetByEmailAsync(model.Email);
+            if (existedAcc != null)
+            {
+                throw new InvalidOperationException("Email is already existed!");
+            }
+
+            var hasUpperChar = model.Password.Any(char.IsUpper);
+            var hasLowerChar = model.Password.Any(char.IsLower);
+            var hasNumber = model.Password.Any(char.IsDigit);
+            var hasSpecialChar = model.Password.Any(ch => !char.IsLetterOrDigit(ch));
+
+            if (!(hasUpperChar && hasLowerChar && hasNumber && hasSpecialChar))
+            {
+                return new BusinessResult(Const.FAIL_CREATE, "Mật khẩu phải có ít nhất một chữ hoa, chữ thường, số và ký tự đặc biệt!");
+            }
+
+            if (model.Phone.Length != 10 || !model.Phone.All(char.IsDigit))
+            {
+                return new BusinessResult(Const.FAIL_CREATE, "Số điện thoại phải là 10 chữ số!");
+            }
+
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_jwtSecret);
             try
@@ -185,7 +207,66 @@ namespace StudySpace.Service.Services
 
                 if (result > 0)
                 {
-                    return new BusinessResult(Const.SUCCESS_CREATE, Const.SUCCESS_CREATE_MSG);
+                    var subject = "Chào mừng bạn đến với StudySpace!";
+                    var body = $@"
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <title>Đăng ký thành công</title>
+    <style>
+        body {{
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }}
+        .container {{
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }}
+        .header {{
+            text-align: center;
+            color: #333;
+        }}
+        .btn {{
+            display: inline-block;
+            margin: 20px 0;
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+        }}
+        .footer {{
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.9em;
+            color: #777;
+        }}
+    </style>
+</head>
+<body>
+    <div class='container'>
+        <h1 class='header'>Chào mừng bạn đến với StudySpace, {model.Name}!</h1>
+        <p>Chúc mừng bạn đã đăng ký tài khoản thành công. Bạn có thể đăng nhập vào hệ thống của chúng tôi bằng cách nhấp vào liên kết dưới đây:</p>
+        <a href='{_frontendUrl}/login' class='btn'>Đăng nhập ngay</a>
+        <p>Nếu bạn có bất kỳ câu hỏi nào, vui lòng liên hệ với đội ngũ hỗ trợ của chúng tôi.</p>
+        <p>Trân trọng,<br>Đội ngũ StudySpace</p>
+    </div>
+    <div class='footer'>
+        <p>Bạn nhận được email này vì đã đăng ký tài khoản trên StudySpace.</p>
+    </div>
+</body>
+</html>
+";
+
+                    await _emailService.SendMailAsync(model.Email, subject, body);
+
+                    return new BusinessResult(Const.SUCCESS_CREATE, Const.SUCCESS_CREATE_MSG, newAcc);
                 } else
                 {
                     return new BusinessResult(Const.FAIL_CREATE, Const.FAIL_CREATE_MSG);
