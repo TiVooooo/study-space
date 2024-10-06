@@ -1,4 +1,5 @@
-﻿using StudySpace.Data.Base;
+﻿using Microsoft.EntityFrameworkCore;
+using StudySpace.Data.Base;
 using StudySpace.Data.Models;
 using System;
 using System.Collections.Generic;
@@ -14,6 +15,15 @@ namespace StudySpace.Data.Repository
         public BookingRepository(EXE201_StudySpaceContext context)
         {
             _context = context;
+        }
+
+        public IQueryable<Booking> GetBookingDetails()
+        {
+            return _context.Bookings
+            .Include(b => b.User)
+            .Include(b => b.Room)
+            .Include(b => b.Feedbacks)
+            .Include(b => b.Transactions);
         }
     }
 }
