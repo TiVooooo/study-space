@@ -15,7 +15,8 @@ namespace StudySpace.DTOs.TokenDTO
         public string Address { get; set; }
         public string Gender { get; set; }
         public string RoleName { get; set; }
-        public string avaURL { get; set; }
+        public string AvaURL { get; set; }
+        public string IsPackaged { get; set; }
         // public DateTime Expiration { get; set; }
     }
 }

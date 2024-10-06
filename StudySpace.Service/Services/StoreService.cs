@@ -323,7 +323,8 @@ namespace StudySpace.Service.Services
                     new Claim(ClaimTypes.Email, store.Email),
                     new Claim(ClaimTypes.HomePhone, store.Phone),
                     new Claim(ClaimTypes.StreetAddress, store.Address),
-                    new Claim(ClaimTypes.Uri, store.ThumbnailUrl)
+                    new Claim(ClaimTypes.Uri, store.ThumbnailUrl),
+                    new Claim("isPackaged", isPackaged.ToString())
                 }),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
@@ -337,8 +338,7 @@ namespace StudySpace.Service.Services
                 {
                     Token = jwtToken,
                     RoleName = accountRole
-                },
-                IsPackaged = isPackaged
+                }
             });
         }
 
@@ -365,6 +365,7 @@ namespace StudySpace.Service.Services
             var address = jwtToken.Claims.FirstOrDefault(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/streetaddress")?.Value;
             var roleName = "Store";
             var avaUrl = jwtToken.Claims.FirstOrDefault(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/uri")?.Value;
+            var isPacaged = jwtToken.Claims.FirstOrDefault(c => c.Type == "isPackaged")?.Value;
 
             //var expiration = jwtToken.ValidTo;
 
@@ -376,7 +377,8 @@ namespace StudySpace.Service.Services
                 Phone = phone,
                 Address = address,
                 RoleName = roleName,
-                avaURL = avaUrl,
+                AvaURL = avaUrl,
+                IsPackaged = isPacaged
                 //Expiration = expiration
             };
         }
