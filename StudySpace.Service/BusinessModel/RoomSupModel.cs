@@ -19,7 +19,7 @@ namespace StudySpace.Data.Models
 
         public string Description { get; set; }
 
-        public bool Status { get; set; }
+        public string Status { get; set; }
 
         public double Area { get; set; }
 
