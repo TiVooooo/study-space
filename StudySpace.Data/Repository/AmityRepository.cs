@@ -1,4 +1,5 @@
-﻿using StudySpace.Data.Base;
+﻿using Microsoft.EntityFrameworkCore;
+using StudySpace.Data.Base;
 using StudySpace.Data.Models;
 using System;
 using System.Collections.Generic;
@@ -16,5 +17,23 @@ namespace StudySpace.Data.Repository
         {
             _context = context;
         }
+
+        public async Task<List<Amity>> GetAllAmitiesByStoreId(int storeId)
+        {
+            return await _context.RoomAmities
+                .Where(ra => ra.Room.StoreId == storeId)
+                .Select(ra => new Amity
+                {
+                    Id = ra.Amities.Id,
+                    Name = ra.Amities.Name,
+                    Type = ra.Amities.Type,
+                    Status = ra.Amities.Status,
+                    Quantity = ra.Amities.Quantity,
+           
+                })
+                .Distinct()
+                .ToListAsync();
+        }
+
     }
 }
