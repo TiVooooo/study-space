@@ -16,6 +16,7 @@ namespace StudySpace.Service.Services
     public interface IAmityService
     {
         Task<IBusinessResult> GetAllAmities();
+        Task<IBusinessResult> GetById(int id);
         Task<IBusinessResult> Save(CreateAmityRequestModel model);
         Task<IBusinessResult> Update(int amityId, CreateAmityRequestModel model);
         Task<IBusinessResult> UnactiveAmity(int amityId);
@@ -32,6 +33,27 @@ namespace StudySpace.Service.Services
             _unitOfWork ??= new UnitOfWork();
 
             _mapper = mapper;
+        }
+
+        public async Task<IBusinessResult> GetById(int id)
+        {
+            try
+            {
+                var obj = await _unitOfWork.AmityRepository.GetByIdAsync(id);
+
+                if (obj == null)
+                {
+                    return new BusinessResult(Const.WARNING_NO_DATA, Const.WARNING_NO_DATA_MSG);
+                }
+                else
+                {
+                    return new BusinessResult(Const.SUCCESS_READ, Const.SUCCESS_READ_MSG, obj);
+                }
+            }
+            catch (Exception ex)
+            {
+                return new BusinessResult(Const.ERROR_EXEPTION, ex.Message);
+            }
         }
 
         public async Task<IBusinessResult> GetAllAmities()

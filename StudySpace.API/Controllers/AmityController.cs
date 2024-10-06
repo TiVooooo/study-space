@@ -51,5 +51,11 @@ namespace StudySpace.API.Controllers
         {
             return Ok(await _amityService.GetBySupId(supplierId));
         }
+
+        [HttpGet("detail/{id}")]
+        public async Task<IActionResult> GetDetailById(int id)
+        {
+            return Ok(await _amityService.GetById(id));
+        }
     }
 }
