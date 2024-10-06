@@ -15,7 +15,7 @@ namespace StudySpace.Service.BusinessModel
 
         public TimeSpan? EndTime { get; set; }
 
-        public bool? Status { get; set; }
+        public string? Status { get; set; }
 
         public double? Fee { get; set; }
 

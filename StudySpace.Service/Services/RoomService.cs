@@ -120,6 +120,8 @@ namespace StudySpace.Service.Services
                     var store = stores.FirstOrDefault(s => s.Id == room.StoreId);
                     var imageEntity = imageEntities.FirstOrDefault(ie => ie.RoomId == room.Id);
 
+                    if (booking.Status == "")
+
                     return new RoomModel
                     {
                         RoomId = room.Id,
@@ -128,7 +130,8 @@ namespace StudySpace.Service.Services
                         Capacity = room.Capacity ?? 0,
                         PricePerHour = room.PricePerHour ?? 0,
                         Description = room.Description,
-                        Status = booking?.Status ?? false,
+                        Status = room.Status ?? ,
+
                         Area = room.Area ?? 0,
                         Type = room.Type,
                         Address = store?.Address ?? "N/A",
@@ -331,7 +334,7 @@ namespace StudySpace.Service.Services
                         Capacity = r.Capacity ?? 0,
                         PricePerHour = r.PricePerHour ?? 0,
                         Description = r.Description,
-                        Status = r.Status ?? false,
+                        Status = r.Status ?? null,
                         Area = r.Area ?? 0,
                         Type = r.Type,
                         Address = store.Address,
@@ -369,7 +372,7 @@ namespace StudySpace.Service.Services
                     return new BusinessResult(Const.WARNING_NO_DATA, Const.WARNING_NO_DATA_MSG);
                 }
 
-                var bookedSlots = _unitOfWork.BookingRepository.FindByCondition(b => b.RoomId == id && b.Status == true)
+                var bookedSlots = _unitOfWork.BookingRepository.FindByCondition(b => b.RoomId == id && b.Status == "Payed")
                                                                .GroupBy(b => b.StartTime.Value.Date)
                                                                .Select(date => new BookedSlots
                                                                {
@@ -738,7 +741,7 @@ namespace StudySpace.Service.Services
                         Capacity = r.Capacity ?? 0,
                         PricePerHour = r.PricePerHour ?? 0,
                         Description = r.Description,
-                        Status = booking.Status ?? false,
+                        Status = r.Status ?? false,
                         Area = r.Area ?? 0,
                         Type = r.Type,
                         Address = store.Address,
@@ -791,6 +794,7 @@ namespace StudySpace.Service.Services
                             amitiesInRoom.Add(amityInRoom);
                         }
                     }
+                    
 
                     var roomModel = new RoomSupModel
                     {
@@ -800,7 +804,7 @@ namespace StudySpace.Service.Services
                         Capacity = room.Capacity ?? 0,
                         PricePerHour = room.PricePerHour ?? 0,
                         Description = room.Description,
-                        Status = booking?.Status ?? false,
+                        Status = booking?.Status ?? null,
                         Area = room.Area ?? 0,
                         Type = room.Type,
                         Address = store.Address,

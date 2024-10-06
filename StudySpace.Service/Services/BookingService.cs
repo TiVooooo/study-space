@@ -49,7 +49,7 @@ namespace StudySpace.Service.Services
                             StartTime = item.StartTime?.TimeOfDay,
                             EndTime = item.EndTime?.TimeOfDay,
                             Fee = item.Fee,
-                            Status = item.Status,
+                            Status = item.Status ,
                             UserName = user.Name
                         };
                         result.Add(bookingModel);
