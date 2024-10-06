@@ -324,6 +324,7 @@ namespace StudySpace.Service.Services
                     new Claim(ClaimTypes.HomePhone, store.Phone),
                     new Claim(ClaimTypes.StreetAddress, store.Address),
                     new Claim(ClaimTypes.Uri, store.ThumbnailUrl),
+                    new Claim("RoleName", accountRole),
                     new Claim("isPackaged", isPackaged.ToString())
                 }),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
@@ -363,7 +364,7 @@ namespace StudySpace.Service.Services
             var email = jwtToken.Claims.FirstOrDefault(c => c.Type == "email")?.Value;
             var phone = jwtToken.Claims.FirstOrDefault(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/homephone")?.Value;
             var address = jwtToken.Claims.FirstOrDefault(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/streetaddress")?.Value;
-            var roleName = "Store";
+            var roleName = jwtToken.Claims.FirstOrDefault(c => c.Type == "RoleName")?.Value;
             var avaUrl = jwtToken.Claims.FirstOrDefault(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/uri")?.Value;
             var isPacaged = jwtToken.Claims.FirstOrDefault(c => c.Type == "isPackaged")?.Value;
 
