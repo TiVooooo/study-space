@@ -45,5 +45,11 @@ namespace StudySpace.API.Controllers
         {
             return Ok(await _amityService.DeleteById(id));
         }
+
+        [HttpGet("supplier/{supplierId}")]
+        public async Task<IActionResult> GetAmitiesBySupplierId(int supplierId)
+        {
+            return Ok(await _amityService.GetBySupId(supplierId));
+        }
     }
 }

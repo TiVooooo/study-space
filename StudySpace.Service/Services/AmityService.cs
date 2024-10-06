@@ -20,6 +20,7 @@ namespace StudySpace.Service.Services
         Task<IBusinessResult> Update(int amityId, CreateAmityRequestModel model);
         Task<IBusinessResult> UnactiveAmity(int amityId);
         Task<IBusinessResult> DeleteById(int id);
+        Task<IBusinessResult> GetBySupId(int supId);
     }
     public class AmityService : IAmityService
     {
@@ -29,7 +30,7 @@ namespace StudySpace.Service.Services
         public AmityService(IMapper mapper)
         {
             _unitOfWork ??= new UnitOfWork();
-            
+
             _mapper = mapper;
         }
 
@@ -173,6 +174,43 @@ namespace StudySpace.Service.Services
             catch (Exception ex)
             {
                 return new BusinessResult(-4, ex.Message);
+            }
+        }
+
+        public async Task<IBusinessResult> GetBySupId(int supId)
+        {
+            try
+            {
+                var existedStore = await _unitOfWork.StoreRepository.GetByIdAsync(supId);
+                if (existedStore == null)
+                {
+                    return new BusinessResult(Const.WARNING_NO_DATA, Const.WARNING_NO_DATA_MSG);
+                }
+
+                var amities = await _unitOfWork.AmityRepository.GetAllAmitiesByStoreId(supId);
+
+                var amitiesDetails = amities.Select(a => new AmitiesDetailsResponse
+                {
+                    AmityId = a.Id,
+                    AmityName = a.Name,
+                    AmityType = a.Type,
+                    AmityStatus = a.Status == true ? "Active" : "Inactive",
+                    Quantity = a.Quantity
+                }).ToList();
+
+                if (amities != null && amities.Count != 0)
+                {
+                    return new BusinessResult(Const.SUCCESS_READ, Const.SUCCESS_READ_MSG, amitiesDetails);
+                }
+                else
+                {
+                    return new BusinessResult(Const.SUCCESS_READ, "No amities have been created!");
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return new BusinessResult(Const.ERROR_EXEPTION, ex.Message);
             }
         }
     }

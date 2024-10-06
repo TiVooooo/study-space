@@ -42,6 +42,7 @@ namespace StudySpace.Service.Services
         private readonly IMapper _mapper;
         private readonly string _jwtSecret = "s3cr3tKeyF0rJWT@2024!MustBe32Char$";
         private readonly IFirebaseService _firebaseService;
+        private readonly string _registerSuccessURL = "https//front-end";
 
         public StoreService(IMapper mapper, IEmailService emailService, IConfiguration config, IFirebaseService firebaseService)
         {
@@ -110,7 +111,6 @@ namespace StudySpace.Service.Services
             }
         }
 
-
         public async Task<IBusinessResult> GetAll()
         {
             try
@@ -163,6 +163,27 @@ namespace StudySpace.Service.Services
 
         public async Task<IBusinessResult> Save(StoreRegistrationRequestModel model, string token)
         {
+            var existedAcc = await _unitOfWork.StoreRepository.GetByEmailAsync(model.Email);
+            if (existedAcc != null)
+            {
+                throw new InvalidOperationException("Email is already existed!");
+            }
+
+            if (model.Phone.Length != 10 || !model.Phone.All(char.IsDigit))
+            {
+                return new BusinessResult(Const.FAIL_CREATE, "Invalid PhoneNumber Format!");
+            }
+
+            var hasUpperChar = model.Password.Any(char.IsUpper);
+            var hasLowerChar = model.Password.Any(char.IsLower);
+            var hasNumber = model.Password.Any(char.IsDigit);
+            var hasSpecialChar = model.Password.Any(ch => !char.IsLetterOrDigit(ch));
+
+            if (!(hasUpperChar && hasLowerChar && hasNumber && hasSpecialChar))
+            {
+                return new BusinessResult(Const.FAIL_CREATE, "Invalid Password Format!");
+            }
+
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_jwtSecret);
             try
@@ -211,7 +232,64 @@ namespace StudySpace.Service.Services
 
                 if (result > 0)
                 {
-                    return new BusinessResult(Const.SUCCESS_CREATE, Const.SUCCESS_CREATE_MSG);
+                    var subject = "Đăng ký thành công!";
+                    var body = $@"
+            <!DOCTYPE html>
+            <html lang='en'>
+            <head>
+                <meta charset='UTF-8'>
+                <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+                <title>Đăng ký thành công</title>
+                <style>
+                    body {{
+                        font-family: Arial, sans-serif;
+                        background-color: #f4f4f4;
+                        padding: 20px;
+                    }}
+                    .container {{
+                        background-color: #fff;
+                        border-radius: 8px;
+                        padding: 20px;
+                        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                    }}
+                    .header {{
+                        text-align: center;
+                        color: #333;
+                    }}
+                    .btn {{
+                        display: inline-block;
+                        margin: 20px 0;
+                        padding: 10px 20px;
+                        background-color: #28a745;
+                        color: white;
+                        text-decoration: none;
+                        border-radius: 5px;
+                        font-weight: bold;
+                    }}
+                    .footer {{
+                        text-align: center;
+                        margin-top: 20px;
+                        font-size: 0.9em;
+                        color: #777;
+                    }}
+                </style>
+            </head>
+            <body>
+                <div class='container'>
+                    <h1 class='header'>Chúc mừng bạn đã đăng ký thành công!</h1>
+                    <p>Store của bạn đã được đăng ký thành công. Bạn có thể truy cập vào dashboard của store thông qua liên kết dưới đây:</p>
+                    <a href='{_registerSuccessURL}' class='btn'>Truy cập Store Dashboard</a>
+                    <p>Cảm ơn bạn đã sử dụng dịch vụ của chúng tôi.</p>
+                    <p>Trân trọng,<br>Đội ngũ StudySpace</p>
+                </div>
+                <div class='footer'>
+                    <p>Bạn nhận được email này vì đã đăng ký tài khoản trên StudySpace.</p>
+                </div>
+            </body>
+            </html>
+            ";
+                    await _emailService.SendMailAsync(newStore.Email, subject, body);
+                    return new BusinessResult(Const.SUCCESS_CREATE, Const.SUCCESS_CREATE_MSG, newStore);
                 }
                 else
                 {
