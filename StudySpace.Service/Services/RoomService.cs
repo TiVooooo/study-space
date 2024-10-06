@@ -120,24 +120,27 @@ namespace StudySpace.Service.Services
                     var store = stores.FirstOrDefault(s => s.Id == room.StoreId);
                     var imageEntity = imageEntities.FirstOrDefault(ie => ie.RoomId == room.Id);
 
-                    if (booking.Status == "")
-
-                    return new RoomModel
+                    if (booking.Status != null && booking.Status == "")
                     {
-                        RoomId = room.Id,
-                        RoomName = room.RoomName,
-                        StoreName = store?.Name ?? "N/A",
-                        Capacity = room.Capacity ?? 0,
-                        PricePerHour = room.PricePerHour ?? 0,
-                        Description = room.Description,
-                        Status = room.Status ?? ,
+                        return new RoomModel
+                        {
+                            RoomId = room.Id,
+                            RoomName = room.RoomName,
+                            StoreName = store?.Name ?? "N/A",
+                            Capacity = room.Capacity ?? 0,
+                            PricePerHour = room.PricePerHour ?? 0,
+                            Description = room.Description,
+                            Status = room.Status ?? false,
 
-                        Area = room.Area ?? 0,
-                        Type = room.Type,
-                        Address = store?.Address ?? "N/A",
-                        Image = imageEntity?.ImageUrl ?? "N/A"
-                    };
-                }).ToList();
+                            Area = room.Area ?? 0,
+                            Type = room.Type,
+                            Address = store?.Address ?? "N/A",
+                            Image = imageEntity?.ImageUrl ?? "N/A"
+                        };
+                    }
+                    return null;
+                    
+                }).Where(roomModel => roomModel != null).ToList();
 
                 return new BusinessResult(Const.SUCCESS_READ, Const.SUCCESS_READ_MSG, list);
             }
@@ -334,7 +337,7 @@ namespace StudySpace.Service.Services
                         Capacity = r.Capacity ?? 0,
                         PricePerHour = r.PricePerHour ?? 0,
                         Description = r.Description,
-                        Status = r.Status ?? null,
+                        Status = r.Status ?? false,
                         Area = r.Area ?? 0,
                         Type = r.Type,
                         Address = store.Address,
