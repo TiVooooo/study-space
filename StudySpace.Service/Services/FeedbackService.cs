@@ -319,8 +319,7 @@ namespace StudySpace.Service.Services
                 _unitOfWork.ImageFeedbackRepository.Save();
 
 
-
-                return new BusinessResult(Const.SUCCESS_CREATE, Const.SUCCESS_CREATE_MSG);
+                return new BusinessResult(Const.SUCCESS_CREATE, Const.SUCCESS_CREATE_MSG, feedback);
 
             }
             catch (Exception ex)
@@ -337,7 +336,7 @@ namespace StudySpace.Service.Services
                 int result = await _unitOfWork.FeedbackRepository.UpdateAsync(acc);
                 if (result > 0)
                 {
-                    return new BusinessResult(Const.FAIL_UDATE, Const.SUCCESS_UDATE_MSG);
+                    return new BusinessResult(Const.FAIL_UDATE, Const.SUCCESS_UDATE_MSG, acc);
                 }
                 else
                 {

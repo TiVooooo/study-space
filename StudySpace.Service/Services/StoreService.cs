@@ -359,7 +359,7 @@ namespace StudySpace.Service.Services
 
                 if (result > 0)
                 {
-                    return new BusinessResult(Const.FAIL_UDATE, Const.SUCCESS_UDATE_MSG);
+                    return new BusinessResult(Const.FAIL_UDATE, Const.SUCCESS_UDATE_MSG, existedStore);
                 }
                 else
                 {

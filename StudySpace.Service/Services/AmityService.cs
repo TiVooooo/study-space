@@ -69,7 +69,7 @@ namespace StudySpace.Service.Services
 
                 if (result > 0)
                 {
-                    return new BusinessResult(Const.SUCCESS_CREATE, Const.SUCCESS_CREATE_MSG);
+                    return new BusinessResult(Const.SUCCESS_CREATE, Const.SUCCESS_CREATE_MSG, newAmity);
                 }
                 else
                 {
@@ -103,7 +103,7 @@ namespace StudySpace.Service.Services
 
                 if (result > 0)
                 {
-                    return new BusinessResult(Const.SUCCESS_UDATE, Const.SUCCESS_UDATE_MSG);
+                    return new BusinessResult(Const.SUCCESS_UDATE, Const.SUCCESS_UDATE_MSG, updatedAmity);
                 }
                 else
                 {

@@ -31,10 +31,10 @@ namespace StudySpace.Service.Services
         Task<IBusinessResult> GetDetailBookedRoomInUser(int bookingId);
 
 
-       Task<IBusinessResult> Save(CreateRoomRequestModel room);
+        Task<IBusinessResult> Save(CreateRoomRequestModel room);
 
 
-          Task<IBusinessResult> SearchRooms(int pageNumber, int pageSize, string space, string location, string room, int person);
+        Task<IBusinessResult> SearchRooms(int pageNumber, int pageSize, string space, string location, string room, int person);
         Task<IBusinessResult> GetRoomWithCondition(string condition);
         Task<IBusinessResult> UnactiveRoom(int roomId);
         Task<IBusinessResult> GetAllBookedRoomInUser(int userId);
@@ -140,7 +140,7 @@ namespace StudySpace.Service.Services
                         };
                     }
                     return null;
-                    
+
                 }).Where(roomModel => roomModel != null).ToList();
 
                 return new BusinessResult(Const.SUCCESS_READ, Const.SUCCESS_READ_MSG, list);
@@ -513,7 +513,7 @@ namespace StudySpace.Service.Services
                 await _unitOfWork.AmityRepository.SaveAsync();
 
                 var imageUrls = room.ImageRoom;
-                if(room.ImageMenu != null)
+                if (room.ImageMenu != null)
                 {
                     var newMenuImage = new ImageRoom
                     {
@@ -546,7 +546,7 @@ namespace StudySpace.Service.Services
 
                 if (result > 0)
                 {
-                    return new BusinessResult(Const.SUCCESS_CREATE, Const.SUCCESS_CREATE_MSG);
+                    return new BusinessResult(Const.SUCCESS_CREATE, Const.SUCCESS_CREATE_MSG, room);
                 }
                 else
                 {
@@ -562,11 +562,11 @@ namespace StudySpace.Service.Services
 
         public async Task<IBusinessResult> GetDetailBookedRoomInUser(int bookingId)
         {
-            try 
+            try
             {
                 var booking = _unitOfWork.BookingRepository.GetById(bookingId);
                 var room = _unitOfWork.RoomRepository.GetById(booking.RoomId ?? 0);
-                var images = _unitOfWork.ImageRoomRepository.FindByCondition(i=>i.RoomId == room.Id).Select(i=>i.ImageUrl).ToList();
+                var images = _unitOfWork.ImageRoomRepository.FindByCondition(i => i.RoomId == room.Id).Select(i => i.ImageUrl).ToList();
                 var result = new BookedRoomDetailUserModel
                 {
                     RoomId = room.Id,
@@ -581,7 +581,7 @@ namespace StudySpace.Service.Services
                     ImageUrl = images
                 };
 
-                return new BusinessResult(Const.SUCCESS_READ,Const.SUCCESS_READ_MSG, result);
+                return new BusinessResult(Const.SUCCESS_READ, Const.SUCCESS_READ_MSG, result);
             }
             catch (Exception ex)
             {
@@ -701,7 +701,7 @@ namespace StudySpace.Service.Services
 
                 if (result > 0)
                 {
-                    return new BusinessResult(Const.SUCCESS_UDATE, Const.SUCCESS_UDATE_MSG);
+                    return new BusinessResult(Const.SUCCESS_UDATE, Const.SUCCESS_UDATE_MSG, room);
                 }
                 else
                 {
@@ -827,7 +827,7 @@ namespace StudySpace.Service.Services
                             amitiesInRoom.Add(amityInRoom);
                         }
                     }
-                    
+
 
                     var roomModel = new RoomSupModel
                     {
