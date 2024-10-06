@@ -37,6 +37,12 @@ namespace StudySpace.API.Controllers
             return Ok(await _roomService.GetById(roomId));
         }
 
+        [HttpGet("detail/history/user/{roomId}")]
+        public async Task<IActionResult> GetDetailBookedRoom(int roomId)
+        {
+            return Ok(await _roomService.GetDetailBookedRoomInUser(roomId));
+        }
+
         [HttpPost]
         public async Task<IActionResult> CreateRoom([FromForm]CreateRoomRequestModel model)
         {

@@ -28,6 +28,7 @@ namespace StudySpace.Service.Services
         Task<IBusinessResult> Update(int roomId, CreateRoomRequestModel room);
         Task<IBusinessResult> DeleteById(int id);
 
+        Task<IBusinessResult> GetDetailBookedRoomInUser(int bookingId);
 
 
        Task<IBusinessResult> Save(CreateRoomRequestModel room);
@@ -535,6 +536,7 @@ namespace StudySpace.Service.Services
                         var imagePath = FirebasePathName.RATING + Guid.NewGuid().ToString();
                         var imageUploadResult = await _firebaseService.UploadImageToFirebaseAsync(image, imagePath);
                         newRoomImage.ImageUrl = imageUploadResult;
+                        newRoomImage.Status = true;
                         _unitOfWork.ImageRoomRepository.PrepareCreate(newRoomImage);
                     }
 
@@ -557,7 +559,35 @@ namespace StudySpace.Service.Services
             }
         }
 
-        
+
+        public async Task<IBusinessResult> GetDetailBookedRoomInUser(int bookingId)
+        {
+            try 
+            {
+                var booking = _unitOfWork.BookingRepository.GetById(bookingId);
+                var room = _unitOfWork.RoomRepository.GetById(booking.RoomId ?? 0);
+                var images = _unitOfWork.ImageRoomRepository.FindByCondition(i=>i.RoomId == room.Id).Select(i=>i.ImageUrl).ToList();
+                var result = new BookedRoomDetailUserModel
+                {
+                    RoomId = room.Id,
+                    RoomName = room.RoomName,
+                    BookingDate = booking.BookingDate,
+                    CheckIn = booking.Checkin,
+                    Note = booking.Note,
+                    Fee = booking.Fee ?? 0,
+                    PaymentMethod = booking.PaymentMethod,
+                    End = booking.EndTime?.TimeOfDay,
+                    Start = booking.StartTime?.TimeOfDay,
+                    ImageUrl = images
+                };
+
+                return new BusinessResult(Const.SUCCESS_READ,Const.SUCCESS_READ_MSG, result);
+            }
+            catch (Exception ex)
+            {
+                return new BusinessResult(-4, ex.Message);
+            }
+        }
 
 
         public async Task<IBusinessResult> Update(int roomId, CreateRoomRequestModel room)

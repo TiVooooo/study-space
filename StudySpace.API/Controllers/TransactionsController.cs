@@ -20,5 +20,11 @@ namespace StudySpace.API.Controllers
             return Ok(await _transactionService.CalculateStoreIncome(storeId));
         }
 
+        [HttpGet("user/{userId}")]
+        public async Task<IActionResult> GetAllTransactionInUser([FromRoute]int userId)
+        {
+            return Ok(await _transactionService.GetAllTransactionInUser(userId));
+        }
+
     }
 }
