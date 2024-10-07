@@ -23,7 +23,9 @@ namespace StudySpace.Data.Models
 
         public double Area { get; set; }
 
-        public string Type { get; set; }
+        public string RoomType { get; set; }
+
+        public string SpaceType { get; set; }   
 
         public string Image { get; set; }
 

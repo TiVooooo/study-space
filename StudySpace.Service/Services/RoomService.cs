@@ -839,7 +839,8 @@ namespace StudySpace.Service.Services
                         Description = room.Description,
                         Status = booking?.Status ?? null,
                         Area = room.Area ?? 0,
-                        Type = room.Type,
+                        SpaceType = room.Space.SpaceName,
+                        RoomType = room.Type,
                         Address = store.Address,
                         Image = imageEntity?.ImageUrl,
                         AmitiesInRoom = amitiesInRoom
@@ -907,7 +908,8 @@ namespace StudySpace.Service.Services
                         Description = room.Description,
                         Status = booking?.Status ?? null,
                         Area = room.Area ?? 0,
-                        Type = room.Type,
+                        SpaceType = room.Space.SpaceName,
+                        RoomType = room.Type,
                         Address = store.Address,
                         Image = imageEntity?.ImageUrl,
                         AmitiesInRoom = amitiesInRoom

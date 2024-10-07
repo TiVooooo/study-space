@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace StudySpace.Common.Enums
 {
-    public enum RoleEnum
+    public enum TypeRoomEnums
     {
-        ADMIN,
-        CUSTOMER,
-        SUPPLIER
+        BASIC,
+        PREMIUM
     }
 }
