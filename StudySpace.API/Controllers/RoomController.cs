@@ -71,19 +71,24 @@ namespace StudySpace.API.Controllers
             return Ok(await _roomService.Update(id, model));
         }
 
-        [HttpGet("user/{userId}")]
+        [HttpGet("booked/user/{userId}")]
         public async Task<IActionResult> GetBookedRoomInUser(int userId)
         {
             return Ok(await _roomService.GetAllBookedRoomInUser(userId));
         }
 
-        [HttpGet("supplier/{supplierId}")]
+        [HttpGet("booked/supplier/{supplierId}")]
         public async Task<IActionResult> GetBookedRoomInSup(int supplierId)
         {
             return Ok(await _roomService.GetAllBookedRoomInSup(supplierId));
 
         }
 
+        [HttpGet("supplier/{supplierId}")]
+        public async Task<IActionResult> GetAllRoom(int supplierId)
+        {
+            return Ok(await _roomService.GetAllRoomInSup(supplierId));
+        }
 
         [HttpGet("filter")]
         public async Task<IActionResult> FilterRoom(

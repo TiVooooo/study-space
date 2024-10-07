@@ -22,6 +22,7 @@ namespace StudySpace.Data.Repository
             return _context.Bookings
             .Include(b => b.User)
             .Include(b => b.Room)
+            .Include(b => b.Room.ImageRooms)
             .Include(b => b.Feedbacks)
             .Include(b => b.Transactions);
         }

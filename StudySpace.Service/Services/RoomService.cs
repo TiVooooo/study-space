@@ -40,7 +40,7 @@ namespace StudySpace.Service.Services
         Task<IBusinessResult> GetAllBookedRoomInUser(int userId);
         Task<IBusinessResult> GetAllBookedRoomInSup(int supID);
         Task<IBusinessResult> FilterRoom(int pageNumber, int pageSize, string price, Double[]? priceRange, string[]? utilities, string space, string location, string room, int person);
-
+        Task<IBusinessResult> GetAllRoomInSup(int supID);
     }
 
     public class RoomService : IRoomService
@@ -860,6 +860,73 @@ namespace StudySpace.Service.Services
             }
         }
 
+        public async Task<IBusinessResult> GetAllRoomInSup(int supID)
+        {
+            try
+            {
+                var rooms = await _unitOfWork.RoomRepository.GetSupRoomAsync();
+                var filteredRooms = rooms
+                    .Where(r => r.StoreId == supID)
+                    .ToList();
+
+                var result = new List<RoomSupModel>();
+
+                foreach (var room in filteredRooms)
+                {
+                    var booking = room.Bookings.FirstOrDefault();
+                    var store = room.Store;
+                    var imageEntity = _unitOfWork.ImageRoomRepository.FindByCondition(ie => ie.RoomId == room.Id).FirstOrDefault();
+
+                    var amitiesInRoom = new List<AmitiesInRoom>();
+
+                    foreach (var roomAmity in room.RoomAmities)
+                    {
+                        if (roomAmity.Amities != null)
+                        {
+                            var amityInRoom = new AmitiesInRoom
+                            {
+                                Id = roomAmity.Amities.Id,
+                                Name = roomAmity.Amities.Name,
+                                Type = roomAmity.Amities.Type,
+                                Status = roomAmity.Amities.Status ?? false,
+                                Quantity = roomAmity.Quantity ?? 0,
+                                Description = roomAmity.Amities.Description
+                            };
+                            amitiesInRoom.Add(amityInRoom);
+                        }
+                    }
+
+
+                    var roomModel = new RoomSupModel
+                    {
+                        RoomId = room.Id,
+                        RoomName = room.RoomName,
+                        StoreName = store.Name,
+                        Capacity = room.Capacity ?? 0,
+                        PricePerHour = room.PricePerHour ?? 0,
+                        Description = room.Description,
+                        Status = booking?.Status ?? null,
+                        Area = room.Area ?? 0,
+                        Type = room.Type,
+                        Address = store.Address,
+                        Image = imageEntity?.ImageUrl,
+                        AmitiesInRoom = amitiesInRoom
+                    };
+                    result.Add(roomModel);
+                }
+
+                if (!result.Any())
+                {
+                    return new BusinessResult(Const.WARNING_NO_DATA, "No rooms found for this supplier.");
+                }
+
+                return new BusinessResult(Const.SUCCESS_READ, Const.SUCCESS_READ_MSG, result);
+            }
+            catch (Exception ex)
+            {
+                return new BusinessResult(Const.ERROR_EXEPTION, ex.Message);
+            }
+        }
 
     }
 }

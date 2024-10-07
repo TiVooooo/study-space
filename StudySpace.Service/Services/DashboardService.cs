@@ -113,18 +113,31 @@ namespace StudySpace.Service.Services
                 return new BusinessResult(Const.WARNING_NO_DATA, Const.WARNING_NO_DATA_MSG);
             }
 
-            var transactions = _unitOfWork.TransactionRepository.FindByCondition(t => t.BookingId != null && t.Booking.Room.StoreId == storeId).ToList();
+            var transactions = _unitOfWork.TransactionRepository.GetAllTransactions()
+                                    .Where(t => t.BookingId != null && t.Booking.Room.StoreId == storeId)
+                                    .ToList();
 
             double totalAmount = transactions.Sum(t => t.Amount ?? 0);
 
-            var rooms = _unitOfWork.RoomRepository.FindByCondition(r => r.StoreId == storeId).ToList();
-            var bookings = new List<Booking>();
+            var rooms = _unitOfWork.RoomRepository.GetAll()
+                                                  .Where(r => r.StoreId == storeId)
+                                                  .ToList();
+            var bookings = _unitOfWork.BookingRepository.GetBookingDetails()
+                                                .Where(b => b.Room.StoreId == storeId)
+                                                .ToList();
 
-            foreach (var room in rooms)
-            {
-                var book = _unitOfWork.BookingRepository.FindByCondition(b => b.RoomId == room.Id).ToList();
-                bookings.AddRange(book);
-            }
+            var popularRooms = bookings
+                                    .GroupBy(b => b.Room)
+                                    .Select(group => new PopularRoom
+                                                        {
+                                                            Name = group.Key.RoomName,
+                                                            Type = group.Key.Type,
+                                                            Image = group.Key.ImageRooms.FirstOrDefault()?.ImageUrl,
+                                                            TotalBooking = group.Count()
+                                                        })
+                                    .OrderByDescending(p => p.TotalBooking)
+                                    .Take(5)
+                                    .ToList();
 
             var monthlyData = transactions
                     .Where(t => t.Date.HasValue)
@@ -154,7 +167,8 @@ namespace StudySpace.Service.Services
                     Month = $"{m.Month}/{m.Year}",
                     TransactionInMonth = m.TotalTransactions,
                     RevenueInMonth = m.TotalAmount
-                }).ToList()
+                }).ToList(),
+                PopularRooms = popularRooms
             };
 
             return new BusinessResult(Const.SUCCESS_READ, Const.SUCCESS_READ_MSG, response);

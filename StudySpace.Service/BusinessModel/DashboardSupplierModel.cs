@@ -16,6 +16,8 @@ namespace StudySpace.Service.BusinessModel
         public int TotalRoom { get; set; }
 
         public List<MonthRevenue> MonthRevenue { get; set; }
+
+        public List<PopularRoom> PopularRooms { get; set; }
     }
 
     public class MonthRevenue
@@ -23,5 +25,13 @@ namespace StudySpace.Service.BusinessModel
         public string Month { get; set; }
         public int TransactionInMonth { get; set; }
         public double RevenueInMonth { get; set; }
+    }
+
+    public class PopularRoom
+    {
+        public string Name { get; set; }
+        public string Type { get; set; }
+        public string Image {  get; set; }
+        public int TotalBooking { get; set; }
     }
 }
