@@ -14,12 +14,6 @@ namespace StudySpace.API.Controllers
             _transactionService ??= transactionService;
         }
 
-        [HttpGet("store/{storeId}/total-amount")]
-        public async Task<IActionResult> GetStoreTotalAmount(int storeId)
-        {
-            return Ok(await _transactionService.CalculateStoreIncome(storeId));
-        }
-
         [HttpGet("user/{userId}")]
         public async Task<IActionResult> GetAllTransactionInUser([FromRoute]int userId)
         {

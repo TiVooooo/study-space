@@ -19,5 +19,11 @@ namespace StudySpace.API.Controllers
         {
             return Ok(await _dashService.CalculateAll());
         }
+
+        [HttpGet("store/{storeId}")]
+        public async Task<IActionResult> GetStoreTotalAmount(int storeId)
+        {
+            return Ok(await _dashService.CalculateStoreIncome(storeId));
+        }
     }
 }

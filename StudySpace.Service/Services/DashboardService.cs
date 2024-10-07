@@ -1,6 +1,8 @@
 ﻿using StudySpace.Common;
+using StudySpace.Data.Models;
 using StudySpace.Data.UnitOfWork;
 using StudySpace.Service.Base;
+using StudySpace.Service.BusinessModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +13,7 @@ namespace StudySpace.Service.Services
 {
     public interface IDashboardService
     {
+        Task<IBusinessResult> CalculateStoreIncome(int storeId);
         Task<IBusinessResult> CalculateAll();
     }
     
@@ -99,6 +102,62 @@ namespace StudySpace.Service.Services
             {
                 return new BusinessResult(Const.ERROR_EXEPTION, ex.Message);
             }
+        }
+
+        public async Task<IBusinessResult> CalculateStoreIncome(int storeId)
+        {
+            var store = await _unitOfWork.StoreRepository.GetByIdAsync(storeId);
+
+            if (store == null)
+            {
+                return new BusinessResult(Const.WARNING_NO_DATA, Const.WARNING_NO_DATA_MSG);
+            }
+
+            var transactions = _unitOfWork.TransactionRepository.FindByCondition(t => t.BookingId != null && t.Booking.Room.StoreId == storeId).ToList();
+
+            double totalAmount = transactions.Sum(t => t.Amount ?? 0);
+
+            var rooms = _unitOfWork.RoomRepository.FindByCondition(r => r.StoreId == storeId).ToList();
+            var bookings = new List<Booking>();
+
+            foreach (var room in rooms)
+            {
+                var book = _unitOfWork.BookingRepository.FindByCondition(b => b.RoomId == room.Id).ToList();
+                bookings.AddRange(book);
+            }
+
+            var monthlyData = transactions
+                    .Where(t => t.Date.HasValue)
+                    .GroupBy(t => new
+                    {
+                        Month = t.Date.Value.Month,
+                        Year = t.Date.Value.Year
+                    })
+                    .Select(group => new
+                    {
+                        Month = group.Key.Month,
+                        Year = group.Key.Year,
+                        TotalTransactions = group.Count(),
+                        TotalAmount = group.Sum(t => t.Amount ?? 0)
+                    })
+                    .OrderBy(g => g.Year).ThenBy(g => g.Month)
+                    .ToList();
+
+            var response = new DashboardSupplierModel
+            {
+                StoreName = store.Name,
+                TotalIncome = totalAmount,
+                TotalRoom = rooms.Count(),
+                TotalBooking = bookings.Count(),
+                MonthRevenue = monthlyData.Select(m => new MonthRevenue
+                {
+                    Month = $"{m.Month}/{m.Year}",
+                    TransactionInMonth = m.TotalTransactions,
+                    RevenueInMonth = m.TotalAmount
+                }).ToList()
+            };
+
+            return new BusinessResult(Const.SUCCESS_READ, Const.SUCCESS_READ_MSG, response);
         }
     }
 }

@@ -8,9 +8,7 @@ namespace StudySpace.Service.Services
 {
     public interface ITransactionService
     {
-        Task<IBusinessResult> CalculateStoreIncome(int storeId);
         Task<IBusinessResult> GetAllTransactionInUser(int userId);
-
     }
 
     public class TransactionService : ITransactionService
@@ -21,37 +19,7 @@ namespace StudySpace.Service.Services
         {
             _unitOfWork ??= new UnitOfWork();
         }
-        public async Task<IBusinessResult> CalculateStoreIncome(int storeId)
-        {
-            var store = await _unitOfWork.StoreRepository.GetByIdAsync(storeId);
-
-            if (store == null)
-            {
-                return new BusinessResult(Const.WARNING_NO_DATA, Const.WARNING_NO_DATA_MSG);
-            }
-
-            var transactions = _unitOfWork.TransactionRepository.FindByCondition(t => t.BookingId != null && t.Booking.Room.StoreId == storeId).ToList();
-
-            double totalAmount = transactions.Sum(t => t.Amount ?? 0);
-
-            var rooms = _unitOfWork.RoomRepository.FindByCondition(r=>r.StoreId == storeId).ToList();
-            var bookings = new List<Booking>();
-
-            foreach (var room in rooms) {
-                var book = _unitOfWork.BookingRepository.FindByCondition(b=>b.RoomId == room.Id).ToList();
-                bookings.AddRange(book);
-            }
-
-            var response = new DashboardSupplierModel
-            {
-                StoreName = store.Name,
-                TotalIncome = totalAmount,
-                TotalRoom = rooms.Count(),
-                TotalBooking = bookings.Count()
-            };
-
-            return new BusinessResult(Const.SUCCESS_READ, Const.SUCCESS_READ_MSG, response);
-        }
+        
 
         public async Task<IBusinessResult> GetAllTransactionInUser(int userId)
         {

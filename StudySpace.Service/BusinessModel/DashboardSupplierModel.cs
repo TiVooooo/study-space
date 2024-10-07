@@ -15,5 +15,13 @@ namespace StudySpace.Service.BusinessModel
         public int TotalBooking { get; set; }
         public int TotalRoom { get; set; }
 
+        public List<MonthRevenue> MonthRevenue { get; set; }
+    }
+
+    public class MonthRevenue
+    {
+        public string Month { get; set; }
+        public int TransactionInMonth { get; set; }
+        public double RevenueInMonth { get; set; }
     }
 }
