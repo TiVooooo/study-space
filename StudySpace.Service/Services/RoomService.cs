@@ -827,7 +827,7 @@ namespace StudySpace.Service.Services
                     .Where(r => r.StoreId == supID)
                     .ToList();
 
-                var result = new List<RoomSupModel>();
+                var result = new List<RoomSupModelVer1>();
 
                 foreach (var room in filteredRooms)
                 {
@@ -835,13 +835,13 @@ namespace StudySpace.Service.Services
                     var store = room.Store;
                     var imageEntity = _unitOfWork.ImageRoomRepository.FindByCondition(ie => ie.RoomId == room.Id).FirstOrDefault();
 
-                    var amitiesInRoom = new List<AmitiesInRoom>();
+                    var amitiesInRoom = new List<AmitiesInRoomVer1>();
 
                     foreach (var roomAmity in room.RoomAmities)
                     {
                         if (roomAmity.Amities != null)
                         {
-                            var amityInRoom = new AmitiesInRoom
+                            var amityInRoom = new AmitiesInRoomVer1
                             {
                                 Id = roomAmity.Amities.Id,
                                 Name = roomAmity.Amities.Name,
@@ -855,7 +855,7 @@ namespace StudySpace.Service.Services
                     }
 
 
-                    var roomModel = new RoomSupModel
+                    var roomModel = new RoomSupModelVer1
                     {
                         RoomId = room.Id,
                         RoomName = room.RoomName,
@@ -863,7 +863,7 @@ namespace StudySpace.Service.Services
                         Capacity = room.Capacity ?? 0,
                         PricePerHour = room.PricePerHour ?? 0,
                         Description = room.Description,
-                        Status = booking?.Status ?? null,
+                        Status = room.Status ?? false,
                         Area = room.Area ?? 0,
                         SpaceType = room.Space.SpaceName,
                         RoomType = room.Type,
