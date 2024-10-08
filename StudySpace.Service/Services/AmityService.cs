@@ -22,6 +22,11 @@ namespace StudySpace.Service.Services
         Task<IBusinessResult> UnactiveAmity(int amityId);
         Task<IBusinessResult> DeleteById(int id);
         Task<IBusinessResult> GetBySupId(int supId);
+
+        Task<IBusinessResult> DeleteAmityInRoom(int roomId, int amityID);
+       Task<IBusinessResult> AddAmityToRoom(int roomId, int amityID, int quantity);
+
+
     }
     public class AmityService : IAmityService
     {
@@ -235,5 +240,70 @@ namespace StudySpace.Service.Services
                 return new BusinessResult(Const.ERROR_EXEPTION, ex.Message);
             }
         }
+
+        public async Task<IBusinessResult> DeleteAmityInRoom (int roomId, int amityID)
+        {
+            try
+            {
+                var roomAmity = _unitOfWork.RoomAminitiesRepository.FindByCondition(r => r.AmitiesId == amityID && r.RoomId == roomId).FirstOrDefault();
+
+                _unitOfWork.RoomAminitiesRepository.Remove(roomAmity);
+
+                var amity = _unitOfWork.AmityRepository.GetById(roomAmity.AmitiesId);
+
+                amity.Quantity += roomAmity.Quantity;
+
+                _unitOfWork.AmityRepository.PrepareUpdate(amity);
+                _unitOfWork.AmityRepository.Save();
+                return new BusinessResult(Const.SUCCESS_DELETE, Const.SUCCESS_DELETE_MSG);
+            }
+
+            catch (Exception ex)
+            {
+                return new BusinessResult(Const.ERROR_EXEPTION, ex.Message);
+            }
+            
+
+        }
+
+        public async Task<IBusinessResult> AddAmityToRoom(int roomId, int amityID, int quantity)
+        {
+            try
+            {
+
+                var room = _unitOfWork.RoomRepository.GetById (roomId);
+                var amity = _unitOfWork.AmityRepository.GetById(amityID);
+                if (amity.Quantity >= quantity)
+                {
+                    amity.Quantity -= quantity;
+                }
+                else
+                {
+                    return new BusinessResult(Const.FAIL_CREATE, "There is not enough Amity in stock!");
+                }
+
+                _unitOfWork.AmityRepository.PrepareUpdate(amity);
+                var amityRoom = new RoomAmity
+                {
+                    RoomId = roomId,
+                    AmitiesId = amityID,
+                    Quantity = quantity
+                };
+                _unitOfWork.RoomAminitiesRepository.PrepareCreate(amityRoom);
+                await _unitOfWork.RoomAminitiesRepository.SaveAsync();
+
+                _unitOfWork.AmityRepository.PrepareUpdate(amity);
+                _unitOfWork.AmityRepository.Save();
+                return new BusinessResult(Const.SUCCESS_CREATE, Const.SUCCESS_CREATE_MSG);
+            }
+
+            catch (Exception ex)
+            {
+                return new BusinessResult(Const.ERROR_EXEPTION, ex.Message);
+            }
+
+
+        }
+
     }
 }

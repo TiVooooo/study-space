@@ -50,9 +50,15 @@ namespace StudySpace.API.Controllers
             return Ok(result);
         }
 
-        
 
-
+        [HttpDelete("test")]
+/*
+        public async Task<IActionResult> Xoa (string url)
+        {
+            var result = _roomService.Xoa(url);
+            return Ok(result);
+        }
+*/
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteRoom(int id)
         {
@@ -66,7 +72,7 @@ namespace StudySpace.API.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateRoom(int id, [FromForm] CreateRoomRequestModel model)
+        public async Task<IActionResult> UpdateRoom(int id, [FromForm] UpdateRoomModel model)
         {
             return Ok(await _roomService.Update(id, model));
         }

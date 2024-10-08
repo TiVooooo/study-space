@@ -25,7 +25,7 @@ namespace StudySpace.Service.BusinessModel
 
         public double Area { get; set; }
 
-        public string HouseRule { get; set; }
+        public List<string> HouseRule { get; set; }
 
         public IFormFile? ImageMenu { get; set; }
 

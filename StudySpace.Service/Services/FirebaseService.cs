@@ -4,10 +4,13 @@ using Firebase.Storage;
 using Google.Cloud.Storage.V1;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json.Linq;
 using StudySpace.Service.Base;
 using System;
 using System.IO;
+using System.Net;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using static StudySpace.Service.Configuration.ConfigurationModel;
@@ -17,6 +20,8 @@ namespace StudySpace.Service
     public interface IFirebaseService
     {
         Task<string> UploadImageToFirebaseAsync(IFormFile imageFile, string basePath);
+         Task<bool> DeleteFileFromFirebase(string basePath);
+
     }
 
     public class FirebaseService : IFirebaseService
@@ -28,29 +33,7 @@ namespace StudySpace.Service
             _firebaseConfig = firebaseConfig.Value;
         }
 
-        /*        public async Task<string> UploadImageToFirebaseAsync(IFormFile imageFile)
-                {
-                    if (imageFile.Length > 0)
-                    {
-                        // Generate a unique file name
-                        var fileName = $"{Guid.NewGuid()}_{imageFile.FileName}";
-
-                        // Define the bucket and the object name
-                        var bucketName = _firebaseConfig.Bucket;
-
-                        using (var stream = imageFile.OpenReadStream())
-                        {
-                            // Upload the file to Firebase Cloud Storage
-                            await _storageClient.UploadObjectAsync(bucketName, $"images/{fileName}", null, stream);
-
-                            // Get the public URL for the uploaded image
-                            return $"https://storage.googleapis.com/{bucketName}/images/{fileName}";
-                        }
-                    }
-
-                    return null;
-                }*/
-
+        
         public async Task<string> UploadImageToFirebaseAsync(IFormFile imageFile, string basePath)
         {
             if (imageFile.Length > 0)
@@ -97,5 +80,76 @@ namespace StudySpace.Service
 
             return null;
         }
+
+
+        public async Task<bool> DeleteFileFromFirebase(string basePath)
+        {
+
+            try
+            {
+
+                var filePath = ExtractFilePathFromUrl(basePath);
+
+
+                var config = new FirebaseAuthConfig
+                {
+                    ApiKey = _firebaseConfig.ApiKey,
+                    AuthDomain = _firebaseConfig.AuthDomain,
+                    Providers = new FirebaseAuthProvider[]
+    {
+                new EmailProvider(),
+                new GoogleProvider()
+    }
+                };
+
+
+                var authClient = new FirebaseAuthClient(config);
+
+
+                var userCens = await authClient.SignInWithEmailAndPasswordAsync(_firebaseConfig.AuthEmail, _firebaseConfig.AuthPassword);
+
+                if (userCens == null) throw new FirebaseAuthException("Can not ss", new AuthErrorReason());
+
+                var storage = new FirebaseStorage(
+                     _firebaseConfig.Bucket,
+                     new FirebaseStorageOptions
+                     {
+                         AuthTokenAsyncFactory = async () =>
+                         {
+                             var idToken = await userCens.User.GetIdTokenAsync();
+                             return idToken;
+                         },
+                         ThrowOnCancel = true
+                     });
+                await storage.Child(filePath).DeleteAsync();
+                return true;
+            }
+            catch (FirebaseStorageException)
+            {
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred: {ex.Message}");
+                return false;
+            }
+        }
+        private string ExtractFilePathFromUrl(string fileUrl)
+        {
+            // The path starts after '/o/' and ends before '?'
+            var startIndex = fileUrl.IndexOf("/o/") + 3; // Skipping '/o/'
+            var endIndex = fileUrl.IndexOf("?");
+
+            if (startIndex >= 0 && endIndex > startIndex)
+            {
+                // Extract the path and replace any encoded characters
+                var filePath = fileUrl.Substring(startIndex, endIndex - startIndex);
+                return Uri.UnescapeDataString(filePath); // Decode URL-encoded characters (like %2F)
+            }
+
+            throw new ArgumentException("Invalid file URL format.");
+        }
+
+
     }
 }

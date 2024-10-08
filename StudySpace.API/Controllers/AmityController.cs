@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using StudySpace.Data.Models;
 using StudySpace.Service.BusinessModel;
 using StudySpace.Service.Services;
 
@@ -56,6 +57,18 @@ namespace StudySpace.API.Controllers
         public async Task<IActionResult> GetDetailById(int id)
         {
             return Ok(await _amityService.GetById(id));
+        }
+
+        [HttpPost("room/{roomID}/amity/{amityId}")]
+        public async Task<IActionResult> AddRoomAmity([FromRoute] int roomID , [FromRoute] int amityId, int quantity)
+        {
+            return Ok(await _amityService.AddAmityToRoom(roomID,amityId, quantity));
+        }
+
+        [HttpDelete("room/{roomID}/amity/{amityId}")]
+        public async Task<IActionResult> DeleteAmityInRoom([FromRoute] int roomID, [FromRoute] int amityId)
+        {
+            return Ok(await _amityService.DeleteAmityInRoom(roomID,amityId));
         }
     }
 }
