@@ -266,7 +266,7 @@ namespace StudySpace.Service.Services
 
                     await _emailService.SendMailAsync(model.Email, subject, body);
 
-                    return new BusinessResult(Const.SUCCESS_CREATE, Const.SUCCESS_CREATE_MSG, newAcc);
+                    return new BusinessResult(Const.SUCCESS_CREATE, Const.SUCCESS_CREATE_MSG, model);
                 } else
                 {
                     return new BusinessResult(Const.FAIL_CREATE, Const.FAIL_CREATE_MSG);
@@ -330,7 +330,7 @@ namespace StudySpace.Service.Services
 
                 if (result > 0)
                 {
-                    return new BusinessResult(Const.SUCCESS_UDATE, Const.SUCCESS_UDATE_MSG, existedUser);
+                    return new BusinessResult(Const.SUCCESS_UDATE, Const.SUCCESS_UDATE_MSG, account);
                 }
                 else
                 {

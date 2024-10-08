@@ -289,7 +289,7 @@ namespace StudySpace.Service.Services
             </html>
             ";
                     await _emailService.SendMailAsync(newStore.Email, subject, body);
-                    return new BusinessResult(Const.SUCCESS_CREATE, Const.SUCCESS_CREATE_MSG, newStore);
+                    return new BusinessResult(Const.SUCCESS_CREATE, Const.SUCCESS_CREATE_MSG, model);
                 }
                 else
                 {
@@ -359,7 +359,7 @@ namespace StudySpace.Service.Services
 
                 if (result > 0)
                 {
-                    return new BusinessResult(Const.FAIL_UDATE, Const.SUCCESS_UDATE_MSG, existedStore);
+                    return new BusinessResult(Const.FAIL_UDATE, Const.SUCCESS_UDATE_MSG, model);
                 }
                 else
                 {
