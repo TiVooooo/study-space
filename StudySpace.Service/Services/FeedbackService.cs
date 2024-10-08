@@ -294,7 +294,8 @@ namespace StudySpace.Service.Services
                     BookingId = feedback.BookingId,
                     ReviewDate = DateTime.Now,
                     ReviewText = feedback.ReviewText,
-                    Rating = feedback.Rating
+                    Rating = feedback.Rating,
+                    Status  = true
                 };
 
                 _unitOfWork.FeedbackRepository.PrepareCreate(newFeedback);
@@ -308,9 +309,10 @@ namespace StudySpace.Service.Services
                         {
                             Feedback = newFeedback
                         };
-                        var imagePath = FirebasePathName.RATING + Guid.NewGuid().ToString();
+                        var imagePath = FirebasePathName.RATING + $"Guid.NewGuid()";
                         var imageUploadResult = await _firebaseService.UploadImageToFirebaseAsync(file, imagePath);
                         newFeedbackImage.ImageUrl = imageUploadResult;
+                        newFeedbackImage.Status = true;
                         _unitOfWork.ImageFeedbackRepository.PrepareCreate(newFeedbackImage);
                     }
 

@@ -8124,24 +8124,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\BINF\\.nuget\\packages\\": {},
-    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
+    "C:\\Users\\Tienvo\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\study-space\\StudySpace.DTOs\\StudySpace.DTOs.csproj",
+      "projectUniqueName": "C:\\Term8\\EXE201\\v15\\study-space\\StudySpace.DTOs\\StudySpace.DTOs.csproj",
       "projectName": "StudySpace.DTOs",
-      "projectPath": "D:\\study-space\\StudySpace.DTOs\\StudySpace.DTOs.csproj",
-      "packagesPath": "C:\\Users\\BINF\\.nuget\\packages\\",
-      "outputPath": "D:\\study-space\\StudySpace.DTOs\\obj\\",
+      "projectPath": "C:\\Term8\\EXE201\\v15\\study-space\\StudySpace.DTOs\\StudySpace.DTOs.csproj",
+      "packagesPath": "C:\\Users\\Tienvo\\.nuget\\packages\\",
+      "outputPath": "C:\\Term8\\EXE201\\v15\\study-space\\StudySpace.DTOs\\obj\\",
       "projectStyle": "PackageReference",
-      "fallbackFolders": [
-        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-      ],
       "configFilePaths": [
-        "C:\\Users\\BINF\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+        "C:\\Users\\Tienvo\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -8156,8 +8151,8 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "D:\\study-space\\StudySpace.Data\\StudySpace.Data.csproj": {
-              "projectPath": "D:\\study-space\\StudySpace.Data\\StudySpace.Data.csproj"
+            "C:\\Term8\\EXE201\\v15\\study-space\\StudySpace.Data\\StudySpace.Data.csproj": {
+              "projectPath": "C:\\Term8\\EXE201\\v15\\study-space\\StudySpace.Data\\StudySpace.Data.csproj"
             }
           }
         }
@@ -8214,7 +8209,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.303/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.302/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

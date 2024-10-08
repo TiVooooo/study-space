@@ -25,7 +25,7 @@ namespace StudySpace.Service.Services
     {
         Task<IBusinessResult> GetAll(int pageNumber, int pageSize);
         Task<IBusinessResult> GetById(int id);
-        Task<IBusinessResult> Update(int roomId, CreateRoomRequestModel room);
+        Task<IBusinessResult> Update(int roomId, UpdateRoomModel room);
         Task<IBusinessResult> DeleteById(int id);
 
         Task<IBusinessResult> GetDetailBookedRoomInUser(int bookingId);
@@ -41,6 +41,9 @@ namespace StudySpace.Service.Services
         Task<IBusinessResult> GetAllBookedRoomInSup(int supID);
         Task<IBusinessResult> FilterRoom(int pageNumber, int pageSize, string price, Double[]? priceRange, string[]? utilities, string space, string location, string room, int person);
         Task<IBusinessResult> GetAllRoomInSup(int supID);
+
+        Task<IBusinessResult> Xoa(string url);
+
     }
 
     public class RoomService : IRoomService
@@ -470,6 +473,13 @@ namespace StudySpace.Service.Services
                     return new BusinessResult(Const.WARNING_NO_DATA, "Unknown Space.");
                 }
 
+                var hr = string.Empty;
+
+                foreach( var hrs in room.HouseRule)
+                {
+                    hr = hr + hrs.ToString() +" ";
+                }
+
                 var newRoom = new Room
                 {
                     SpaceId = room.SpaceId,
@@ -481,7 +491,7 @@ namespace StudySpace.Service.Services
                     Description = room.Description,
                     Status = true,
                     Area = room.Area,
-                    HouseRule = room.HouseRule
+                    HouseRule = hr
                 };
 
                 _unitOfWork.RoomRepository.PrepareCreate(newRoom);
@@ -522,6 +532,7 @@ namespace StudySpace.Service.Services
                     var imgPath = FirebasePathName.MENU + Guid.NewGuid().ToString();
                     var imgUploadRes = await _firebaseService.UploadImageToFirebaseAsync(room.ImageMenu, imgPath);
                     newMenuImage.ImageUrl = imgUploadRes;
+                    newMenuImage.Status = true;
                     _unitOfWork.ImageRoomRepository.PrepareCreate(newMenuImage);
                 }
 
@@ -589,23 +600,19 @@ namespace StudySpace.Service.Services
             }
         }
 
+        public async Task<IBusinessResult> Xoa(string url)
+        {
+        //    var image = _unitOfWork.ImageRoomRepository.FindByCondition(i=>i.ImageUrl == url);
 
-        public async Task<IBusinessResult> Update(int roomId, CreateRoomRequestModel room)
+            var re = _firebaseService.DeleteFileFromFirebase(url);
+            return new BusinessResult(Const.SUCCESS_DELETE,Const.SUCCESS_DELETE_MSG, re);
+        }
+
+        public async Task<IBusinessResult> Update(int roomId, UpdateRoomModel room)
         {
             try
             {
-                var storeExisted = _unitOfWork.StoreRepository.FindByCondition(c => c.Id == room.StoreId).FirstOrDefault();
-                var spaceExisted = _unitOfWork.SpaceRepository.FindByCondition(c => c.Id == room.SpaceId).FirstOrDefault();
 
-                if (storeExisted == null)
-                {
-                    return new BusinessResult(Const.WARNING_NO_DATA, "Unknown Store.");
-                }
-
-                if (spaceExisted == null)
-                {
-                    return new BusinessResult(Const.WARNING_NO_DATA, "Unknown Space.");
-                }
 
                 var updatedRoom = await _unitOfWork.RoomRepository.GetByIdAsync(roomId);
                 if (updatedRoom == null)
@@ -613,87 +620,37 @@ namespace StudySpace.Service.Services
                     return new BusinessResult(Const.WARNING_NO_DATA, "Room not found.");
                 }
 
-                updatedRoom.SpaceId = room.SpaceId;
-                updatedRoom.RoomName = room.RoomName;
-                updatedRoom.StoreId = room.StoreId;
-                updatedRoom.Capacity = room.Capacity;
-                updatedRoom.PricePerHour = room.PricePerHour;
-                updatedRoom.Description = room.Description;
-                updatedRoom.Status = true;
-                updatedRoom.Area = room.Area;
-                updatedRoom.HouseRule = room.HouseRule;
+        
+              
+                if (room.PricePerHour != null)
+                {
+                    updatedRoom.PricePerHour = room.PricePerHour;
+
+                }
+                if (room.Description != null)
+                {
+                    updatedRoom.Description = room.Description;
+
+                }
+            
+               
+
+                if (room.HouseRule != null)
+                {
+                    var hr = string.Empty;
+
+                    foreach (var hrs in room.HouseRule)
+                    {
+                        hr = hr + hrs.ToString() + " ";
+                    }
+
+                    updatedRoom.HouseRule = hr;
+
+                }
 
                 _unitOfWork.RoomRepository.PrepareUpdate(updatedRoom);
 
-                /*
-                                foreach (var item in room.Amities)
-                                {
 
-                                    var amity = _unitOfWork.AmityRepository.GetById(item.AmityId);
-                                    if (amity.Quantity >= item.Quantity)
-                                    {
-                                        amity.Quantity -= item.Quantity;
-                                    }
-                                    else
-                                    {
-                                        return new BusinessResult(Const.FAIL_CREATE, "There is not enough Amity in stock!");
-                                    }
-
-                                    _unitOfWork.AmityRepository.PrepareUpdate(amity);
-                                    var amityRoom = new RoomAmity
-                                    {
-                                        RoomId = newRoom.Id,
-                                        AmitiesId = item.AmityId,
-                                        Quantity = item.Quantity
-                                    };
-                                    _unitOfWork.RoomAminitiesRepository.PrepareCreate(amityRoom);
-                                    await _unitOfWork.RoomAminitiesRepository.SaveAsync();
-
-
-                                }*/
-
-                await _unitOfWork.AmityRepository.SaveAsync();
-
-
-                var imageUrls = room.ImageRoom;
-                if (imageUrls != null)
-                {
-                    var existingImages = _unitOfWork.ImageRoomRepository.FindByCondition(i => i.RoomId == roomId && !i.ImageUrl.Contains("MENU")).ToList();
-                    foreach (var imageUrl in existingImages)
-                    {
-                        _unitOfWork.ImageRoomRepository.PrepareRemove(imageUrl);
-                    }
-
-                    foreach (var image in imageUrls)
-                    {
-                        var newRoomImage = new ImageRoom
-                        {
-                            Room = updatedRoom
-                        };
-                        var imagePath = FirebasePathName.RATING + Guid.NewGuid().ToString();
-                        var imageUploadResult = await _firebaseService.UploadImageToFirebaseAsync(image, imagePath);
-                        newRoomImage.ImageUrl = imageUploadResult;
-                        _unitOfWork.ImageRoomRepository.PrepareCreate(newRoomImage);
-                    }
-                }
-
-                if (room.ImageMenu != null)
-                {
-                    var existingMenuImages = _unitOfWork.ImageRoomRepository.FindByCondition(i => i.RoomId == roomId && i.ImageUrl.Contains("MENU")).ToList();
-                    foreach (var imageUrl in existingMenuImages)
-                    {
-                        _unitOfWork.ImageRoomRepository.PrepareRemove(imageUrl);
-                    }
-
-                    var newMenuImage = new ImageRoom
-                    {
-                        Room = updatedRoom
-                    };
-                    var imgPath = FirebasePathName.MENU + Guid.NewGuid().ToString();
-                    var imgUploadRes = await _firebaseService.UploadImageToFirebaseAsync(room.ImageMenu, imgPath);
-                    newMenuImage.ImageUrl = imgUploadRes;
-                    _unitOfWork.ImageRoomRepository.PrepareCreate(newMenuImage);
-                }
 
                 int result = await _unitOfWork.RoomRepository.SaveAsync();
                 await _unitOfWork.ImageRoomRepository.SaveAsync();
