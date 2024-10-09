@@ -17,6 +17,7 @@ using System.Text;
 using System.Threading.Tasks;
 using static System.Net.Mime.MediaTypeNames;
 using Newtonsoft.Json;
+using MimeKit;
 
 namespace StudySpace.Service.Services
 {
@@ -43,6 +44,8 @@ namespace StudySpace.Service.Services
         Task<IBusinessResult> GetAllRoomInSup(int supID);
 
         Task<IBusinessResult> Xoa(string url);
+
+        Task<IBusinessResult> GetRoomDetailInSup(int supId, int roomId);
 
     }
 
@@ -882,6 +885,102 @@ namespace StudySpace.Service.Services
                 return new BusinessResult(Const.SUCCESS_READ, Const.SUCCESS_READ_MSG, result);
             }
             catch (Exception ex)
+            {
+                return new BusinessResult(Const.ERROR_EXEPTION, ex.Message);
+            }
+        }
+
+        public async Task<IBusinessResult> GetRoomDetailInSup(int supId, int roomId)
+        {
+            try
+            {
+                var existedRoom = await _unitOfWork.RoomRepository.FindByConditionAsync(r => r.Id == roomId && r.StoreId == supId);
+                if(existedRoom.Count() == 0)
+                {
+                    return new BusinessResult(Const.WARNING_NO_DATA, Const.WARNING_NO_DATA_MSG);
+                }
+
+                var room = await _unitOfWork.RoomRepository.GetByIdAsync(roomId);
+
+                var listImageOfRoom = _unitOfWork.ImageRoomRepository.FindByCondition(i => i.RoomId == roomId).Select(i => i.ImageUrl).ToList();
+
+                var imageMenu = listImageOfRoom.FirstOrDefault(i => i.Contains("MENU"));
+                var listOtherImage = listImageOfRoom.Where(i => !i.Contains("MENU")).ToList();
+
+                var listAminityRoom = _unitOfWork.RoomAminitiesRepository.FindByCondition(a => a.RoomId == roomId).Select(a => a.AmitiesId).ToList();
+
+                var spaceName = _unitOfWork.SpaceRepository.GetById(room.SpaceId ?? 0);
+
+                var store = _unitOfWork.StoreRepository.FindByCondition(s => s.Id == room.StoreId).FirstOrDefault();
+
+                var space = _unitOfWork.SpaceRepository.FindByCondition(s => s.Id == room.Space.Id).FirstOrDefault();
+
+                var imageBuBuBu = new ListImages
+                {
+                    ImageMenu = imageMenu,
+                    ImageList = listOtherImage
+                };
+
+                var rooms = await _unitOfWork.RoomRepository.GetSupRoomAsync();
+                var filteredRooms = rooms
+                    .Where(r => r.StoreId == supId)
+                    .ToList();
+
+                var roomDo = filteredRooms.FirstOrDefault(c => c.Id == room.Id);
+
+                var amitiesInRoom = new List<AmitiesInRoomVer2>();
+
+                foreach (var roomAmity in roomDo.RoomAmities)
+                {
+                    if (roomAmity.Amities != null)
+                    {
+                        var amityInRoom = new AmitiesInRoomVer2
+                        {
+                            Id = roomAmity.Amities.Id,
+                            Name = roomAmity.Amities.Name,
+                            Type = roomAmity.Amities.Type,
+                            Status = roomAmity.Amities.Status ?? false,
+                            Quantity = roomAmity.Quantity ?? 0,
+                            Description = roomAmity.Amities.Description
+                        };
+                        amitiesInRoom.Add(amityInRoom);
+                    }
+                }
+
+                var result = new RoomSupModelVer2
+                {
+                    RoomName = room.RoomName,
+                    StoreName = store.Name,
+                    Capacity = room.Capacity ?? 0,
+                    PricePerHour = room.PricePerHour ?? 0,
+                    Area = room.Area ?? 0,
+                    ListImages = imageBuBuBu,
+                    HouseRule = room.HouseRule?.Split(new[] { '.' }, StringSplitOptions.RemoveEmptyEntries)
+                                                .Select(part => part.Trim())
+                                                .ToArray(),
+                    TypeRoom = room.Type,
+                    TypeSpace = space.SpaceName,
+                    Description = room.Description,
+                    Address = store.Address,
+                    Longtitude = store.Longitude,
+                    Latitude = store.Latitude,
+                    Status = room.Status ?? false,
+                    isOvernight = store.IsOverNight ?? false,
+                    StartTime = store.OpenTime?.TimeOfDay,
+                    EndTime = store.CloseTime?.TimeOfDay,
+                    AmitiesInRoom = amitiesInRoom
+                };
+
+                if(result == null)
+                {
+                    return new BusinessResult(Const.FAIL_READ, Const.FAIL_READ_MSG);
+                } else
+                {
+                    return new BusinessResult(Const.SUCCESS_READ, Const.SUCCESS_READ_MSG, result);
+                }
+
+
+            } catch (Exception ex)
             {
                 return new BusinessResult(Const.ERROR_EXEPTION, ex.Message);
             }

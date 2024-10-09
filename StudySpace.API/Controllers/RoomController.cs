@@ -106,5 +106,11 @@ namespace StudySpace.API.Controllers
             return Ok(await _roomService.FilterRoom(pageNumber,pageSize,price,priceRange,utilities,space,location,room,person));
         }
 
+        [HttpGet("detail-by-store")]
+        public async Task<IActionResult> GetRoomDetailByStore(int roomId, int storeId)
+        {
+            return Ok(await _roomService.GetRoomDetailInSup(storeId,roomId));
+        }
+
     }
 }
