@@ -73,8 +73,14 @@ namespace StudySpace.Service.Services
                 #region Business rule
                 #endregion
 
-                var payments = await _unitOfWork.SpaceRepository.GetAllAsync();
-
+                var payments = _unitOfWork.SpaceRepository
+                            .FindByCondition(s => s.Status == true)
+                            .Select(s => new
+                            {
+                                s.Id,
+                                s.SpaceName
+                            })
+                            .ToList();
                 if (payments == null)
                 {
                     return new BusinessResult(Const.WARNING_NO_DATA, Const.WARNING_NO_DATA_MSG);

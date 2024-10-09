@@ -20,5 +20,18 @@ namespace StudySpace.API.Controllers
             return Ok(await _transactionService.GetAllTransactionInUser(userId));
         }
 
+
+        [HttpGet("sup/{supId}")]
+        public async Task<IActionResult> GetTransactionOfSup([FromRoute] int supId)
+        {
+            return Ok(await _transactionService.TransactionOfSupplier(supId));
+        }
+
+        [HttpGet("booking-room/{bookingID}")]
+        public async Task<IActionResult> GetAllTransactionOfBooking([FromRoute] int bookingID)
+        {
+            return Ok(await _transactionService.GetTransactionOfBooking(bookingID));
+        }
+
     }
 }
