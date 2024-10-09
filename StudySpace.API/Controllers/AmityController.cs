@@ -16,6 +16,9 @@ namespace StudySpace.API.Controllers
             _amityService = amityService;
         }
 
+
+
+
         [HttpGet("name")]
         public async Task<IActionResult> GetAll()
         {

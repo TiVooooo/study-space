@@ -21,6 +21,15 @@ namespace StudySpace.API.Controllers
 
         }
 
+
+        [HttpGet()]
+        public async Task<IActionResult> GetAll()
+        {
+            var resutl = await _spaceService.GetAll();
+            return Ok(resutl);
+
+        }
+
         [HttpGet("name")]
         public async Task<IActionResult> GetALlSpaceName()
         {

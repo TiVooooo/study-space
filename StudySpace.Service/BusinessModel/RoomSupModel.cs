@@ -8,6 +8,24 @@ namespace StudySpace.Data.Models
 {
     public class RoomSupModel
     {
+
+        public int BookingId { get; set; }
+
+        public string UserName { get; set; }
+
+        public string Email {  get; set; }
+
+        public string UserAddress { get; set; }
+        public string Gender { get; set; }
+
+        public string Avatar { get; set; }
+
+        public DateTime? BookedDate { get; set; }
+
+        public TimeSpan? BookedTime { get; set; }
+
+        public bool Checkin { get; set; }
+
         public int RoomId { get; set; }
         public string RoomName { get; set; }
 
@@ -31,21 +49,7 @@ namespace StudySpace.Data.Models
 
         public string Address { get; set; }
 
-        public List<AmitiesInRoom> AmitiesInRoom { get; set; }
     }
 
-    public class AmitiesInRoom
-    {
-        public int? Id { get; set; }
-
-        public string? Name { get; set; }
-
-        public string? Type { get; set; }
-
-        public bool? Status { get; set; }
-
-        public int? Quantity { get; set; }
-
-        public string? Description { get; set; }
-    }
+    
 }

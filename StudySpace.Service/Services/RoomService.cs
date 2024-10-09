@@ -758,54 +758,52 @@ namespace StudySpace.Service.Services
                 var rooms = await _unitOfWork.RoomRepository.GetSupRoomAsync();
 
                 var filteredRooms = rooms
-                    .Where(r => r.StoreId == supID && r.Bookings.Any())
+                    .Where(r => r.StoreId == supID)
                     .ToList();
 
                 var result = new List<RoomSupModel>();
 
                 foreach (var room in filteredRooms)
                 {
-                    var booking = room.Bookings.FirstOrDefault();
-                    var store = room.Store;
-                    var imageEntity = _unitOfWork.ImageRoomRepository.FindByCondition(ie => ie.RoomId == room.Id).FirstOrDefault();
+                    var booking = _unitOfWork.BookingRepository.FindByCondition(b=>b.RoomId == room.Id).ToList();
 
-                    var amitiesInRoom = new List<AmitiesInRoom>();
-
-                    foreach (var roomAmity in room.RoomAmities)
+                    foreach (var book in booking)
                     {
-                        if (roomAmity.Amities != null)
+                        var store = room.Store;
+                        var imageEntity = _unitOfWork.ImageRoomRepository.FindByCondition(ie => ie.RoomId == room.Id).FirstOrDefault();
+
+
+                        var userName = _unitOfWork.AccountRepository.GetById(book.UserId ?? 0);
+
+
+                      
+                        var roomModel = new RoomSupModel
                         {
-                            var amityInRoom = new AmitiesInRoom
-                            {
-                                Id = roomAmity.Amities.Id,
-                                Name = roomAmity.Amities.Name,
-                                Type = roomAmity.Amities.Type,
-                                Status = roomAmity.Amities.Status ?? false,
-                                Quantity = roomAmity.Quantity ?? 0,
-                                Description = roomAmity.Amities.Description
-                            };
-                            amitiesInRoom.Add(amityInRoom);
-                        }
+                            BookingId = book.Id,
+                            UserName = userName.Name,
+                            Avatar = userName.AvatarUrl,
+                            Email = userName.Email,
+                            Gender = userName.Gender,
+                            UserAddress = userName.Address,
+                            BookedDate = book.BookingDate,
+                            Checkin = book.Checkin ?? false,
+                            BookedTime = book.StartTime?.TimeOfDay,
+                            RoomId = room.Id,
+                            RoomName = room.RoomName,
+                            StoreName = store.Name,
+                            Capacity = room.Capacity ?? 0,
+                            PricePerHour = room.PricePerHour ?? 0,
+                            Description = room.Description,
+                            Status = book?.Status ?? null,
+                            Area = room.Area ?? 0,
+                            SpaceType = room.Space.SpaceName,
+                            RoomType = room.Type,
+                            Address = store.Address,
+                            Image = imageEntity?.ImageUrl,
+                        };
+                        result.Add(roomModel);
                     }
-
-
-                    var roomModel = new RoomSupModel
-                    {
-                        RoomId = room.Id,
-                        RoomName = room.RoomName,
-                        StoreName = store.Name,
-                        Capacity = room.Capacity ?? 0,
-                        PricePerHour = room.PricePerHour ?? 0,
-                        Description = room.Description,
-                        Status = booking?.Status ?? null,
-                        Area = room.Area ?? 0,
-                        SpaceType = room.Space.SpaceName,
-                        RoomType = room.Type,
-                        Address = store.Address,
-                        Image = imageEntity?.ImageUrl,
-                        AmitiesInRoom = amitiesInRoom
-                    };
-                    result.Add(roomModel);
+                    
                 }
 
                 if (!result.Any())
