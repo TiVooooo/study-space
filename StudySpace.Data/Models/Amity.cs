@@ -19,5 +19,9 @@ public partial class Amity
 
     public string Description { get; set; }
 
+    public int? StoreId { get; set; }
+
     public virtual ICollection<RoomAmity> RoomAmities { get; set; } = new List<RoomAmity>();
+
+    public virtual Store Store { get; set; }
 }

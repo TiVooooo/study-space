@@ -45,6 +45,8 @@ public partial class Store
 
     public string PostalNumber { get; set; }
 
+    public virtual ICollection<Amity> Amities { get; set; } = new List<Amity>();
+
     public virtual ICollection<Room> Rooms { get; set; } = new List<Room>();
 
     public virtual ICollection<StorePackage> StorePackages { get; set; } = new List<StorePackage>();

@@ -14,7 +14,6 @@ public partial class EXE201_StudySpaceContext : DbContext
     {
     }
 
-
     public EXE201_StudySpaceContext()
 
     {
@@ -32,6 +31,7 @@ public partial class EXE201_StudySpaceContext : DbContext
     }
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseSqlServer(GetConnectionString("DefaultConnection"));
+
 
 
     public virtual DbSet<Account> Accounts { get; set; }
@@ -93,6 +93,11 @@ public partial class EXE201_StudySpaceContext : DbContext
 
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.Description).HasColumnType("ntext");
+            entity.Property(e => e.StoreId).HasColumnName("StoreID");
+
+            entity.HasOne(d => d.Store).WithMany(p => p.Amities)
+                .HasForeignKey(d => d.StoreId)
+                .HasConstraintName("FK_Amities_Store");
         });
 
         modelBuilder.Entity<Booking>(entity =>
