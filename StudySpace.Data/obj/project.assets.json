@@ -9297,11 +9297,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Term8\\EXE201\\v16\\study-space\\StudySpace.Data\\StudySpace.Data.csproj",
+      "projectUniqueName": "C:\\Term8\\EXE201\\v17\\study-space\\StudySpace.Data\\StudySpace.Data.csproj",
       "projectName": "StudySpace.Data",
-      "projectPath": "C:\\Term8\\EXE201\\v16\\study-space\\StudySpace.Data\\StudySpace.Data.csproj",
+      "projectPath": "C:\\Term8\\EXE201\\v17\\study-space\\StudySpace.Data\\StudySpace.Data.csproj",
       "packagesPath": "C:\\Users\\Tienvo\\.nuget\\packages\\",
-      "outputPath": "C:\\Term8\\EXE201\\v16\\study-space\\StudySpace.Data\\obj\\",
+      "outputPath": "C:\\Term8\\EXE201\\v17\\study-space\\StudySpace.Data\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Tienvo\\AppData\\Roaming\\NuGet\\NuGet.Config",

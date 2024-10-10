@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Term8\\EXE201\\v16\\study-space\\StudySpace.DTOs\\StudySpace.DTOs.csproj": {}
+    "C:\\Term8\\EXE201\\v17\\study-space\\StudySpace.DTOs\\StudySpace.DTOs.csproj": {}
   },
   "projects": {
-    "C:\\Term8\\EXE201\\v16\\study-space\\StudySpace.Data\\StudySpace.Data.csproj": {
+    "C:\\Term8\\EXE201\\v17\\study-space\\StudySpace.Data\\StudySpace.Data.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Term8\\EXE201\\v16\\study-space\\StudySpace.Data\\StudySpace.Data.csproj",
+        "projectUniqueName": "C:\\Term8\\EXE201\\v17\\study-space\\StudySpace.Data\\StudySpace.Data.csproj",
         "projectName": "StudySpace.Data",
-        "projectPath": "C:\\Term8\\EXE201\\v16\\study-space\\StudySpace.Data\\StudySpace.Data.csproj",
+        "projectPath": "C:\\Term8\\EXE201\\v17\\study-space\\StudySpace.Data\\StudySpace.Data.csproj",
         "packagesPath": "C:\\Users\\Tienvo\\.nuget\\packages\\",
-        "outputPath": "C:\\Term8\\EXE201\\v16\\study-space\\StudySpace.Data\\obj\\",
+        "outputPath": "C:\\Term8\\EXE201\\v17\\study-space\\StudySpace.Data\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Tienvo\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -113,14 +113,14 @@
         }
       }
     },
-    "C:\\Term8\\EXE201\\v16\\study-space\\StudySpace.DTOs\\StudySpace.DTOs.csproj": {
+    "C:\\Term8\\EXE201\\v17\\study-space\\StudySpace.DTOs\\StudySpace.DTOs.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Term8\\EXE201\\v16\\study-space\\StudySpace.DTOs\\StudySpace.DTOs.csproj",
+        "projectUniqueName": "C:\\Term8\\EXE201\\v17\\study-space\\StudySpace.DTOs\\StudySpace.DTOs.csproj",
         "projectName": "StudySpace.DTOs",
-        "projectPath": "C:\\Term8\\EXE201\\v16\\study-space\\StudySpace.DTOs\\StudySpace.DTOs.csproj",
+        "projectPath": "C:\\Term8\\EXE201\\v17\\study-space\\StudySpace.DTOs\\StudySpace.DTOs.csproj",
         "packagesPath": "C:\\Users\\Tienvo\\.nuget\\packages\\",
-        "outputPath": "C:\\Term8\\EXE201\\v16\\study-space\\StudySpace.DTOs\\obj\\",
+        "outputPath": "C:\\Term8\\EXE201\\v17\\study-space\\StudySpace.DTOs\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Tienvo\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -138,8 +138,8 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Term8\\EXE201\\v16\\study-space\\StudySpace.Data\\StudySpace.Data.csproj": {
-                "projectPath": "C:\\Term8\\EXE201\\v16\\study-space\\StudySpace.Data\\StudySpace.Data.csproj"
+              "C:\\Term8\\EXE201\\v17\\study-space\\StudySpace.Data\\StudySpace.Data.csproj": {
+                "projectPath": "C:\\Term8\\EXE201\\v17\\study-space\\StudySpace.Data\\StudySpace.Data.csproj"
               }
             }
           }

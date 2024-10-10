@@ -222,7 +222,8 @@ namespace StudySpace.Service.Services
                     AmityName = a.Name,
                     AmityType = a.Type,
                     AmityStatus = a.Status == true ? "Active" : "Inactive",
-                    Quantity = a.Quantity
+                    Quantity = a.Quantity,
+                    Description = a.Description
                 }).ToList();
 
                 if (amities != null && amities.Count != 0)
