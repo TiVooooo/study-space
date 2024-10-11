@@ -480,7 +480,7 @@ namespace StudySpace.Service.Services
 
                 foreach( var hrs in room.HouseRule)
                 {
-                    hr = hr + hrs.ToString() +" ";
+                    hr += hrs.ToString() +".";
                 }
 
                 var newRoom = new Room
@@ -644,11 +644,10 @@ namespace StudySpace.Service.Services
 
                     foreach (var hrs in room.HouseRule)
                     {
-                        hr = hr + hrs.ToString() + " ";
+                        hr += hrs.ToString() + ".";
                     }
 
                     updatedRoom.HouseRule = hr;
-
                 }
 
                 _unitOfWork.RoomRepository.PrepareUpdate(updatedRoom);
