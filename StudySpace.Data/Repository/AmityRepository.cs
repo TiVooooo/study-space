@@ -18,6 +18,8 @@ namespace StudySpace.Data.Repository
             _context = context;
         }
 
+
+
         public async Task<List<Amity>> GetAllAmitiesByStoreId(int storeId)
         {
             return await _context.RoomAmities

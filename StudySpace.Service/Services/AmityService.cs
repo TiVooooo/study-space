@@ -17,8 +17,8 @@ namespace StudySpace.Service.Services
     {
         Task<IBusinessResult> GetAllAmities();
         Task<IBusinessResult> GetById(int id);
-        Task<IBusinessResult> Save(CreateAmityRequestModel model);
-        Task<IBusinessResult> Update(int amityId, CreateAmityRequestModel model);
+        Task<IBusinessResult> Save(int storeId, CreateAmityRequestModel model);
+        Task<IBusinessResult> Update(int amityId, int storeId, CreateAmityRequestModel model);
         Task<IBusinessResult> UnactiveAmity(int amityId);
         Task<IBusinessResult> DeleteById(int id);
         Task<IBusinessResult> GetBySupId(int supId);
@@ -77,17 +77,25 @@ namespace StudySpace.Service.Services
             }
         }
 
-        public async Task<IBusinessResult> Save(CreateAmityRequestModel model)
+        public async Task<IBusinessResult> Save(int storeId, CreateAmityRequestModel model)
         {
             try
             {
+                var existedStore = await _unitOfWork.StoreRepository.FindByConditionAsync(c => c.Id == storeId);
+
+                if (existedStore.Count() == 0)
+                {
+                    return new BusinessResult(Const.FAIL_CREATE, "Store is not existed !");
+                }
+
                 var newAmity = new Amity
                 {
                     Name = model.Name,
                     Type = model.Type,
                     Status = true,
                     Quantity = model.Quantity,
-                    Description = model.Description
+                    Description = model.Description,
+                    StoreId = storeId
                 };
 
                 _unitOfWork.AmityRepository.PrepareCreate(newAmity);
@@ -109,15 +117,17 @@ namespace StudySpace.Service.Services
             }
         }
 
-        public async Task<IBusinessResult> Update(int amityId, CreateAmityRequestModel model)
+        public async Task<IBusinessResult> Update(int amityId, int storeId, CreateAmityRequestModel model)
         {
             try
             {
-                var updatedAmity = await _unitOfWork.AmityRepository.GetByIdAsync(amityId);
-                if (updatedAmity == null)
+                var existed = await _unitOfWork.AmityRepository.FindByConditionAsync(c => c.Id == amityId && c.StoreId == storeId);
+                if (existed.Count() == 0)
                 {
-                    return new BusinessResult(Const.WARNING_NO_DATA, "Amity not found.");
+                    return new BusinessResult(Const.WARNING_NO_DATA, "Amity not found or Store does not have permission");
                 }
+
+                var updatedAmity = await _unitOfWork.AmityRepository.GetByIdAsync(amityId);
 
                 updatedAmity.Name = model.Name;
                 updatedAmity.Type = model.Type;

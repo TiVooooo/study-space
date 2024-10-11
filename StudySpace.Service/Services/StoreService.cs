@@ -374,6 +374,13 @@ namespace StudySpace.Service.Services
 
         public async Task<IBusinessResult> Login(string email, string password)
         {
+            var stranger = await _unitOfWork.AccountRepository.GetByEmailAsync(email);
+
+            if (stranger != null)
+            {
+                return new BusinessResult(Const.FAIL_LOGIN, "You don't have permission to login this service.");
+            }
+
             var store = await _unitOfWork.StoreRepository.GetByEmailAsync(email);
 
             if (store == null || !PasswordHashHelper.VerifyPassword(password, store.Password))

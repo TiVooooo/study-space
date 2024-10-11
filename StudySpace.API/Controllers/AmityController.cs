@@ -27,15 +27,15 @@ namespace StudySpace.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateAmity([FromBody] CreateAmityRequestModel model)
+        public async Task<IActionResult> CreateAmity(int supplierId, [FromBody] CreateAmityRequestModel model)
         {
-            return Ok(await _amityService.Save(model));
+            return Ok(await _amityService.Save(supplierId, model));
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateAmity(int id, CreateAmityRequestModel model)
+        public async Task<IActionResult> UpdateAmity(int id, int supplierId, CreateAmityRequestModel model)
         {
-            return Ok(await _amityService.Update(id, model));
+            return Ok(await _amityService.Update(id, supplierId, model));
         }
 
         [HttpPut("status/{id}")]

@@ -345,13 +345,20 @@ namespace StudySpace.Service.Services
 
         public async Task<IBusinessResult> Login(string email, string password)
         {
+            var stranger = await _unitOfWork.StoreRepository.GetByEmailAsync(email);
             var acc = await _unitOfWork.AccountRepository.GetByEmailAsync(email);
+
+            if (stranger != null)
+            {
+                return new BusinessResult(Const.FAIL_LOGIN, "You don't have permission to login this service.");
+            }
+
 
             if (acc == null || !PasswordHashHelper.VerifyPassword(password, acc.Password))
             {
                 return new BusinessResult(Const.FAIL_LOGIN, Const.FAIL_LOGIN_MSG);
             }
-
+            
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_jwtSecret);
 
