@@ -73,5 +73,11 @@ namespace StudySpace.API.Controllers
         {
             return Ok(await _amityService.DeleteAmityInRoom(roomID,amityId));
         }
+
+        [HttpPut("room/{roomID}/amity/{amityID}")]
+        public async Task<IActionResult> UpdateQuantityAmityRoom(int roomID, int amityID, int quantity)
+        {
+            return Ok(await _amityService.UpdateQuantityAmityInRoom(roomID ,amityID, quantity));
+        }
     }
 }

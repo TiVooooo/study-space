@@ -25,6 +25,7 @@ namespace StudySpace.Service.Services
 
         Task<IBusinessResult> DeleteAmityInRoom(int roomId, int amityID);
        Task<IBusinessResult> AddAmityToRoom(int roomId, int amityID, int quantity);
+        Task<IBusinessResult> UpdateQuantityAmityInRoom(int roomId, int amityID, int quantity);
 
 
     }
@@ -293,8 +294,6 @@ namespace StudySpace.Service.Services
             {
                 return new BusinessResult(Const.ERROR_EXEPTION, ex.Message);
             }
-            
-
         }
 
         public async Task<IBusinessResult> AddAmityToRoom(int roomId, int amityID, int quantity)
@@ -314,26 +313,100 @@ namespace StudySpace.Service.Services
                 }
 
                 _unitOfWork.AmityRepository.PrepareUpdate(amity);
-                var amityRoom = new RoomAmity
+
+                var existedRoomAmity = await _unitOfWork.RoomAminitiesRepository.FindByConditionAsync(ra => ra.RoomId == roomId && ra.AmitiesId == amityID);
+                if(existedRoomAmity.Count() != 0)
                 {
-                    RoomId = roomId,
-                    AmitiesId = amityID,
-                    Quantity = quantity
-                };
-                _unitOfWork.RoomAminitiesRepository.PrepareCreate(amityRoom);
+                    var old = existedRoomAmity.FirstOrDefault();
+                    old.Quantity += quantity;
+                    _unitOfWork.RoomAminitiesRepository.PrepareUpdate(old);
+                } else
+                {
+                    var amityRoom = new RoomAmity
+                    {
+                        RoomId = roomId,
+                        AmitiesId = amityID,
+                        Quantity = quantity
+                    };
+                    _unitOfWork.RoomAminitiesRepository.PrepareCreate(amityRoom);
+                }
+                
                 await _unitOfWork.RoomAminitiesRepository.SaveAsync();
-
                 _unitOfWork.AmityRepository.PrepareUpdate(amity);
-                _unitOfWork.AmityRepository.Save();
-                return new BusinessResult(Const.SUCCESS_CREATE, Const.SUCCESS_CREATE_MSG);
-            }
+                var result = _unitOfWork.AmityRepository.Save();
 
+                if (result > 0)
+                {
+                    return new BusinessResult(Const.SUCCESS_CREATE, Const.SUCCESS_CREATE_MSG);
+                }
+                else
+                {
+                    return new BusinessResult(Const.FAIL_CREATE, Const.FAIL_CREATE_MSG);
+                }   
+            }
             catch (Exception ex)
             {
                 return new BusinessResult(Const.ERROR_EXEPTION, ex.Message);
             }
+        }
+        
+        public async Task<IBusinessResult> UpdateQuantityAmityInRoom(int roomId, int amityID, int quantity)
+        {
+            try
+            {
+                if(quantity < 0)
+                {
+                    return new BusinessResult(Const.FAIL_UDATE, "Invalid Quantity");
+                }
 
+                var room = _unitOfWork.RoomRepository.GetById (roomId);
+                var amity = _unitOfWork.AmityRepository.GetById(amityID);
+                var existedRoomAmity = await _unitOfWork.RoomAminitiesRepository.FindByConditionAsync(ra => ra.RoomId == roomId && ra.AmitiesId == amityID);
 
+                if (existedRoomAmity.Count() == 0)
+                {
+                    return new BusinessResult(Const.FAIL_UDATE, "There are not any amities that your input in your room input !");
+                }
+
+                var old = existedRoomAmity.FirstOrDefault();
+                var chenhLech = Math.Abs(old.Quantity.Value - quantity);
+
+                if (old.Quantity < quantity)
+                {
+                    if (amity.Quantity >= quantity)
+                    {
+                        amity.Quantity -= chenhLech;
+                    }
+                    else
+                    {
+                        return new BusinessResult(Const.FAIL_UDATE, "There is not enough Amity in stock!");
+                    }
+                } else
+                {
+                    amity.Quantity += chenhLech;
+                }
+
+                old.Quantity = quantity;
+
+                _unitOfWork.RoomAminitiesRepository.PrepareUpdate(old);
+                await _unitOfWork.RoomAminitiesRepository.SaveAsync();
+ 
+                _unitOfWork.AmityRepository.PrepareUpdate(amity);
+                var result = await _unitOfWork.AmityRepository.SaveAsync();
+
+                if (result > 0)
+                {
+                    return new BusinessResult(Const.SUCCESS_UDATE, Const.SUCCESS_UDATE_MSG);
+                }
+                else
+                {
+                    return new BusinessResult(Const.FAIL_UDATE, Const.FAIL_UDATE_MSG);
+                }   
+            }
+            catch (Exception ex)
+            {
+                return new BusinessResult(Const.ERROR_EXEPTION, ex.Message);
+            }
         }
 
     }
