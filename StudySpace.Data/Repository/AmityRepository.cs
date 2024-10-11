@@ -18,22 +18,19 @@ namespace StudySpace.Data.Repository
             _context = context;
         }
 
-
-
         public async Task<List<Amity>> GetAllAmitiesByStoreId(int storeId)
         {
-            return await _context.RoomAmities
-                .Where(ra => ra.Room.StoreId == storeId)
+            return await _context.Amities
+                .Where(ra => ra.StoreId == storeId)
                 .Select(ra => new Amity
                 {
-                    Id = ra.Amities.Id,
-                    Name = ra.Amities.Name,
-                    Type = ra.Amities.Type,
-                    Status = ra.Amities.Status,
-                    Quantity = ra.Amities.Quantity,
-           
+                    Id = ra.Id,
+                    Name = ra.Name,
+                    Type = ra.Type,
+                    Status = ra.Status,
+                    Quantity = ra.Quantity,
+                    Description = ra.Description,
                 })
-                .Distinct()
                 .ToListAsync();
         }
 

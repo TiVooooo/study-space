@@ -102,9 +102,19 @@ namespace StudySpace.Service.Services
 
                 int result = await _unitOfWork.AmityRepository.SaveAsync();
 
+                var amityRes = new AmitiesDetailsResponse
+                {
+                    AmityId = newAmity.Id,
+                    AmityName = newAmity.Name,
+                    AmityType = newAmity.Type,
+                    AmityStatus = newAmity.Status == true ? "Active" : "Inactive",
+                    Quantity = newAmity.Quantity,
+                    Description = newAmity.Description,
+                };
+
                 if (result > 0)
                 {
-                    return new BusinessResult(Const.SUCCESS_CREATE, Const.SUCCESS_CREATE_MSG, newAmity);
+                    return new BusinessResult(Const.SUCCESS_CREATE, Const.SUCCESS_CREATE_MSG, amityRes);
                 }
                 else
                 {
@@ -138,9 +148,19 @@ namespace StudySpace.Service.Services
 
                 int result = await _unitOfWork.AmityRepository.SaveAsync();
 
+                var amityRes = new AmitiesDetailsResponse
+                {
+                    AmityId = updatedAmity.Id,
+                    AmityName = updatedAmity.Name,
+                    AmityType = updatedAmity.Type,
+                    AmityStatus = updatedAmity.Status == true ? "Active" : "Inactive",
+                    Quantity = updatedAmity.Quantity,
+                    Description = updatedAmity.Description,
+                };
+
                 if (result > 0)
                 {
-                    return new BusinessResult(Const.SUCCESS_UDATE, Const.SUCCESS_UDATE_MSG, updatedAmity);
+                    return new BusinessResult(Const.SUCCESS_UDATE, Const.SUCCESS_UDATE_MSG, amityRes);
                 }
                 else
                 {
@@ -221,7 +241,7 @@ namespace StudySpace.Service.Services
                 var existedStore = await _unitOfWork.StoreRepository.GetByIdAsync(supId);
                 if (existedStore == null)
                 {
-                    return new BusinessResult(Const.WARNING_NO_DATA, Const.WARNING_NO_DATA_MSG);
+                    return new BusinessResult(Const.WARNING_NO_DATA, "Store not found");
                 }
 
                 var amities = await _unitOfWork.AmityRepository.GetAllAmitiesByStoreId(supId);
