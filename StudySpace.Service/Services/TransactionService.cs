@@ -66,19 +66,20 @@ namespace StudySpace.Service.Services
                 var tran = _unitOfWork.TransactionRepository.FindByCondition(t => t.BookingId == bookingId).FirstOrDefault();
                 if(tran == null)
                 {
-                    return new BusinessResult(Const.WARNING_NO_DATA, "This booking is PENDING!");
+                    return null;
                 }
 
                 var book = _unitOfWork.BookingRepository.GetById(bookingId);
                 if (book == null)
                 {
-                    return new BusinessResult(Const.WARNING_NO_DATA, "Booking is not available!");
+                    return null;
 
                 }
                 var user = _unitOfWork.AccountRepository.GetById(book.UserId ?? 0);
                 var room = _unitOfWork.RoomRepository.GetById(book.RoomId??0);
 
                 var checkInDate = book.StartTime.Value.Date;
+                var checkOutDate = book.EndTime.Value.Date;
 
                 var transaction = new TransactionInBooking
                 {
@@ -90,6 +91,7 @@ namespace StudySpace.Service.Services
                     UserAddress = user.Address,
                     BookedDate = book.BookingDate,
                     CheckInDate = checkInDate.ToString("yyyy-MM-dd"),
+                    CheckOutDate = checkOutDate.ToString("yyyy-MM-dd"),
                     Start = book.StartTime?.TimeOfDay,
                     Status = book.Status,
                     End = book.EndTime?.TimeOfDay,

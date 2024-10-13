@@ -23,7 +23,7 @@ namespace StudySpace.Service.BusinessModel
 
         public string CheckInDate { get; set; }
         public TimeSpan? Start { get; set; }
-
+        public string CheckOutDate { get; set; }
         public TimeSpan? End { get; set; }
         public double? Fee { get; set; }
         public string? PaymentMethod { get; set; }
