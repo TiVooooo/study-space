@@ -64,7 +64,17 @@ namespace StudySpace.Service.Services
             try
             {
                 var tran = _unitOfWork.TransactionRepository.FindByCondition(t=>t.BookingId == bookingId).FirstOrDefault();
+                if(tran == null)
+                {
+                    return new BusinessResult(Const.WARNING_NO_DATA, "No transaction with this booking id");
+                }
+
                 var book = _unitOfWork.BookingRepository.GetById(bookingId);
+                if (book== null)
+                {
+                    return new BusinessResult(Const.WARNING_NO_DATA, "No booking with this booking id");
+
+                }
                 var user = _unitOfWork.AccountRepository.GetById(book.UserId ?? 0);
                 var room = _unitOfWork.RoomRepository.GetById(book.RoomId??0);
                 var transaction = new TransactionInBooking

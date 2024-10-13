@@ -459,30 +459,181 @@ namespace StudySpace.Service.Services
             }
         }
 
+        /*       public async Task<IBusinessResult> Save(CreateRoomRequestModel room)
+               {
+                   try
+                   {
+                       var storeExisted = _unitOfWork.StoreRepository.FindByCondition(c => c.Id == room.StoreId).FirstOrDefault();
+                       var spaceExisted = _unitOfWork.SpaceRepository.FindByCondition(c => c.Id == room.SpaceId).FirstOrDefault();
+
+                       if (storeExisted == null)
+                       {
+                           return new BusinessResult(Const.WARNING_NO_DATA, "Unknown Store.");
+                       }
+
+                       if (spaceExisted == null)
+                       {
+                           return new BusinessResult(Const.WARNING_NO_DATA, "Unknown Space.");
+                       }
+
+                       var hr = string.Empty;
+
+                       foreach( var hrs in room.HouseRule)
+                       {
+                           hr += hrs.ToString() +".";
+                       }
+
+                       var newRoom = new Room
+                       {
+                           SpaceId = room.SpaceId,
+                           RoomName = room.RoomName,
+                           StoreId = room.StoreId,
+                           Capacity = room.Capacity,
+                           PricePerHour = room.PricePerHour,
+                           Type = room.Type,
+                           Description = room.Description,
+                           Status = true,
+                           Area = room.Area,
+                           HouseRule = hr
+                       };
+                       _unitOfWork.RoomRepository.PrepareCreate(newRoom);
+
+                       var newMenuImage = new ImageRoom();
+                       var newRoomImage = new ImageRoom();
+
+
+                       foreach (var item in room.Amities)
+                       {
+
+                           var amity = _unitOfWork.AmityRepository.GetById(item.AmityId);
+                           if (amity.Quantity >= item.Quantity)
+                           {
+                               amity.Quantity -= item.Quantity;
+                           }
+                           else
+                           {
+                               return new BusinessResult(Const.FAIL_CREATE, "There is not enough Amity in stock!");
+                           }
+
+                           _unitOfWork.AmityRepository.PrepareUpdate(amity);
+                           var amityRoom = new RoomAmity
+                           {
+                               RoomId = newRoom.Id,
+                               AmitiesId = item.AmityId,
+                               Quantity = item.Quantity
+                           };
+                           _unitOfWork.RoomAminitiesRepository.PrepareCreate(amityRoom);
+                       }
+
+
+                       var imageUrls = room.ImageRoom;
+                       if (room.ImageMenu != null)
+                       {
+                           newMenuImage = new ImageRoom
+                           {
+                               Room = newRoom
+                           };
+                           var imgPath = FirebasePathName.MENU + Guid.NewGuid().ToString();
+                           var imgUploadRes = await _firebaseService.UploadImageToFirebaseAsync(room.ImageMenu, imgPath);
+                           newMenuImage.ImageUrl = imgUploadRes;
+                           newMenuImage.Status = true;
+                           _unitOfWork.ImageRoomRepository.PrepareCreate(newMenuImage);
+
+                       }
+
+                       if (imageUrls != null)
+                       {
+                           foreach (var image in imageUrls)
+                           {
+                                newRoomImage = new ImageRoom
+                               {
+                                   Room = newRoom
+                               };
+                               var imagePath = FirebasePathName.RATING + Guid.NewGuid().ToString();
+                               var imageUploadResult = await _firebaseService.UploadImageToFirebaseAsync(image, imagePath);
+                               newRoomImage.ImageUrl = imageUploadResult;
+                               newRoomImage.Status = true;
+                               _unitOfWork.ImageRoomRepository.PrepareCreate(newRoomImage);
+
+                           }
+
+                       }
+
+                       await _unitOfWork.RoomAminitiesRepository.SaveAsync();
+
+
+
+                       await _unitOfWork.ImageRoomRepository.SaveAsync();
+
+
+                       int result = await _unitOfWork.RoomRepository.SaveAsync();
+
+
+                       await _unitOfWork.AmityRepository.SaveAsync();
+                       if (result > 0)
+                       {
+                           return new BusinessResult(Const.SUCCESS_CREATE, Const.SUCCESS_CREATE_MSG, room);
+                       }
+                       else
+                       {
+                           return new BusinessResult(Const.FAIL_CREATE, Const.FAIL_CREATE_MSG);
+                       }
+                   }
+                   catch (Exception ex)
+                   {
+                       return new BusinessResult(-4, ex.Message);
+                   }
+               }
+
+       */
+
+
         public async Task<IBusinessResult> Save(CreateRoomRequestModel room)
         {
             try
             {
+                // Step 1: Validate Store Existence
                 var storeExisted = _unitOfWork.StoreRepository.FindByCondition(c => c.Id == room.StoreId).FirstOrDefault();
-                var spaceExisted = _unitOfWork.SpaceRepository.FindByCondition(c => c.Id == room.SpaceId).FirstOrDefault();
-
                 if (storeExisted == null)
                 {
                     return new BusinessResult(Const.WARNING_NO_DATA, "Unknown Store.");
                 }
 
+                // Step 2: Validate Space Existence
+                var spaceExisted = _unitOfWork.SpaceRepository.FindByCondition(c => c.Id == room.SpaceId).FirstOrDefault();
                 if (spaceExisted == null)
                 {
                     return new BusinessResult(Const.WARNING_NO_DATA, "Unknown Space.");
                 }
 
-                var hr = string.Empty;
 
-                foreach( var hrs in room.HouseRule)
+                if (room.Amities.Count == 0)
                 {
-                    hr += hrs.ToString() +".";
+
+                    return new BusinessResult(Const.WARNING_NO_DATA, "Amities is null.");
+
+
                 }
 
+
+                // Step 3: Validate Amity Availability
+                foreach (var item in room.Amities)
+                {
+                    var amity = _unitOfWork.AmityRepository.GetById(item.AmityId);
+                    if (amity == null || amity.Quantity < item.Quantity)
+                    {
+                        return new BusinessResult(Const.FAIL_CREATE, "There is not enough Amity in stock!");
+                    }
+                }
+
+                // Step 4: Format House Rules
+                var hr = string.Join(".", room.HouseRule.Select(hr => hr.TrimEnd('.')));
+                if (room.HouseRule.Any() && !room.HouseRule.Last().EndsWith("."))
+                {
+                    hr += ".";
+                }
+
+                // Step 5: Prepare new Room entity
                 var newRoom = new Room
                 {
                     SpaceId = room.SpaceId,
@@ -497,81 +648,76 @@ namespace StudySpace.Service.Services
                     HouseRule = hr
                 };
 
-                _unitOfWork.RoomRepository.PrepareCreate(newRoom);
-                int result = await _unitOfWork.RoomRepository.SaveAsync();
-                foreach (var item in room.Amities)
-                {
-
-                    var amity = _unitOfWork.AmityRepository.GetById(item.AmityId);
-                    if (amity.Quantity >= item.Quantity)
-                    {
-                        amity.Quantity -= item.Quantity;
-                    }
-                    else
-                    {
-                        return new BusinessResult(Const.FAIL_CREATE, "There is not enough Amity in stock!");
-                    }
-
-                    _unitOfWork.AmityRepository.PrepareUpdate(amity);
-                    var amityRoom = new RoomAmity
-                    {
-                        RoomId = newRoom.Id,
-                        AmitiesId = item.AmityId,
-                        Quantity = item.Quantity
-                    };
-                    _unitOfWork.RoomAminitiesRepository.PrepareCreate(amityRoom);
-                    await _unitOfWork.RoomAminitiesRepository.SaveAsync();
-                }
-
-                await _unitOfWork.AmityRepository.SaveAsync();
-
-                var imageUrls = room.ImageRoom;
+                // Handle images before saving the room
+                var newMenuImage = new ImageRoom();
                 if (room.ImageMenu != null)
                 {
-                    var newMenuImage = new ImageRoom
+                    newMenuImage = new ImageRoom
                     {
-                        Room = newRoom
+                        Status = true
                     };
                     var imgPath = FirebasePathName.MENU + Guid.NewGuid().ToString();
                     var imgUploadRes = await _firebaseService.UploadImageToFirebaseAsync(room.ImageMenu, imgPath);
                     newMenuImage.ImageUrl = imgUploadRes;
-                    newMenuImage.Status = true;
                     _unitOfWork.ImageRoomRepository.PrepareCreate(newMenuImage);
                 }
 
-                if (imageUrls != null)
+                // Step 6: Save the Room
+                _unitOfWork.RoomRepository.PrepareCreate(newRoom);
+                int roomResult = await _unitOfWork.RoomRepository.SaveAsync();
+
+                // Check if the room was saved successfully
+                if (roomResult <= 0)
                 {
-                    foreach (var image in imageUrls)
+                    return new BusinessResult(Const.FAIL_CREATE, "Failed to create room.");
+                }
+
+                // Step 7: Create RoomAmity entries
+                foreach (var item in room.Amities)
+                {
+                    var amity = _unitOfWork.AmityRepository.GetById(item.AmityId);
+                    amity.Quantity -= item.Quantity; // Update the quantity
+                    _unitOfWork.AmityRepository.PrepareUpdate(amity);
+
+                    var amityRoom = new RoomAmity
+                    {
+                        RoomId = newRoom.Id, // Use the saved room's ID
+                        AmitiesId = item.AmityId,
+                        Quantity = item.Quantity
+                    };
+                    _unitOfWork.RoomAminitiesRepository.PrepareCreate(amityRoom);
+                }
+
+                // Handle Room Images
+                if (room.ImageRoom != null)
+                {
+                    foreach (var image in room.ImageRoom)
                     {
                         var newRoomImage = new ImageRoom
                         {
-                            Room = newRoom
+                            Room = newRoom, // Link to the saved room
+                            Status = true,
                         };
                         var imagePath = FirebasePathName.RATING + Guid.NewGuid().ToString();
                         var imageUploadResult = await _firebaseService.UploadImageToFirebaseAsync(image, imagePath);
                         newRoomImage.ImageUrl = imageUploadResult;
-                        newRoomImage.Status = true;
                         _unitOfWork.ImageRoomRepository.PrepareCreate(newRoomImage);
                     }
-
                 }
+
+                // Save all changes
+                await _unitOfWork.RoomAminitiesRepository.SaveAsync();
                 await _unitOfWork.ImageRoomRepository.SaveAsync();
 
-
-                if (result > 0)
-                {
-                    return new BusinessResult(Const.SUCCESS_CREATE, Const.SUCCESS_CREATE_MSG, room);
-                }
-                else
-                {
-                    return new BusinessResult(Const.FAIL_CREATE, Const.FAIL_CREATE_MSG);
-                }
+                return new BusinessResult(Const.SUCCESS_CREATE, Const.SUCCESS_CREATE_MSG, room);
             }
             catch (Exception ex)
             {
                 return new BusinessResult(-4, ex.Message);
             }
         }
+
+
 
 
         public async Task<IBusinessResult> GetDetailBookedRoomInUser(int bookingId)
