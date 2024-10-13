@@ -59,20 +59,20 @@ namespace StudySpace.Service.Services
             }
         }
 
-        public async Task<IBusinessResult> GetTransactionOfBooking (int bookingId)
+        public async Task<IBusinessResult> GetTransactionOfBooking(int bookingId)
         {
             try
             {
-                var tran = _unitOfWork.TransactionRepository.FindByCondition(t=>t.BookingId == bookingId).FirstOrDefault();
+                var tran = _unitOfWork.TransactionRepository.FindByCondition(t => t.BookingId == bookingId).FirstOrDefault();
                 if(tran == null)
                 {
-                    return null;
+                    return new BusinessResult(Const.WARNING_NO_DATA, "This booking is PENDING!");
                 }
 
                 var book = _unitOfWork.BookingRepository.GetById(bookingId);
-                if (book== null)
+                if (book == null)
                 {
-                    return null;
+                    return new BusinessResult(Const.WARNING_NO_DATA, "Booking is not available!");
 
                 }
                 var user = _unitOfWork.AccountRepository.GetById(book.UserId ?? 0);
