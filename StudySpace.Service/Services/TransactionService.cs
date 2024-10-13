@@ -77,6 +77,9 @@ namespace StudySpace.Service.Services
                 }
                 var user = _unitOfWork.AccountRepository.GetById(book.UserId ?? 0);
                 var room = _unitOfWork.RoomRepository.GetById(book.RoomId??0);
+
+                var checkInDate = book.StartTime.Value.Date;
+
                 var transaction = new TransactionInBooking
                 {
                     Avatar = user.AvatarUrl,
@@ -85,7 +88,8 @@ namespace StudySpace.Service.Services
                     UserName = user.Name,
                     Fee =tran.Amount,
                     UserAddress = user.Address,
-                    BookedDate = tran.Date,
+                    BookedDate = book.BookingDate,
+                    CheckInDate = checkInDate.ToString("yyyy-MM-dd"),
                     Start = book.StartTime?.TimeOfDay,
                     Status = book.Status,
                     End = book.EndTime?.TimeOfDay,
@@ -94,7 +98,6 @@ namespace StudySpace.Service.Services
                 };
 
                 return new BusinessResult(Const.SUCCESS_READ, Const.SUCCESS_READ_MSG, transaction);
-
 
             }
             catch (Exception ex)

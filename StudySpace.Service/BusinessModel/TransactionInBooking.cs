@@ -21,6 +21,7 @@ namespace StudySpace.Service.BusinessModel
 
         public DateTime? BookedDate { get; set; }
 
+        public string CheckInDate { get; set; }
         public TimeSpan? Start { get; set; }
 
         public TimeSpan? End { get; set; }
