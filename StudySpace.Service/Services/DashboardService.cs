@@ -1,4 +1,5 @@
-﻿using StudySpace.Common;
+﻿using Microsoft.EntityFrameworkCore;
+using StudySpace.Common;
 using StudySpace.Data.Models;
 using StudySpace.Data.UnitOfWork;
 using StudySpace.Service.Base;
@@ -73,6 +74,30 @@ namespace StudySpace.Service.Services
                     .OrderBy(g => g.Year).ThenBy(g => g.Month)
                     .ToList();
 
+                var getBookingWithStore = await _unitOfWork.BookingRepository.GetBookingDetails().ToListAsync();
+                var hotBookingStore = getBookingWithStore
+                    .Where(b => b.Room.StoreId.HasValue)
+                    .GroupBy(b => b.Room.StoreId)
+                    .Select(gr => new
+                    {
+                        StoreId = gr.Key,
+                        ImageUrl = gr.SelectMany(b => b.Room.ImageRooms)
+                                     .Where(img => img != null)
+                                     .Select(img => img.ImageUrl)
+                                     .FirstOrDefault(),
+                        TotalBookings = gr.Count()
+                    })
+                    .OrderByDescending(g => g.TotalBookings)
+                    .Take(5)
+                    .Join(stores, b => b.StoreId, s => s.Id, (b, s) => new
+                    {
+                        StoreName = s.Name,
+                        Address = s.Address,
+                        ImageURL = b.ImageUrl,
+                        TotalBookings = b.TotalBookings,
+                    })
+                    .ToList();
+
                 var totalBookingInMonth = bookings.Where(b => b.BookingDate.HasValue && b.BookingDate.Value.Month == DateTime.Now.Month && b.BookingDate.Value.Year == DateTime.Now.Year).Count();
                 var totalTransactionInMonth = transactions.Where(t => t.Date.HasValue && t.Date.Value.Month == DateTime.Now.Month && t.Date.Value.Year == DateTime.Now.Year).Count();
                 var totalRevenueInMonth = transactions.Where(t => t.Date.HasValue && t.Date.Value.Month == DateTime.Now.Month && t.Date.Value.Year == DateTime.Now.Year).Sum(t => t.Amount ?? 0);
@@ -104,8 +129,10 @@ namespace StudySpace.Service.Services
 
                     TotalTransactions = totalTransactions,
 
-                    TotalBookings = totalBookings
-            };
+                    TotalBookings = totalBookings,
+
+                    HotBookingStore = hotBookingStore
+                };
 
                 return new BusinessResult(Const.SUCCESS_READ, Const.SUCCESS_READ_MSG, response);
             }
