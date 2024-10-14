@@ -277,6 +277,10 @@ public partial class EXE201_StudySpaceContext : DbContext
             entity.Property(e => e.BookingId).HasColumnName("BookingID");
             entity.Property(e => e.Date).HasColumnType("datetime");
             entity.Property(e => e.PackageId).HasColumnName("PackageID");
+            entity.Property(e => e.PaymentCode).HasMaxLength(255);
+            entity.Property(e => e.PaymentDate).HasColumnType("datetime");
+            entity.Property(e => e.PaymentLink).HasMaxLength(500);
+            entity.Property(e => e.PaymentStatus).HasMaxLength(50);
             entity.Property(e => e.StoreId).HasColumnName("StoreID");
             entity.Property(e => e.UserId).HasColumnName("UserID");
 

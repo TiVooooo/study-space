@@ -21,6 +21,14 @@ public partial class Transaction
 
     public double? Amount { get; set; }
 
+    public string PaymentCode { get; set; }
+
+    public string PaymentLink { get; set; }
+
+    public string PaymentStatus { get; set; }
+
+    public DateTime? PaymentDate { get; set; }
+
     public virtual Booking Booking { get; set; }
 
     public virtual Package Package { get; set; }
