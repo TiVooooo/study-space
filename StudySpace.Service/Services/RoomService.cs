@@ -28,7 +28,7 @@ namespace StudySpace.Service.Services
         Task<IBusinessResult> GetById(int id);
         Task<IBusinessResult> Update(int roomId, UpdateRoomModel room);
         Task<IBusinessResult> DeleteById(int id);
-
+        Task<IBusinessResult> GetAll();
         Task<IBusinessResult> GetDetailBookedRoomInUser(int bookingId);
 
 
@@ -1129,6 +1129,50 @@ namespace StudySpace.Service.Services
             }
         }
 
+        public async Task<IBusinessResult> GetAll()
+        {
+            try
+            {
+                var all = await _unitOfWork.RoomRepository.GetSupRoomAsync();
+
+                var rooms = all.Select(r => new GetAllRoomsModel
+                {
+                    RoomId = r.Id,
+                    RoomName = r.RoomName,
+                    StoreName = r.Store.Name,
+                    Capacity = r.Capacity,
+                    PricePerHour = r.PricePerHour,
+                    Description = r.Description,
+                    Status = r.Status,
+                    Area = r.Area,
+                    RoomType = r.Type,
+                    SpaceType = r.Space.SpaceName,
+                    Image = r.ImageRooms.FirstOrDefault() != null ? r.ImageRooms.FirstOrDefault().ImageUrl : null,
+                    Address = r.Store.Address,
+                    AmitiesInRoom = r.RoomAmities.Select(ra => new AmityInRoom
+                    {
+                        Id = ra.Amities.Id,
+                        Name = ra.Amities.Name,
+                        Type = ra.Amities.Type,
+                        Status = ra.Amities.Status,
+                        Quantity = ra.Quantity,
+                        Description = ra.Amities.Description
+                    }).ToList()
+                }).ToList();
+
+                if (rooms.Count > 0)
+                {
+                    return new BusinessResult(Const.SUCCESS_READ, Const.SUCCESS_READ_MSG, rooms);
+                }
+                else
+                {
+                    return new BusinessResult(Const.WARNING_NO_DATA, Const.WARNING_NO_DATA_MSG);
+                }
+            } catch (Exception ex)
+            {
+                return new BusinessResult(Const.ERROR_EXEPTION, ex.Message);
+            }
+        }
     }
 }
 

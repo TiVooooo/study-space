@@ -24,6 +24,12 @@ namespace StudySpace.API.Controllers
             return Ok(result);
         }
 
+        [HttpGet("without-paging")]
+        public async Task<IActionResult> GetAll()
+        {
+            return Ok(await _roomService.GetAll());
+        }
+
         [HttpGet("available")]
         public async Task<IActionResult> FilterRoom(int pageNumber, int pageSize, string space, string location, string room, int person)
         {
