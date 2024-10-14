@@ -120,13 +120,27 @@ namespace StudySpace.Service.Services
 
                 var objs = await _unitOfWork.StoreRepository.GetAllAsync();
 
+                var allStore = objs.Select(store => new GetAllStoreModel
+                {
+                    Id = store.Id,
+                    Name = store.Name,
+                    Description = store.Description,
+                    Email = store.Email,
+                    Phone = store.Phone,
+                    Address = store.Address,
+                    OpenTime = store.OpenTime,
+                    CloseTime = store.CloseTime,
+                    IsOverNight = store.IsOverNight,
+                    Status = store.IsActive == true ? "Active" : "Unactive",
+                }).ToList();
+
                 if (objs == null)
                 {
                     return new BusinessResult(Const.WARNING_NO_DATA, Const.WARNING_NO_DATA_MSG);
                 }
                 else
                 {
-                    return new BusinessResult(Const.SUCCESS_READ, Const.SUCCESS_READ_MSG, objs);
+                    return new BusinessResult(Const.SUCCESS_READ, Const.SUCCESS_READ_MSG, allStore);
                 }
             }
             catch (Exception ex)

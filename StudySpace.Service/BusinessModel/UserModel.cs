@@ -16,5 +16,6 @@ namespace StudySpace.Service.BusinessModel
         public string Phone {  get; set; }
         public string RoleName { get; set; }
 
+        public string? Status { get; set; }
     }
 }
