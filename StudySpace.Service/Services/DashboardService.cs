@@ -73,6 +73,10 @@ namespace StudySpace.Service.Services
                     .OrderBy(g => g.Year).ThenBy(g => g.Month)
                     .ToList();
 
+                var totalBookingInMonth = bookings.Where(b => b.BookingDate.HasValue && b.BookingDate.Value.Month == DateTime.Now.Month && b.BookingDate.Value.Year == DateTime.Now.Year).Count();
+                var totalTransactionInMonth = transactions.Where(t => t.Date.HasValue && t.Date.Value.Month == DateTime.Now.Month && t.Date.Value.Year == DateTime.Now.Year).Count();
+                var totalRevenueInMonth = transactions.Where(t => t.Date.HasValue && t.Date.Value.Month == DateTime.Now.Month && t.Date.Value.Year == DateTime.Now.Year).Sum(t => t.Amount ?? 0);
+
                 var response = new
                 {
                     Accounts = new {
@@ -80,6 +84,13 @@ namespace StudySpace.Service.Services
                         TotalUsers = totalUsers,
                         TotalStores = totalStores,
                         TotalAccounts = totalAccounts,
+                    },
+
+                    TotalInThisMonth = new
+                    {
+                        TotalBookingsInMonth = totalBookingInMonth,
+                        TotalTransactionsInMonth = totalTransactionInMonth,
+                        TotalRevenueInMonth = totalRevenueInMonth
                     },
 
                     MonthlyIncome = monthlyData.Select(m => new
@@ -156,8 +167,18 @@ namespace StudySpace.Service.Services
                     .OrderBy(g => g.Year).ThenBy(g => g.Month)
                     .ToList();
 
+            var totalBookingInMonth = bookings.Where(b => b.BookingDate.HasValue && b.BookingDate.Value.Month == DateTime.Now.Month && b.BookingDate.Value.Year == DateTime.Now.Year).Count();
+            var totalTransactionInMonth = transactions.Where(t => t.Date.HasValue && t.Date.Value.Month == DateTime.Now.Month && t.Date.Value.Year == DateTime.Now.Year).Count();
+            var totalRevenueInMonth = transactions.Where(t => t.Date.HasValue && t.Date.Value.Month == DateTime.Now.Month && t.Date.Value.Year == DateTime.Now.Year).Sum(t => t.Amount ?? 0);
+
             var response = new DashboardSupplierModel
             {
+                TotalInThisMonth = new TotalInThisMonth
+                {
+                    TotalBookingsInMonth = totalBookingInMonth,
+                    TotalRevenueInMonth = totalRevenueInMonth,
+                    TotalTransactionsInMonth = totalRevenueInMonth
+                },
                 StoreName = store.Name,
                 TotalIncome = totalAmount,
                 TotalRoom = rooms.Count(),
