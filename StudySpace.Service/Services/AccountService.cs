@@ -564,7 +564,8 @@ namespace StudySpace.Service.Services
                         Email = user.Email,
                         Name = user.Name,
                         Phone = user.Phone,
-                        RoleName = role.RoleName
+                        RoleName = role.RoleName,
+                        Status = user.IsActive == true ? "Active" : "Unactive",
                     };
                     result.Add(userModel);
                 }

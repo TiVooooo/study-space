@@ -38,7 +38,32 @@ namespace StudySpace.Service.Services
                 #region Business rule
                 #endregion
 
-                var objs = await _unitOfWork.BookingRepository.GetAllAsync();
+                var objs = await _unitOfWork.BookingRepository.GetBookingDetails().ToListAsync();
+
+                var bookings = objs.Select(b => new GetAllBookings
+                {
+                    BookingId = b.Id,
+                    UserName = b.User.Name,
+                    UserEmail = b.User.Email,
+                    UserAddress = b.User.Address,
+                    Gender = b.User.Gender,
+                    Avatar = b.User.AvatarUrl,
+                    BookingDate = b.BookingDate.HasValue ? b.BookingDate.Value.ToString("yyyy-MM-dd") : null,
+                    BookingTime = b.BookingDate.HasValue ? b.BookingDate.Value.ToString("HH:mm:ss") : null,
+                    Checkin = b.Checkin,
+                    RoomId = b.RoomId,
+                    RoomName = b.Room.RoomName,
+                    StoreName = b.Room.Store.Name,
+                    Capacity = b.Room.Capacity,
+                    PricePerHour = b.Room.PricePerHour,
+                    Description = b.Room.Description,
+                    Status = b.Room.Status,
+                    Area = b.Room.Area,
+                    RoomType = b.Room.Type,
+                    SpaceType = b.Room.Space.SpaceName,
+                    Image = b.Room.ImageRooms.FirstOrDefault() != null ? b.Room.ImageRooms.FirstOrDefault().ImageUrl : null,
+                    Address = b.Room.Store.Address,
+                }).ToList();
 
                 if (objs == null)
                 {
@@ -46,7 +71,7 @@ namespace StudySpace.Service.Services
                 }
                 else
                 {
-                    return new BusinessResult(Const.SUCCESS_READ, Const.SUCCESS_READ_MSG, objs);
+                    return new BusinessResult(Const.SUCCESS_READ, Const.SUCCESS_READ_MSG, bookings);
                 }
             }
             catch (Exception ex)

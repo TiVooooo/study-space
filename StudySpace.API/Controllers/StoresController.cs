@@ -25,6 +25,12 @@ namespace StudySpace.API.Controllers
             _storeService ??= storeService;
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            return Ok(await _storeService.GetAll());
+        }
+
         [HttpPost("login-authen")]
         public async Task<IActionResult> Login([FromBody] LoginRequestDTO model)
         {

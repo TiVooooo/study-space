@@ -40,6 +40,7 @@ namespace StudySpace.Data.Repository
             .Include(r => r.Bookings)       
             .Include(r => r.Store)          
             .Include(r => r.Space)
+            .Include(r => r.ImageRooms)
             .Include(r => r.RoomAmities)    
                 .ThenInclude(ra => ra.Amities) 
             .ToListAsync();
