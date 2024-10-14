@@ -459,134 +459,6 @@ namespace StudySpace.Service.Services
             }
         }
 
-        /*       public async Task<IBusinessResult> Save(CreateRoomRequestModel room)
-               {
-                   try
-                   {
-                       var storeExisted = _unitOfWork.StoreRepository.FindByCondition(c => c.Id == room.StoreId).FirstOrDefault();
-                       var spaceExisted = _unitOfWork.SpaceRepository.FindByCondition(c => c.Id == room.SpaceId).FirstOrDefault();
-
-                       if (storeExisted == null)
-                       {
-                           return new BusinessResult(Const.WARNING_NO_DATA, "Unknown Store.");
-                       }
-
-                       if (spaceExisted == null)
-                       {
-                           return new BusinessResult(Const.WARNING_NO_DATA, "Unknown Space.");
-                       }
-
-                       var hr = string.Empty;
-
-                       foreach( var hrs in room.HouseRule)
-                       {
-                           hr += hrs.ToString() +".";
-                       }
-
-                       var newRoom = new Room
-                       {
-                           SpaceId = room.SpaceId,
-                           RoomName = room.RoomName,
-                           StoreId = room.StoreId,
-                           Capacity = room.Capacity,
-                           PricePerHour = room.PricePerHour,
-                           Type = room.Type,
-                           Description = room.Description,
-                           Status = true,
-                           Area = room.Area,
-                           HouseRule = hr
-                       };
-                       _unitOfWork.RoomRepository.PrepareCreate(newRoom);
-
-                       var newMenuImage = new ImageRoom();
-                       var newRoomImage = new ImageRoom();
-
-
-                       foreach (var item in room.Amities)
-                       {
-
-                           var amity = _unitOfWork.AmityRepository.GetById(item.AmityId);
-                           if (amity.Quantity >= item.Quantity)
-                           {
-                               amity.Quantity -= item.Quantity;
-                           }
-                           else
-                           {
-                               return new BusinessResult(Const.FAIL_CREATE, "There is not enough Amity in stock!");
-                           }
-
-                           _unitOfWork.AmityRepository.PrepareUpdate(amity);
-                           var amityRoom = new RoomAmity
-                           {
-                               RoomId = newRoom.Id,
-                               AmitiesId = item.AmityId,
-                               Quantity = item.Quantity
-                           };
-                           _unitOfWork.RoomAminitiesRepository.PrepareCreate(amityRoom);
-                       }
-
-
-                       var imageUrls = room.ImageRoom;
-                       if (room.ImageMenu != null)
-                       {
-                           newMenuImage = new ImageRoom
-                           {
-                               Room = newRoom
-                           };
-                           var imgPath = FirebasePathName.MENU + Guid.NewGuid().ToString();
-                           var imgUploadRes = await _firebaseService.UploadImageToFirebaseAsync(room.ImageMenu, imgPath);
-                           newMenuImage.ImageUrl = imgUploadRes;
-                           newMenuImage.Status = true;
-                           _unitOfWork.ImageRoomRepository.PrepareCreate(newMenuImage);
-
-                       }
-
-                       if (imageUrls != null)
-                       {
-                           foreach (var image in imageUrls)
-                           {
-                                newRoomImage = new ImageRoom
-                               {
-                                   Room = newRoom
-                               };
-                               var imagePath = FirebasePathName.RATING + Guid.NewGuid().ToString();
-                               var imageUploadResult = await _firebaseService.UploadImageToFirebaseAsync(image, imagePath);
-                               newRoomImage.ImageUrl = imageUploadResult;
-                               newRoomImage.Status = true;
-                               _unitOfWork.ImageRoomRepository.PrepareCreate(newRoomImage);
-
-                           }
-
-                       }
-
-                       await _unitOfWork.RoomAminitiesRepository.SaveAsync();
-
-
-
-                       await _unitOfWork.ImageRoomRepository.SaveAsync();
-
-
-                       int result = await _unitOfWork.RoomRepository.SaveAsync();
-
-
-                       await _unitOfWork.AmityRepository.SaveAsync();
-                       if (result > 0)
-                       {
-                           return new BusinessResult(Const.SUCCESS_CREATE, Const.SUCCESS_CREATE_MSG, room);
-                       }
-                       else
-                       {
-                           return new BusinessResult(Const.FAIL_CREATE, Const.FAIL_CREATE_MSG);
-                       }
-                   }
-                   catch (Exception ex)
-                   {
-                       return new BusinessResult(-4, ex.Message);
-                   }
-               }
-
-       */
-
 
         public async Task<IBusinessResult> Save(CreateRoomRequestModel room)
         {
@@ -849,6 +721,8 @@ namespace StudySpace.Service.Services
             }
         }
 
+        
+
         public async Task<IBusinessResult> GetAllBookedRoomInUser(int userId)
         {
             try
@@ -856,22 +730,31 @@ namespace StudySpace.Service.Services
                 var user = _unitOfWork.AccountRepository.GetById(userId);
                 var allRooms = await _unitOfWork.RoomRepository.GetAllAsync();
 
-                var listRoomID = _unitOfWork.BookingRepository.FindByCondition(b => b.UserId == userId).Select(b => b.RoomId).ToList();
+                var listRoomID = _unitOfWork.BookingRepository.FindByCondition(b => b.UserId == userId).ToList();
 
-                var listRoom = allRooms.Where(r => listRoomID.Contains(r.Id)).ToList();
+             
 
-                var result = new List<RoomModel>();
+                var result = new List<GetBookedRoomInUserModel>();
 
 
-                foreach (var room in listRoom)
+                foreach (var booking in listRoomID)
                 {
-                    var r = _unitOfWork.RoomRepository.GetById(room.Id);
-                    var booking = _unitOfWork.BookingRepository.FindByCondition(b => b.RoomId == room.Id && b.UserId == userId).FirstOrDefault();
+                    var r = _unitOfWork.RoomRepository.GetById(booking.Id);
+                    //var booking = _unitOfWork.BookingRepository.FindByCondition(b => b.RoomId == room.Id && b.UserId == userId).FirstOrDefault();
 
                     var store = _unitOfWork.StoreRepository.GetById(r.StoreId ?? 0);
                     var imageEntity = _unitOfWork.ImageRoomRepository.FindByCondition(ie => ie.RoomId == r.Id).FirstOrDefault();
+                    var space = _unitOfWork.SpaceRepository.GetById(r.SpaceId ?? 0);
 
-                    var roomModel = new RoomModel
+                    var feedback = _unitOfWork.FeedbackRepository.FindByCondition(f => f.UserId == userId && f.BookingId == booking.Id).FirstOrDefault();
+                    var isFeedback = false;
+
+                    if (feedback != null)
+                    { isFeedback = true; };
+
+
+
+                    var roomModel = new GetBookedRoomInUserModel
                     {
                         RoomId = r.Id,
                         RoomName = r.RoomName,
@@ -883,7 +766,17 @@ namespace StudySpace.Service.Services
                         Area = r.Area ?? 0,
                         Type = r.Type,
                         Address = store.Address,
-                        Image = imageEntity.ImageUrl
+                        Image = imageEntity.ImageUrl,
+                        BookedDate = booking.BookingDate,
+                        BookedTime = booking.BookingDate?.TimeOfDay,
+                        BookingStatus = booking.Status,
+                        CheckIn = booking.Checkin ?? false,
+                        isOvernight = store.IsOverNight,
+                        TypeSpace = space.SpaceName,
+                        PaymentMethod = booking.PaymentMethod,
+                        Start = booking.StartTime?.TimeOfDay,
+                        End = booking.EndTime?.TimeOfDay,
+                        IsFeedback = isFeedback
                     };
                     result.Add(roomModel);
                 }
