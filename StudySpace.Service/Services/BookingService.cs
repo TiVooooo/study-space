@@ -57,7 +57,7 @@ namespace StudySpace.Service.Services
                     Capacity = b.Room.Capacity,
                     PricePerHour = b.Room.PricePerHour,
                     Description = b.Room.Description,
-                    Status = b.Room.Status,
+                    Status = b.Status,
                     Area = b.Room.Area,
                     RoomType = b.Room.Type,
                     SpaceType = b.Room.Space.SpaceName,

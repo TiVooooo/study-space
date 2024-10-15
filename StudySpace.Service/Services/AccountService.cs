@@ -553,23 +553,23 @@ namespace StudySpace.Service.Services
         {
             try
             {
-                var users = _unitOfWork.AccountRepository.GetAll();
-                var result = new List<UserModel>();
-                foreach (var user in users)
+                var users = _unitOfWork.AccountRepository.GetAllAccounts();
+
+                var results = users.Select(u => new UserModel
                 {
-                    var role = _unitOfWork.UserRoleRepository.GetById(user.RoleId ??0);
-                    var userModel = new UserModel
-                    {
-                        AvatarUrl = user.AvatarUrl,
-                        Email = user.Email,
-                        Name = user.Name,
-                        Phone = user.Phone,
-                        RoleName = role.RoleName,
-                        Status = user.IsActive == true ? "Active" : "Unactive",
-                    };
-                    result.Add(userModel);
-                }
-                return new BusinessResult(Const.SUCCESS_READ, Const.SUCCESS_READ_MSG, result);
+                    Id = u.Id,
+                    RoleName = u.Role.RoleName,
+                    Name = u.Name,
+                    Email = u.Email,
+                    Phone = u.Phone,
+                    Address = u.Address,
+                    Gender = u.Gender,
+                    DOB = u.Dob,
+                    IsActive = u.IsActive,
+                    Wallet = u.Wallet,
+                    AvatarUrl = u.AvatarUrl,
+                }).ToList();
+                return new BusinessResult(Const.SUCCESS_READ, Const.SUCCESS_READ_MSG, results);
             }
             catch (Exception ex)
             {

@@ -118,7 +118,7 @@ namespace StudySpace.Service.Services
                 #region Business rule
                 #endregion
 
-                var objs = await _unitOfWork.StoreRepository.GetAllAsync();
+                var objs = _unitOfWork.StoreRepository.GetAllRooms();
 
                 var allStore = objs.Select(store => new GetAllStoreModel
                 {
@@ -132,6 +132,21 @@ namespace StudySpace.Service.Services
                     CloseTime = store.CloseTime,
                     IsOverNight = store.IsOverNight,
                     Status = store.IsActive == true ? "Active" : "Unactive",
+                    TotalBookings = store.Rooms.SelectMany(r => r.Bookings).Count(),
+                    TotalTransactions = store.Rooms.SelectMany(r => r.Bookings).SelectMany(b => b.Transactions).Count(),
+                    TotalBookingsInMonth = store.Rooms.SelectMany(r => r.Bookings)
+                                                      .Where(b => b.BookingDate.HasValue && b.BookingDate.Value.Month == DateTime.Now.Month && b.BookingDate.Value.Year == DateTime.Now.Year)
+                                                      .Count(),
+                    TotalTransactionsInMonth = store.Rooms.SelectMany(r => r.Bookings)
+                                                          .SelectMany(b => b.Transactions)
+                                                          .Where(t => t.Date.HasValue && t.Date.Value.Month == DateTime.Now.Month && t.Date.Value.Year == DateTime.Now.Year)
+                                                          .Count(),
+                    TotalRooms = store.Rooms.Count(),
+                    StarAverage = Math.Round(store.Rooms.SelectMany(r => r.Bookings)
+                                             .Where(b => b.Feedbacks != null)
+                                             .SelectMany(b => b.Feedbacks)
+                                             .DefaultIfEmpty()
+                                             .Average(f => f.Rating.HasValue ? f.Rating.Value : 0), 2)
                 }).ToList();
 
                 if (objs == null)

@@ -26,5 +26,11 @@ namespace StudySpace.Data.Repository
         {
             return await _context.Accounts.Include(a => a.Role).FirstOrDefaultAsync(a => a.Role.RoleName.ToLower() == roleName.ToLower());
         }
+
+        public IQueryable<Account> GetAllAccounts()
+        {
+            return _context.Accounts
+                    .Include(a => a.Role);
+        }
     }
 }

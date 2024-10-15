@@ -23,7 +23,7 @@ namespace StudySpace.Service.BusinessModel
         public int? Capacity { get; set; }
         public double? PricePerHour { get; set; }
         public string Description { get; set; }
-        public bool? Status { get; set; }
+        public string? Status { get; set; }
         public double? Area { get; set; }
         public string RoomType { get; set; }
         public string SpaceType { get; set; }

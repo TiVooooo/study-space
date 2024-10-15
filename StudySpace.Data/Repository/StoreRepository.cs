@@ -21,5 +21,17 @@ namespace StudySpace.Data.Repository
         {
             return await _context.Stores.FirstOrDefaultAsync(e => e.Email == email);
         }
+
+        public IQueryable<Store> GetAllRooms()
+        {
+            return _context.Stores
+                .Include(s => s.Rooms)
+                    .ThenInclude(r => r.Bookings)
+                .Include(s => s.Rooms)
+                    .ThenInclude(r => r.Bookings)
+                    .ThenInclude(b => b.Feedbacks)
+                .Include(s => s.Rooms)
+                .Include(s => s.Transactions);
+        }
     }
 }
