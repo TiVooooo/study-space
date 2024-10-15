@@ -33,5 +33,11 @@ namespace StudySpace.API.Controllers
             return Ok(await _transactionService.GetTransactionOfBooking(bookingID));
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetAllTransaction()
+        {
+            return Ok(await _transactionService.GetAllTransaction());
+        }
+
     }
 }
