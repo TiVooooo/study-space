@@ -1,0 +1,16 @@
+C:\Term8\EXE201\v20\study-space\StudySpace.DTOs\bin\Debug\net8.0\StudySpace.DTOs.deps.json
+C:\Term8\EXE201\v20\study-space\StudySpace.DTOs\bin\Debug\net8.0\StudySpace.DTOs.dll
+C:\Term8\EXE201\v20\study-space\StudySpace.DTOs\bin\Debug\net8.0\StudySpace.DTOs.pdb
+C:\Term8\EXE201\v20\study-space\StudySpace.DTOs\bin\Debug\net8.0\StudySpace.Data.dll
+C:\Term8\EXE201\v20\study-space\StudySpace.DTOs\bin\Debug\net8.0\StudySpace.Data.pdb
+C:\Term8\EXE201\v20\study-space\StudySpace.DTOs\obj\Debug\net8.0\StudySpace.DTOs.csproj.AssemblyReference.cache
+C:\Term8\EXE201\v20\study-space\StudySpace.DTOs\obj\Debug\net8.0\StudySpace.DTOs.GeneratedMSBuildEditorConfig.editorconfig
+C:\Term8\EXE201\v20\study-space\StudySpace.DTOs\obj\Debug\net8.0\StudySpace.DTOs.AssemblyInfoInputs.cache
+C:\Term8\EXE201\v20\study-space\StudySpace.DTOs\obj\Debug\net8.0\StudySpace.DTOs.AssemblyInfo.cs
+C:\Term8\EXE201\v20\study-space\StudySpace.DTOs\obj\Debug\net8.0\StudySpace.DTOs.csproj.CoreCompileInputs.cache
+C:\Term8\EXE201\v20\study-space\StudySpace.DTOs\obj\Debug\net8.0\StudySpace.DTOs.sourcelink.json
+C:\Term8\EXE201\v20\study-space\StudySpace.DTOs\obj\Debug\net8.0\StudySpa.A4CA8A6E.Up2Date
+C:\Term8\EXE201\v20\study-space\StudySpace.DTOs\obj\Debug\net8.0\StudySpace.DTOs.dll
+C:\Term8\EXE201\v20\study-space\StudySpace.DTOs\obj\Debug\net8.0\refint\StudySpace.DTOs.dll
+C:\Term8\EXE201\v20\study-space\StudySpace.DTOs\obj\Debug\net8.0\StudySpace.DTOs.pdb
+C:\Term8\EXE201\v20\study-space\StudySpace.DTOs\obj\Debug\net8.0\ref\StudySpace.DTOs.dll
