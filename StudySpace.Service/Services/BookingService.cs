@@ -198,13 +198,13 @@ namespace StudySpace.Service.Services
                 var userExisted = await _unitOfWork.AccountRepository.GetByIdAsync(booking.UserId.Value);
                 if(userExisted == null)
                 {
-                    return new BusinessResult(Const.FAIL_CREATE, "Invalid UserID");
+                    return new BusinessResult(Const.WARNING_NO_DATA, "Invalid UserID");
                 }
 
                 var roomExisted = await _unitOfWork.RoomRepository.GetByIdAsync(booking.RoomId.Value);
                 if(roomExisted == null)
                 {
-                    return new BusinessResult(Const.FAIL_CREATE, "Invalid RoomID");
+                    return new BusinessResult(Const.WARNING_NO_DATA, "Invalid RoomID");
                 }
 
                 var newBooking = new Booking
@@ -216,7 +216,7 @@ namespace StudySpace.Service.Services
                     Status = StatusBookingEnums.PENDING.ToString(),
                     Fee = booking.Fee,
                     BookingDate = DateTime.Now,
-                    PaymentMethod = booking.PaymentMethod,
+                    PaymentMethod = "none",
                     Checkin = false,
                     Note = booking.Note
                 };
@@ -237,5 +237,7 @@ namespace StudySpace.Service.Services
                 return new BusinessResult(Const.ERROR_EXEPTION, ex.Message);
             }
         }
+
+
     }
 }

@@ -4,13 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace StudySpace.Common.Enums
+namespace StudySpace.Service.Services
 {
-    public enum StatusBookingEnums
+    public class PaymentService
     {
-        PAID,
-        PENDING,
-        CANCELED,
-        FAILED
+
     }
 }
