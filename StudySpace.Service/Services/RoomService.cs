@@ -776,7 +776,7 @@ namespace StudySpace.Service.Services
                         PaymentMethod = booking.PaymentMethod,
                         Start = booking.StartTime?.TimeOfDay,
                         End = booking.EndTime?.TimeOfDay,
-                        IsFeedback = isFeedback
+                        IsFeedback = false
                     };
                     result.Add(roomModel);
                 }
