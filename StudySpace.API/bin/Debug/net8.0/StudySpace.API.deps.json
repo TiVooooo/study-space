@@ -23,7 +23,8 @@
           "StudySpace.Data": "1.0.0",
           "StudySpace.Service": "1.0.0",
           "Swashbuckle.AspNetCore": "6.7.3",
-          "System.IdentityModel.Tokens.Jwt": "8.0.2"
+          "System.IdentityModel.Tokens.Jwt": "8.0.2",
+          "payOS": "1.0.7"
         },
         "runtime": {
           "StudySpace.API.dll": {}
@@ -2036,6 +2037,17 @@
           }
         }
       },
+      "payOS/1.0.7": {
+        "dependencies": {
+          "Newtonsoft.Json": "13.0.3"
+        },
+        "runtime": {
+          "lib/net6.0/payos-lib-backend-dotnet.dll": {
+            "assemblyVersion": "1.0.7.0",
+            "fileVersion": "1.0.7.0"
+          }
+        }
+      },
       "runtime.debian.8-x64.runtime.native.System.Security.Cryptography.OpenSsl/4.3.0": {},
       "runtime.fedora.23-x64.runtime.native.System.Security.Cryptography.OpenSsl/4.3.0": {},
       "runtime.fedora.24-x64.runtime.native.System.Security.Cryptography.OpenSsl/4.3.0": {},
@@ -2287,14 +2299,7 @@
           }
         }
       },
-      "System.Formats.Asn1/8.0.1": {
-        "runtime": {
-          "lib/net8.0/System.Formats.Asn1.dll": {
-            "assemblyVersion": "8.0.0.0",
-            "fileVersion": "8.0.724.31311"
-          }
-        }
-      },
+      "System.Formats.Asn1/8.0.1": {},
       "System.Globalization/4.3.0": {
         "dependencies": {
           "Microsoft.NETCore.Platforms": "5.0.0",
@@ -2848,12 +2853,6 @@
       "System.Text.Json/8.0.4": {
         "dependencies": {
           "System.Text.Encodings.Web": "8.0.0"
-        },
-        "runtime": {
-          "lib/net8.0/System.Text.Json.dll": {
-            "assemblyVersion": "8.0.0.0",
-            "fileVersion": "8.0.724.31311"
-          }
         }
       },
       "System.Text.RegularExpressions/4.3.0": {
@@ -2990,7 +2989,8 @@
           "Microsoft.AspNetCore.Http.Features": "5.0.17",
           "StudySpace.Common": "1.0.0",
           "StudySpace.DTOs": "1.0.0",
-          "StudySpace.Data": "1.0.0"
+          "StudySpace.Data": "1.0.0",
+          "payOS": "1.0.7"
         },
         "runtime": {
           "StudySpace.Service.dll": {}
@@ -4193,6 +4193,13 @@
       "sha512": "sha512-v/GGlIj2dd7svplFmASWEueu62veKW0MrMtBaZ7QG8aJTSGv2yE+pgUGhXRcQ4nxNOEq/wLBrz1vkth/1SND7A==",
       "path": "nuget.versioning/6.11.0",
       "hashPath": "nuget.versioning.6.11.0.nupkg.sha512"
+    },
+    "payOS/1.0.7": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-4SqQbcEy/ZLYYmPeaoeMZLdElDrPQTgVz92Us7xAulPcfxB61Xx7+TkuFNHqGTFbtugfXoOjfZMBniOa0QxJ5A==",
+      "path": "payos/1.0.7",
+      "hashPath": "payos.1.0.7.nupkg.sha512"
     },
     "runtime.debian.8-x64.runtime.native.System.Security.Cryptography.OpenSsl/4.3.0": {
       "type": "package",

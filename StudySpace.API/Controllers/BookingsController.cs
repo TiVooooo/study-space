@@ -6,7 +6,7 @@ namespace StudySpace.API.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    public class BookingsController : Controller
+    public class BookingsController : ControllerBase
     {
         private readonly IBookingService _bookingService;
 
