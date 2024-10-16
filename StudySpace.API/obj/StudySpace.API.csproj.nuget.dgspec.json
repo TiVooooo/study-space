@@ -112,6 +112,10 @@
             "System.IdentityModel.Tokens.Jwt": {
               "target": "Package",
               "version": "[8.0.2, )"
+            },
+            "payOS": {
+              "target": "Package",
+              "version": "[1.0.7, )"
             }
           },
           "imports": [
@@ -507,6 +511,10 @@
             "Microsoft.AspNetCore.Http.Features": {
               "target": "Package",
               "version": "[5.0.17, )"
+            },
+            "payOS": {
+              "target": "Package",
+              "version": "[1.0.7, )"
             }
           },
           "imports": [
