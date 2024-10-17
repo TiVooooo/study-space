@@ -20,6 +20,7 @@ namespace StudySpace.Data.Repository
         public List<Transaction> GetAllTransactions()
         {
             return _context.Transactions
+                .Include(t => t.Booking)
                 .Include(t => t.Booking.Room)
                 .ToList();
         }

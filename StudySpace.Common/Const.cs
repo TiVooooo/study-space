@@ -38,6 +38,8 @@ namespace StudySpace.Common
         public static string SUCCESS_LOGOUT_MSG = "Logout success";
         public static int SUCCESS_UNACTIVATE = 1;
         public static string SUCCESS_UNACTIVATE_MSG = "Unactivate success";
+        public static int SUCCESS_BOOKED = 1;
+        public static string SUCCESS_BOOKED_MSG = "Booked success";
         #endregion
 
 
@@ -55,6 +57,7 @@ namespace StudySpace.Common
         public static string FAIL_LOGIN_MSG = "Invalid email or password.";
         public static int FAIL_UNACTIVATE = 0;
         public static string FAIL_UNACTIVATE_MSG = "Unactivate fail.";
+        public static int FAIL_BOOKING = 1;
         #endregion
 
 

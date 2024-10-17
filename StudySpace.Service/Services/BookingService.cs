@@ -198,13 +198,13 @@ namespace StudySpace.Service.Services
                 var userExisted = await _unitOfWork.AccountRepository.GetByIdAsync(booking.UserId.Value);
                 if(userExisted == null)
                 {
-                    return new BusinessResult(Const.FAIL_CREATE, "Invalid UserID");
+                    return new BusinessResult(Const.WARNING_NO_DATA, "Invalid UserID");
                 }
 
                 var roomExisted = await _unitOfWork.RoomRepository.GetByIdAsync(booking.RoomId.Value);
                 if(roomExisted == null)
                 {
-                    return new BusinessResult(Const.FAIL_CREATE, "Invalid RoomID");
+                    return new BusinessResult(Const.WARNING_NO_DATA, "Invalid RoomID");
                 }
 
                 var newBooking = new Booking
@@ -213,20 +213,34 @@ namespace StudySpace.Service.Services
                     RoomId = booking.RoomId,
                     StartTime = booking.StartTime,
                     EndTime = booking.EndTime,
-                    Status = StatusBookingEnums.PENDING.ToString(),
+                    Status = StatusBookingEnums.NONE.ToString(),
                     Fee = booking.Fee,
                     BookingDate = DateTime.Now,
-                    PaymentMethod = booking.PaymentMethod,
+                    PaymentMethod = "NONE",
                     Checkin = false,
                     Note = booking.Note
                 };
 
                 _unitOfWork.BookingRepository.PrepareCreate(newBooking);
-
                 var result = await _unitOfWork.BookingRepository.SaveAsync();
+
+                var bookings = _unitOfWork.BookingRepository.GetBookingDetails();
+                var bookingResponse = bookings.Where(t => t.Id == newBooking.Id)
+                                              .Select(t => new CreateBookingResponse
+                                              {
+                                                  UserId = t.UserId,
+                                                  RoomId = t.RoomId,
+                                                  RoomName = t.Room.RoomName,
+                                                  CheckInDate = t.StartTime.HasValue ? t.StartTime.Value.ToString("yyyy-MM-dd") : null,
+                                                  CheckInTime = t.StartTime.HasValue ? t.StartTime.Value.ToString("HH:mm:ss") : null,
+                                                  CheckOutDate = t.EndTime.HasValue ? t.EndTime.Value.ToString("yyyy-MM-dd") : null,
+                                                  CheckOutTime = t.EndTime.HasValue ? t.EndTime.Value.ToString("HH:mm:ss") : null,
+                                                  Total = t.Fee
+                                              }).ToList();
+
                 if(result > 0)
                 {
-                    return new BusinessResult(Const.SUCCESS_CREATE, Const.SUCCESS_CREATE_MSG, newBooking);
+                    return new BusinessResult(Const.SUCCESS_CREATE, Const.SUCCESS_CREATE_MSG, bookingResponse);
                 } else
                 {
                     return new BusinessResult(Const.FAIL_CREATE, Const.FAIL_CREATE_MSG);
@@ -237,5 +251,7 @@ namespace StudySpace.Service.Services
                 return new BusinessResult(Const.ERROR_EXEPTION, ex.Message);
             }
         }
+
+
     }
 }

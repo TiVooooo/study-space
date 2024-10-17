@@ -8,8 +8,10 @@ namespace StudySpace.Common.Enums
 {
     public enum StatusBookingEnums
     {
+        NONE,
         PAID,
         PENDING,
-        CANCELED
+        CANCELED,
+        FAILED
     }
 }

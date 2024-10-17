@@ -1,0 +1,16 @@
+D:\study-space\StudySpace.Common\bin\Debug\net8.0\StudySpace.Common.deps.json
+D:\study-space\StudySpace.Common\bin\Debug\net8.0\StudySpace.Common.dll
+D:\study-space\StudySpace.Common\bin\Debug\net8.0\StudySpace.Common.pdb
+D:\study-space\StudySpace.Common\bin\Debug\net8.0\StudySpace.Data.dll
+D:\study-space\StudySpace.Common\bin\Debug\net8.0\StudySpace.Data.pdb
+D:\study-space\StudySpace.Common\obj\Debug\net8.0\StudySpace.Common.csproj.AssemblyReference.cache
+D:\study-space\StudySpace.Common\obj\Debug\net8.0\StudySpace.Common.GeneratedMSBuildEditorConfig.editorconfig
+D:\study-space\StudySpace.Common\obj\Debug\net8.0\StudySpace.Common.AssemblyInfoInputs.cache
+D:\study-space\StudySpace.Common\obj\Debug\net8.0\StudySpace.Common.AssemblyInfo.cs
+D:\study-space\StudySpace.Common\obj\Debug\net8.0\StudySpace.Common.csproj.CoreCompileInputs.cache
+D:\study-space\StudySpace.Common\obj\Debug\net8.0\StudySpace.Common.sourcelink.json
+D:\study-space\StudySpace.Common\obj\Debug\net8.0\StudySpa.20B255E9.Up2Date
+D:\study-space\StudySpace.Common\obj\Debug\net8.0\StudySpace.Common.dll
+D:\study-space\StudySpace.Common\obj\Debug\net8.0\refint\StudySpace.Common.dll
+D:\study-space\StudySpace.Common\obj\Debug\net8.0\StudySpace.Common.pdb
+D:\study-space\StudySpace.Common\obj\Debug\net8.0\ref\StudySpace.Common.dll
