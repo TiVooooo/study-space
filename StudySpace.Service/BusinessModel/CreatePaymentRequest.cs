@@ -9,7 +9,7 @@ namespace StudySpace.Service.BusinessModel
     public class CreatePaymentRequest
     {
         public int BookingId { get; set; }
-        public double Amount { get; set; }
+        public int Amount { get; set; }
         public string Description { get; set; }
 
     }

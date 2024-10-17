@@ -20,5 +20,11 @@ namespace StudySpace.API.Controllers
         {
             return Ok(await _paymentService.CreatePaymentWithPayOS(request));
         }
+
+        [HttpGet("{transactionId}")]
+        public async Task<IActionResult> GetPayOSDetails(int transactionId)
+        {
+            return Ok(await _paymentService.GetPaymentDetailsPayOS(transactionId));
+        }
     }
 }
