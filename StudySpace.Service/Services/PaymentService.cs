@@ -23,6 +23,7 @@ namespace StudySpace.Service.Services
     {
         Task<IBusinessResult> CreatePaymentWithPayOS(CreatePaymentRequest request);
         Task<IBusinessResult> GetPaymentDetailsPayOS(int transactionID);
+        Task<IBusinessResult> CancelPayment(long bookingId, string cancelReason);
     }
 
     public class PaymentService : IPaymentService
@@ -147,6 +148,27 @@ namespace StudySpace.Service.Services
                     return new BusinessResult(Const.SUCCESS_READ, Const.SUCCESS_READ_MSG, paymentLinkInformation);
                 }
             } 
+            catch (Exception ex)
+            {
+                return new BusinessResult(Const.ERROR_EXEPTION, ex.Message);
+            }
+        }
+
+        public async Task<IBusinessResult> CancelPayment(long bookingId, string cancelReason)
+        {
+            try
+            {
+                PayOS payOS = new PayOS(_clientID, _apiKey, _checkSum);
+
+                PaymentLinkInformation cancelledPaymentLinkInfo = await payOS.cancelPaymentLink(bookingId, cancelReason);
+
+                if (cancelledPaymentLinkInfo == null)
+                {
+                    return new BusinessResult(Const.FAIL_BOOKING, "Wrong bookingID");
+                }
+
+                return new BusinessResult(Const.SUCCESS_BOOKED, "Cancel Payment Success !", cancelledPaymentLinkInfo);
+            }
             catch (Exception ex)
             {
                 return new BusinessResult(Const.ERROR_EXEPTION, ex.Message);
