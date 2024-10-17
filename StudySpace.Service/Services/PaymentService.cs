@@ -1,6 +1,7 @@
 ﻿using Google.Apis.Http;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using Net.payOS;
 using Net.payOS.Types;
 using Org.BouncyCastle.Utilities;
@@ -23,6 +24,7 @@ namespace StudySpace.Service.Services
     {
         Task<IBusinessResult> CreatePaymentWithPayOS(CreatePaymentRequest request);
         Task<IBusinessResult> GetPaymentDetailsPayOS(int transactionID);
+        Task<IBusinessResult> CancelPayment(int transactionID, string cancelReason);
     }
 
     public class PaymentService : IPaymentService
@@ -53,30 +55,27 @@ namespace StudySpace.Service.Services
                     return new BusinessResult(Const.WARNING_NO_DATA, "No booking was found !");
                 }
 
-                var transactions = _unitOfWork.TransactionRepository.GetAllTransactions();
-                var bookingTransaction = transactions.Where(t => t.UserId == bookingExisted.UserId && request.BookingId == t.BookingId).FirstOrDefault();
-
-                if(bookingTransaction != null)
-                {
-                    return new BusinessResult(Const.FAIL_BOOKING, "There is already transaction existed !");
-                }
-
                 if (bookingExisted.Status != StatusBookingEnums.NONE.ToString())
                 {
-                    return new BusinessResult(Const.FAIL_BOOKING, "Booking is already has payment transaction !");
+                    return new BusinessResult(Const.FAIL_BOOKING, "Booking already has a payment transaction!");
                 }
 
-                var bookWithRoom = _unitOfWork.BookingRepository.GetBookingDetails();
-                var bookedRequest = bookWithRoom.Where(b => b.Id == request.BookingId)
-                    .FirstOrDefault();
+                var bookingDetails = _unitOfWork.BookingRepository.GetBookingDetails()
+                                                                  .FirstOrDefault(b => b.Id == request.BookingId);
 
                 bookingExisted.Status = StatusBookingEnums.PENDING.ToString();
                 bookingExisted.PaymentMethod = "PayOS";
                 _unitOfWork.BookingRepository.PrepareUpdate(bookingExisted);
-                var result = await _unitOfWork.BookingRepository.SaveAsync();
+
+                var results = await _unitOfWork.BookingRepository.SaveAsync();
+
+                if (results <= 0)
+                {
+                    return new BusinessResult(Const.FAIL_BOOKING, "Failed to update booking status!");
+                }
 
                 PayOS payOS = new PayOS(_clientID, _apiKey, _checkSum);
-                ItemData room = new ItemData(bookedRequest.Room.RoomName, 1, (int) bookingExisted.Fee);
+                ItemData room = new ItemData(bookingDetails.Room.RoomName, 1, (int) bookingExisted.Fee);
                 List<ItemData> items = new List<ItemData>();
                 items.Add(room);
 
@@ -99,13 +98,13 @@ namespace StudySpace.Service.Services
                     PaymentCode = createPayment.orderCode.ToString(),
                     PaymentLink = createPayment.paymentLinkId,
                     PaymentStatus = createPayment.status,
-                    PaymentDate = DateTime.Now
+                    PaymentDate = DateTime.Now,
+                    PaymentUrl = createPayment.checkoutUrl
                 };
 
-                
                 var resultTrans = await _unitOfWork.TransactionRepository.CreateAsync(trans);
 
-                if(resultTrans <= 0)
+                if (resultTrans <= 0)
                 {
                     return new BusinessResult(Const.FAIL_BOOKING, "Fail in saving Transaction !");
                 }
@@ -142,6 +141,51 @@ namespace StudySpace.Service.Services
                     return new BusinessResult(Const.SUCCESS_READ, Const.SUCCESS_READ_MSG, paymentLinkInformation);
                 }
             } 
+            catch (Exception ex)
+            {
+                return new BusinessResult(Const.ERROR_EXEPTION, ex.Message);
+            }
+        }
+
+        public async Task<IBusinessResult> CancelPayment(int transactionID, string cancelReason)
+        {
+            try
+            {
+                var transaction = await _unitOfWork.TransactionRepository.GetByIdAsync(transactionID);
+                if (transaction == null)
+                {
+                    return new BusinessResult(Const.FAIL_BOOKING, "Transaction does not existed !");
+                }
+
+                long paymentCode = long.Parse(transaction.PaymentCode);
+
+                PayOS payOS = new PayOS(_clientID, _apiKey, _checkSum);
+                PaymentLinkInformation cancelledPaymentLinkInfo;
+
+                if (string.IsNullOrEmpty(cancelReason))
+                {
+                    cancelledPaymentLinkInfo = await payOS.cancelPaymentLink(paymentCode);
+                } else
+                {
+                    cancelledPaymentLinkInfo = await payOS.cancelPaymentLink(paymentCode, cancelReason);
+                }
+
+                if (cancelledPaymentLinkInfo == null)
+                {
+                    return new BusinessResult(Const.FAIL_BOOKING, "Wrong bookingID");
+                }
+                transaction.PaymentStatus = StatusBookingEnums.CANCELED.ToString();
+                transaction.PaymentDate = DateTime.Now;
+                transaction.PaymentUrl = null;
+
+                var result = await _unitOfWork.TransactionRepository.UpdateAsync(transaction);
+                if(result <= 0)
+                {
+                    return new BusinessResult(Const.FAIL_UDATE, "Fail at update transactions");
+                }
+
+                return new BusinessResult(Const.SUCCESS_BOOKED, "Cancel Payment Success !", cancelledPaymentLinkInfo);
+            }
             catch (Exception ex)
             {
                 return new BusinessResult(Const.ERROR_EXEPTION, ex.Message);

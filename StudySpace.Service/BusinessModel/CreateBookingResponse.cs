@@ -8,8 +8,9 @@ namespace StudySpace.Service.BusinessModel
 {
     public class CreateBookingResponse
     {
-        public int? UserId { get; set; }
+        public int? BookingId { get; set; }
         public int? RoomId { get; set; }
+        public int? UserId { get; set; }
         public string RoomName { get; set; }
         public string CheckInDate { get; set; }
         public string CheckInTime { get; set; }
