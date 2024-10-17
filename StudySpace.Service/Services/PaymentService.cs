@@ -75,8 +75,6 @@ namespace StudySpace.Service.Services
                 _unitOfWork.BookingRepository.PrepareUpdate(bookingExisted);
                 var result = await _unitOfWork.BookingRepository.SaveAsync();
 
-                
-
                 PayOS payOS = new PayOS(_clientID, _apiKey, _checkSum);
                 ItemData room = new ItemData(bookedRequest.Room.RoomName, 1, (int) bookingExisted.Fee);
                 List<ItemData> items = new List<ItemData>();
