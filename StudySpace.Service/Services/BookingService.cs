@@ -230,6 +230,7 @@ namespace StudySpace.Service.Services
                                               {
                                                   UserId = t.UserId,
                                                   RoomId = t.RoomId,
+                                                  BookingId = t.Id,
                                                   RoomName = t.Room.RoomName,
                                                   CheckInDate = t.StartTime.HasValue ? t.StartTime.Value.ToString("yyyy-MM-dd") : null,
                                                   CheckInTime = t.StartTime.HasValue ? t.StartTime.Value.ToString("HH:mm:ss") : null,

@@ -1,6 +1,7 @@
 ﻿using Google.Apis.Http;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using Net.payOS;
 using Net.payOS.Types;
 using Org.BouncyCastle.Utilities;
@@ -23,7 +24,7 @@ namespace StudySpace.Service.Services
     {
         Task<IBusinessResult> CreatePaymentWithPayOS(CreatePaymentRequest request);
         Task<IBusinessResult> GetPaymentDetailsPayOS(int transactionID);
-        Task<IBusinessResult> CancelPayment(long bookingId, string cancelReason);
+        Task<IBusinessResult> CancelPayment(int transactionID, string cancelReason);
     }
 
     public class PaymentService : IPaymentService
@@ -52,14 +53,6 @@ namespace StudySpace.Service.Services
                 if (bookingExisted == null)
                 {
                     return new BusinessResult(Const.WARNING_NO_DATA, "No booking was found !");
-                }
-
-                var existingTransaction = _unitOfWork.TransactionRepository.GetAllTransactions()
-                                    .FirstOrDefault(t => t.UserId == bookingExisted.UserId && t.BookingId == request.BookingId);
-
-                if (existingTransaction != null)
-                {
-                    return new BusinessResult(Const.FAIL_BOOKING, "A transaction already exists!");
                 }
 
                 if (bookingExisted.Status != StatusBookingEnums.NONE.ToString())
@@ -154,17 +147,41 @@ namespace StudySpace.Service.Services
             }
         }
 
-        public async Task<IBusinessResult> CancelPayment(long bookingId, string cancelReason)
+        public async Task<IBusinessResult> CancelPayment(int transactionID, string cancelReason)
         {
             try
             {
-                PayOS payOS = new PayOS(_clientID, _apiKey, _checkSum);
+                var transaction = await _unitOfWork.TransactionRepository.GetByIdAsync(transactionID);
+                if (transaction == null)
+                {
+                    return new BusinessResult(Const.FAIL_BOOKING, "Transaction does not existed !");
+                }
 
-                PaymentLinkInformation cancelledPaymentLinkInfo = await payOS.cancelPaymentLink(bookingId, cancelReason);
+                long paymentCode = long.Parse(transaction.PaymentCode);
+
+                PayOS payOS = new PayOS(_clientID, _apiKey, _checkSum);
+                PaymentLinkInformation cancelledPaymentLinkInfo;
+
+                if (string.IsNullOrEmpty(cancelReason))
+                {
+                    cancelledPaymentLinkInfo = await payOS.cancelPaymentLink(paymentCode);
+                } else
+                {
+                    cancelledPaymentLinkInfo = await payOS.cancelPaymentLink(paymentCode, cancelReason);
+                }
 
                 if (cancelledPaymentLinkInfo == null)
                 {
                     return new BusinessResult(Const.FAIL_BOOKING, "Wrong bookingID");
+                }
+                transaction.PaymentStatus = StatusBookingEnums.CANCELED.ToString();
+                transaction.PaymentDate = DateTime.Now;
+                transaction.PaymentUrl = null;
+
+                var result = await _unitOfWork.TransactionRepository.UpdateAsync(transaction);
+                if(result <= 0)
+                {
+                    return new BusinessResult(Const.FAIL_UDATE, "Fail at update transactions");
                 }
 
                 return new BusinessResult(Const.SUCCESS_BOOKED, "Cancel Payment Success !", cancelledPaymentLinkInfo);
