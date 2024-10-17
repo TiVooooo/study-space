@@ -281,6 +281,9 @@ public partial class EXE201_StudySpaceContext : DbContext
             entity.Property(e => e.PaymentDate).HasColumnType("datetime");
             entity.Property(e => e.PaymentLink).HasMaxLength(500);
             entity.Property(e => e.PaymentStatus).HasMaxLength(50);
+            entity.Property(e => e.PaymentUrl)
+                .HasMaxLength(255)
+                .IsUnicode(false);
             entity.Property(e => e.StoreId).HasColumnName("StoreID");
             entity.Property(e => e.UserId).HasColumnName("UserID");
 
