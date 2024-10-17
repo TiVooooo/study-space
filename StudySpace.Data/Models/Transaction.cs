@@ -29,6 +29,8 @@ public partial class Transaction
 
     public DateTime? PaymentDate { get; set; }
 
+    public string PaymentUrl { get; set; }
+
     public virtual Booking Booking { get; set; }
 
     public virtual Package Package { get; set; }
