@@ -53,30 +53,35 @@ namespace StudySpace.Service.Services
                     return new BusinessResult(Const.WARNING_NO_DATA, "No booking was found !");
                 }
 
-                var transactions = _unitOfWork.TransactionRepository.GetAllTransactions();
-                var bookingTransaction = transactions.Where(t => t.UserId == bookingExisted.UserId && request.BookingId == t.BookingId).FirstOrDefault();
+                var existingTransaction = _unitOfWork.TransactionRepository.GetAllTransactions()
+                                    .FirstOrDefault(t => t.UserId == bookingExisted.UserId && t.BookingId == request.BookingId);
 
-                if(bookingTransaction != null)
+                if (existingTransaction != null)
                 {
-                    return new BusinessResult(Const.FAIL_BOOKING, "There is already transaction existed !");
+                    return new BusinessResult(Const.FAIL_BOOKING, "A transaction already exists!");
                 }
 
                 if (bookingExisted.Status != StatusBookingEnums.NONE.ToString())
                 {
-                    return new BusinessResult(Const.FAIL_BOOKING, "Booking is already has payment transaction !");
+                    return new BusinessResult(Const.FAIL_BOOKING, "Booking already has a payment transaction!");
                 }
 
-                var bookWithRoom = _unitOfWork.BookingRepository.GetBookingDetails();
-                var bookedRequest = bookWithRoom.Where(b => b.Id == request.BookingId)
-                    .FirstOrDefault();
+                var bookingDetails = _unitOfWork.BookingRepository.GetBookingDetails()
+                                                                  .FirstOrDefault(b => b.Id == request.BookingId);
 
                 bookingExisted.Status = StatusBookingEnums.PENDING.ToString();
                 bookingExisted.PaymentMethod = "PayOS";
                 _unitOfWork.BookingRepository.PrepareUpdate(bookingExisted);
-                var result = await _unitOfWork.BookingRepository.SaveAsync();
+
+                var results = await _unitOfWork.BookingRepository.SaveAsync();
+
+                if (results <= 0)
+                {
+                    return new BusinessResult(Const.FAIL_BOOKING, "Failed to update booking status!");
+                }
 
                 PayOS payOS = new PayOS(_clientID, _apiKey, _checkSum);
-                ItemData room = new ItemData(bookedRequest.Room.RoomName, 1, (int) bookingExisted.Fee);
+                ItemData room = new ItemData(bookingDetails.Room.RoomName, 1, (int) bookingExisted.Fee);
                 List<ItemData> items = new List<ItemData>();
                 items.Add(room);
 
@@ -99,13 +104,13 @@ namespace StudySpace.Service.Services
                     PaymentCode = createPayment.orderCode.ToString(),
                     PaymentLink = createPayment.paymentLinkId,
                     PaymentStatus = createPayment.status,
-                    PaymentDate = DateTime.Now
+                    PaymentDate = DateTime.Now,
+                    PaymentUrl = createPayment.checkoutUrl
                 };
 
-                
                 var resultTrans = await _unitOfWork.TransactionRepository.CreateAsync(trans);
 
-                if(resultTrans <= 0)
+                if (resultTrans <= 0)
                 {
                     return new BusinessResult(Const.FAIL_BOOKING, "Fail in saving Transaction !");
                 }
