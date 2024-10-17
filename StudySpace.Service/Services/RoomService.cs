@@ -756,6 +756,7 @@ namespace StudySpace.Service.Services
 
                     var roomModel = new GetBookedRoomInUserModel
                     {
+                        BookingId = booking.Id,
                         RoomId = r.Id,
                         RoomName = r.RoomName,
                         StoreName = store.Name,
@@ -776,7 +777,7 @@ namespace StudySpace.Service.Services
                         PaymentMethod = booking.PaymentMethod,
                         Start = booking.StartTime?.TimeOfDay,
                         End = booking.EndTime?.TimeOfDay,
-                        IsFeedback = isFeedback
+                        IsFeedback = false
                     };
                     result.Add(roomModel);
                 }

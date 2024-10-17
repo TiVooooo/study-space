@@ -8,6 +8,8 @@ namespace StudySpace.Service.BusinessModel
 {
     public class GetBookedRoomInUserModel
     {
+
+        public int BookingId { get; set; }
         public int RoomId { get; set; }
         public string RoomName { get; set; }
 

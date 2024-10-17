@@ -282,10 +282,10 @@ namespace StudySpace.Service.Services
         {
             try
             {
-                var checkHasBooking = _unitOfWork.BookingRepository.FindByCondition(b => b.UserId == feedback.UserId && b.RoomId == feedback.BookingId).FirstOrDefault();
+                var checkHasBooking = _unitOfWork.BookingRepository.FindByCondition(b => b.UserId == feedback.UserId && b.Id == feedback.BookingId).FirstOrDefault();
                 if (checkHasBooking == null)
                 {
-                    return new BusinessResult(Const.WARNING_NO_DATA, Const.WARNING_NO_DATA_MSG);
+                    return new BusinessResult(Const.WARNING_NO_DATA, Const.WARNING_NO_DATA_MSG, "Booking is not valid!");
                 }
 
                 var newFeedback = new Feedback
