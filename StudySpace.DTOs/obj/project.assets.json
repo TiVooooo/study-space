@@ -8130,11 +8130,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\study-space\\StudySpace.DTOs\\StudySpace.DTOs.csproj",
+      "projectUniqueName": "D:\\Learning Resource\\study-space\\StudySpace.DTOs\\StudySpace.DTOs.csproj",
       "projectName": "StudySpace.DTOs",
-      "projectPath": "D:\\study-space\\StudySpace.DTOs\\StudySpace.DTOs.csproj",
+      "projectPath": "D:\\Learning Resource\\study-space\\StudySpace.DTOs\\StudySpace.DTOs.csproj",
       "packagesPath": "C:\\Users\\BINF\\.nuget\\packages\\",
-      "outputPath": "D:\\study-space\\StudySpace.DTOs\\obj\\",
+      "outputPath": "D:\\Learning Resource\\study-space\\StudySpace.DTOs\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -8156,8 +8156,8 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "D:\\study-space\\StudySpace.Data\\StudySpace.Data.csproj": {
-              "projectPath": "D:\\study-space\\StudySpace.Data\\StudySpace.Data.csproj"
+            "D:\\Learning Resource\\study-space\\StudySpace.Data\\StudySpace.Data.csproj": {
+              "projectPath": "D:\\Learning Resource\\study-space\\StudySpace.Data\\StudySpace.Data.csproj"
             }
           }
         }
