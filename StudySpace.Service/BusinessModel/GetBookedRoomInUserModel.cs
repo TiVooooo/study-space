@@ -34,7 +34,7 @@ namespace StudySpace.Service.BusinessModel
         public bool? isOvernight { get; set; }
 
         public string TypeSpace { get; set; }
-        public  DateTime? BookedDate { get; set; }
+        public string BookedDate { get; set; }
         public string BookedTime { get; set; }
         public string BookingStatus { get; set; }
         public string Start {  get; set; }

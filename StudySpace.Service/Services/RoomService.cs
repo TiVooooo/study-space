@@ -736,6 +736,7 @@ namespace StudySpace.Service.Services
 
                 var result = _unitOfWork.BookingRepository.GetBookingDetails()
                                                           .Where(b => b.UserId == userId)
+                                                          .OrderByDescending(b => b.BookingDate)
                                                           .Select(booking => new GetBookedRoomInUserModel
                                                                     {
                                                                         BookingId = booking.Id,
@@ -750,9 +751,9 @@ namespace StudySpace.Service.Services
                                                                         Type = booking.Room.Type,
                                                                         Address = booking.Room.Store.Address,
                                                                         Image = booking.Room.ImageRooms.FirstOrDefault().ImageUrl,
-                                                                        BookedDate = booking.BookingDate,
+                                                                        BookedDate = booking.BookingDate.HasValue ? booking.BookingDate.Value.ToString("yy:mm:dd") : null,
                                                                         BookedTime = booking.BookingDate.HasValue ? booking.BookingDate.Value.ToString("HH:mm:ss") : null,
-                                                              BookingStatus = booking.Status,
+                                                                        BookingStatus = booking.Status,
                                                                         CheckIn = booking.Checkin ?? false,
                                                                         isOvernight = booking.Room.Store.IsOverNight,
                                                                         TypeSpace = booking.Room.Space.SpaceName,
