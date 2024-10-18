@@ -751,7 +751,7 @@ namespace StudySpace.Service.Services
                                                                         Type = booking.Room.Type,
                                                                         Address = booking.Room.Store.Address,
                                                                         Image = booking.Room.ImageRooms.FirstOrDefault().ImageUrl,
-                                                                        BookedDate = booking.BookingDate.HasValue ? booking.BookingDate.Value.ToString("yy:mm:dd") : null,
+                                                                        BookedDate = booking.BookingDate.HasValue ? booking.BookingDate.Value.ToString("yyyy-MM-dd") : null,
                                                                         BookedTime = booking.BookingDate.HasValue ? booking.BookingDate.Value.ToString("HH:mm:ss") : null,
                                                                         BookingStatus = booking.Status,
                                                                         CheckIn = booking.Checkin ?? false,
