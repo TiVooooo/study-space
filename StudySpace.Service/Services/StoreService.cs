@@ -248,13 +248,22 @@ namespace StudySpace.Service.Services
                     Address = model.Address,
                     Phone = model.Phone,
                     CreateDate = DateTime.Now,
-                    OpenTime = model.OpenTime,
-                    CloseTime = model.CloseTime,
                     IsOverNight = model.IsOverNight,
                     IsActive = true,
                     TaxNumber = "-1",
                     PostalNumber = "-1",
                 };
+
+                if (model.IsOverNight == false)
+                {
+                    newStore.OpenTime = model.OpenTime;
+                    newStore.CloseTime = model.CloseTime;
+                }
+                else
+                {
+                    newStore.OpenTime = DateTime.Today.Add(new TimeSpan(0, 0, 0));
+                    newStore.CloseTime = DateTime.Today.Add(new TimeSpan(23, 59, 59)); 
+                }
 
                 _unitOfWork.StoreRepository.PrepareCreate(newStore);
                 int result = _unitOfWork.AccountRepository.Save();
