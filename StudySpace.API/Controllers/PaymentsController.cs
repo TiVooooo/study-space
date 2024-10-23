@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Net.payOS.Types;
 using StudySpace.Service.BusinessModel;
+using StudySpace.Service.Helper;
 using StudySpace.Service.Services;
+using System.Text.Json;
 
 namespace StudySpace.API.Controllers
 {
@@ -32,5 +35,12 @@ namespace StudySpace.API.Controllers
         {
             return Ok(await _paymentService.CancelPayment(transactionID, reason));
         }
+
+        [HttpPost]
+        public async Task PayOSWebhook([FromBody]WebhookType webhookData)
+        {
+            await _paymentService.ProcessWebhook(webhookData);
+        }
+
     }
 }

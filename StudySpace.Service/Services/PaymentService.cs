@@ -11,6 +11,7 @@ using StudySpace.Data.Models;
 using StudySpace.Data.UnitOfWork;
 using StudySpace.Service.Base;
 using StudySpace.Service.BusinessModel;
+using StudySpace.Service.Helper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,6 +26,7 @@ namespace StudySpace.Service.Services
         Task<IBusinessResult> CreatePaymentWithPayOS(CreatePaymentRequest request);
         Task<IBusinessResult> GetPaymentDetailsPayOS(int transactionID);
         Task<IBusinessResult> CancelPayment(int transactionID, string cancelReason);
+        Task ProcessWebhook(WebhookType webhookData);
     }
 
     public class PaymentService : IPaymentService
@@ -136,7 +138,8 @@ namespace StudySpace.Service.Services
                 if(paymentLinkInformation == null)
                 {
                     return new BusinessResult(Const.WARNING_NO_DATA, "Not found link information or have not created payOS link yet !");
-                } else
+                } 
+                else
                 {
                     return new BusinessResult(Const.SUCCESS_READ, Const.SUCCESS_READ_MSG, paymentLinkInformation);
                 }
@@ -191,5 +194,24 @@ namespace StudySpace.Service.Services
                 return new BusinessResult(Const.ERROR_EXEPTION, ex.Message);
             }
         }
+
+        public async Task ProcessWebhook(WebhookType webhookData)
+        {
+            try
+            {
+                PayOS payOS = new PayOS(_clientID, _apiKey, _checkSum);
+                payOS.verifyPaymentWebhookData(webhookData);
+
+                var trans = await _unitOfWork.TransactionRepository.GetByIdAsync((int)webhookData.data.orderCode);
+                trans.PaymentStatus = StatusBookingEnums.PENDING.ToString();
+
+                await _unitOfWork.TransactionRepository.UpdateAsync(trans);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error processing webhook: {ex.Message}");
+            }
+        }
+
     }
 }
