@@ -264,7 +264,7 @@ namespace StudySpace.Service.Services
                     return new BusinessResult(Const.FAIL_UDATE, "Fail at update transactions");
                 }
 
-                return new BusinessResult(Const.SUCCESS_BOOKED, "Cancel Payment Success !", cancelledPaymentLinkInfo);
+                return new BusinessResult(Const.SUCCESS_BOOKED, "Cancel Payment Success !");
             }
             catch (Exception ex)
             {
