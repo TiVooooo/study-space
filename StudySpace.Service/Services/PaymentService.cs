@@ -284,7 +284,7 @@ namespace StudySpace.Service.Services
                     var allTrans = await _unitOfWork.TransactionRepository.GetAllAsync();
                     var whoTrans = allTrans.Where(r => r.StoreId != null && r.PaymentCode == orderCode.ToString()).ToList();
 
-                    if (whoTrans.Any())
+                    if (whoTrans.Count() > 0)
                     {
 
                         var storeTrans = await _unitOfWork.TransactionRepository.GetByIdAsync(orderCode);

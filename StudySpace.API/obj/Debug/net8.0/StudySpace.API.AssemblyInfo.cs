@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("StudySpace.API")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6a40568d0566da769c3fcca041ad4dddc8cdb88d")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+cfd045ff334c6bff15cd4c3764f283532a14ec6f")]
 [assembly: System.Reflection.AssemblyProductAttribute("StudySpace.API")]
 [assembly: System.Reflection.AssemblyTitleAttribute("StudySpace.API")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
