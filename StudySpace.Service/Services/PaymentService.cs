@@ -277,8 +277,11 @@ namespace StudySpace.Service.Services
             try
             {
                 _payOS.verifyPaymentWebhookData(webhookData);
-
                 var orderCode = webhookData.data.orderCode;
+
+                var test = await _unitOfWork.TransactionRepository.GetByIdAsync(orderCode);
+                test.PaymentStatus = "TEST";
+
                 if (webhookData.code == "00")
                 {
                     var allTrans = await _unitOfWork.TransactionRepository.GetAllAsync();
