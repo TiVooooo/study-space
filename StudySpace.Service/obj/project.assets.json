@@ -9274,11 +9274,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\study-space\\StudySpace.Service\\StudySpace.Service.csproj",
+      "projectUniqueName": "D:\\Learning Resource\\study-space\\StudySpace.Service\\StudySpace.Service.csproj",
       "projectName": "StudySpace.Service",
-      "projectPath": "D:\\study-space\\StudySpace.Service\\StudySpace.Service.csproj",
+      "projectPath": "D:\\Learning Resource\\study-space\\StudySpace.Service\\StudySpace.Service.csproj",
       "packagesPath": "C:\\Users\\BINF\\.nuget\\packages\\",
-      "outputPath": "D:\\study-space\\StudySpace.Service\\obj\\",
+      "outputPath": "D:\\Learning Resource\\study-space\\StudySpace.Service\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -9300,14 +9300,14 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "D:\\study-space\\StudySpace.Common\\StudySpace.Common.csproj": {
-              "projectPath": "D:\\study-space\\StudySpace.Common\\StudySpace.Common.csproj"
+            "D:\\Learning Resource\\study-space\\StudySpace.Common\\StudySpace.Common.csproj": {
+              "projectPath": "D:\\Learning Resource\\study-space\\StudySpace.Common\\StudySpace.Common.csproj"
             },
-            "D:\\study-space\\StudySpace.Data\\StudySpace.Data.csproj": {
-              "projectPath": "D:\\study-space\\StudySpace.Data\\StudySpace.Data.csproj"
+            "D:\\Learning Resource\\study-space\\StudySpace.Data\\StudySpace.Data.csproj": {
+              "projectPath": "D:\\Learning Resource\\study-space\\StudySpace.Data\\StudySpace.Data.csproj"
             },
-            "D:\\study-space\\StudySpace.DTOs\\StudySpace.DTOs.csproj": {
-              "projectPath": "D:\\study-space\\StudySpace.DTOs\\StudySpace.DTOs.csproj"
+            "D:\\Learning Resource\\study-space\\StudySpace.DTOs\\StudySpace.DTOs.csproj": {
+              "projectPath": "D:\\Learning Resource\\study-space\\StudySpace.DTOs\\StudySpace.DTOs.csproj"
             }
           }
         }
