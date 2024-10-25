@@ -37,7 +37,7 @@ namespace StudySpace.API.Controllers
         }
 
         [HttpPost("cancelled/{transactionID}")]
-        public async Task<IActionResult> CancelPayment(int transactionID, string reason)
+        public async Task<IActionResult> CancelPayment(int transactionID, string? reason)
         {
             return Ok(await _paymentService.CancelPayment(transactionID, reason));
         }

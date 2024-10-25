@@ -228,7 +228,7 @@ namespace StudySpace.Service.Services
             }
         }
 
-        public async Task<IBusinessResult> CancelPayment(int transactionID, string cancelReason)
+        public async Task<IBusinessResult> CancelPayment(int transactionID, string? cancelReason)
         {
             try
             {
