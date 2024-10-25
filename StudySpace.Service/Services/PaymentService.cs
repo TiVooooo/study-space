@@ -278,9 +278,7 @@ namespace StudySpace.Service.Services
             {
                 _payOS.verifyPaymentWebhookData(webhookData);
                 var orderCode = webhookData.data.orderCode;
-
-                var test = await _unitOfWork.TransactionRepository.GetByIdAsync(orderCode);
-                test.PaymentStatus = "TEST";
+                var trans = await _unitOfWork.TransactionRepository.GetAllAsync();
 
                 if (webhookData.code == "00")
                 {
@@ -289,8 +287,8 @@ namespace StudySpace.Service.Services
 
                     if (whoTrans.Count() > 0)
                     {
+                        var storeTrans = trans.FirstOrDefault(r => r.PaymentCode == orderCode.ToString());
 
-                        var storeTrans = await _unitOfWork.TransactionRepository.GetByIdAsync(orderCode);
                         storeTrans.PaymentStatus = "PAID";
                         storeTrans.PaymentDate = DateTime.Now;
                         storeTrans.PaymentUrl = null;
@@ -309,7 +307,7 @@ namespace StudySpace.Service.Services
                     }
                     else
                     {
-                        var cusTrans = await _unitOfWork.TransactionRepository.GetByIdAsync(orderCode);
+                        var cusTrans = trans.FirstOrDefault(r => r.PaymentCode == orderCode.ToString());
                         cusTrans.PaymentDate = DateTime.Now;
                         cusTrans.PaymentStatus = "PAID";
                         cusTrans.PaymentUrl = null;
