@@ -24,6 +24,7 @@ namespace StudySpace.Service.Services
     public interface IPaymentService
     {
         Task<IBusinessResult> CreatePaymentWithPayOS(CreatePaymentRequest request);
+        Task<IBusinessResult> CreatePaymentSupplierWithPayOS(CreatePaymentSupplierRequest request);
         Task<IBusinessResult> GetPaymentDetailsPayOS(int transactionID);
         Task<IBusinessResult> CancelPayment(int transactionID, string cancelReason);
         Task ProcessWebhook(WebhookType webhookData);
@@ -39,12 +40,15 @@ namespace StudySpace.Service.Services
         private readonly string _apiKey;
         private readonly string _checkSum;
 
+        private readonly PayOS _payOS;
+
         public PaymentService(IConfiguration configuration)
         {
             _unitOfWork = new UnitOfWork();
             _clientID = configuration["PayOS:ClientID"];
             _apiKey = configuration["PayOS:ApiKey"];
             _checkSum = configuration["PayOS:ChecksumKey"];
+            _payOS = new PayOS(_clientID, _apiKey, _checkSum);
         }
 
         public async Task<IBusinessResult> CreatePaymentWithPayOS(CreatePaymentRequest request)
@@ -76,13 +80,12 @@ namespace StudySpace.Service.Services
                     return new BusinessResult(Const.FAIL_BOOKING, "Failed to update booking status!");
                 }
 
-                PayOS payOS = new PayOS(_clientID, _apiKey, _checkSum);
                 ItemData room = new ItemData(bookingDetails.Room.RoomName, 1, (int) bookingExisted.Fee);
                 List<ItemData> items = new List<ItemData>();
                 items.Add(room);
 
                 PaymentData paymentData = new PaymentData(bookingExisted.Id, request.Amount, request.Description, items, cancelURL, returnURL);
-                CreatePaymentResult createPayment = await payOS.createPaymentLink(paymentData);
+                CreatePaymentResult createPayment = await _payOS.createPaymentLink(paymentData);
 
                 if (createPayment == null)
                 {
@@ -95,6 +98,81 @@ namespace StudySpace.Service.Services
                     BookingId = request.BookingId,
                     PackageId = null,
                     StoreId = null,
+                    Date = DateTime.Now,
+                    Amount = request.Amount,
+                    PaymentCode = createPayment.orderCode.ToString(),
+                    PaymentLink = createPayment.paymentLinkId,
+                    PaymentStatus = createPayment.status,
+                    PaymentDate = DateTime.Now,
+                    PaymentUrl = createPayment.checkoutUrl
+                };
+
+                var resultTrans = await _unitOfWork.TransactionRepository.CreateAsync(trans);
+
+                if (resultTrans <= 0)
+                {
+                    return new BusinessResult(Const.FAIL_BOOKING, "Fail in saving Transaction !");
+                }
+
+                return new BusinessResult(Const.SUCCESS_CREATE, Const.SUCCESS_CREATE_MSG, createPayment);
+            }
+            catch (Exception ex)
+            {
+                return new BusinessResult(Const.ERROR_EXEPTION, ex.Message);
+            }
+        }
+
+        public async Task<IBusinessResult> CreatePaymentSupplierWithPayOS(CreatePaymentSupplierRequest request)
+        {
+            try
+            {
+                var pack_sup = await _unitOfWork.PackageRepository.GetByIdAsync(request.PackageID);
+
+                var pack = await _unitOfWork.StorePackageRepository.GetAllAsync();
+                var sup_pack = pack.Where(r => r.StoreId == request.StoreID && r.PackageId == request.PackageID && r.Status == true).ToList();
+
+                if (sup_pack.Count() > 0)
+                {
+                    return new BusinessResult(Const.FAIL_CREATE, "Supplier already has package !");
+                }
+
+                ItemData package = new ItemData(pack_sup.Name, 1, request.Amount);
+                List<ItemData> items = new List<ItemData>();
+                items.Add(package);
+
+                var orderCode = OrderCodeHashHelper.GenerateOrderCodeHash(request.StoreID, request.PackageID, DateTime.Now);
+
+                PaymentData paymentData = new PaymentData(orderCode, request.Amount, request.Description, items, cancelURL, returnURL);
+                CreatePaymentResult createPayment = await _payOS.createPaymentLink(paymentData);
+
+                if (createPayment == null)
+                {
+                    return new BusinessResult(Const.FAIL_BOOKING, "Create Payment link fail !");
+                }
+
+                var newSupPack = new StorePackage
+                {
+                    StoreId = request.StoreID,
+                    PackageId = request.PackageID,
+                    Fee = request.Amount,
+                    StartDate = null,
+                    Duration = request.Duration,
+                    Status = false
+                };
+
+                var resultSupPackTrans = await _unitOfWork.StorePackageRepository.CreateAsync(newSupPack);
+
+                if (resultSupPackTrans <= 0)
+                {
+                    return new BusinessResult(Const.FAIL_BOOKING, "Fail in saving StorePackage !");
+                }
+
+                var trans = new StudySpace.Data.Models.Transaction
+                {
+                    UserId = null,
+                    BookingId = null,
+                    PackageId = request.PackageID,
+                    StoreId = request.StoreID,
                     Date = DateTime.Now,
                     Amount = request.Amount,
                     PaymentCode = createPayment.orderCode.ToString(),
@@ -162,15 +240,14 @@ namespace StudySpace.Service.Services
 
                 long paymentCode = long.Parse(transaction.PaymentCode);
 
-                PayOS payOS = new PayOS(_clientID, _apiKey, _checkSum);
                 PaymentLinkInformation cancelledPaymentLinkInfo;
 
                 if (string.IsNullOrEmpty(cancelReason))
                 {
-                    cancelledPaymentLinkInfo = await payOS.cancelPaymentLink(paymentCode);
+                    cancelledPaymentLinkInfo = await _payOS.cancelPaymentLink(paymentCode);
                 } else
                 {
-                    cancelledPaymentLinkInfo = await payOS.cancelPaymentLink(paymentCode, cancelReason);
+                    cancelledPaymentLinkInfo = await _payOS.cancelPaymentLink(paymentCode, cancelReason);
                 }
 
                 if (cancelledPaymentLinkInfo == null)
@@ -199,13 +276,48 @@ namespace StudySpace.Service.Services
         {
             try
             {
-                PayOS payOS = new PayOS(_clientID, _apiKey, _checkSum);
-                payOS.verifyPaymentWebhookData(webhookData);
+                _payOS.verifyPaymentWebhookData(webhookData);
 
-                var trans = await _unitOfWork.TransactionRepository.GetByIdAsync((int)webhookData.data.orderCode);
-                trans.PaymentStatus = StatusBookingEnums.PENDING.ToString();
+                var orderCode = webhookData.data.orderCode;
+                if (webhookData.code == "00")
+                {
+                    var allTrans = await _unitOfWork.TransactionRepository.GetAllAsync();
+                    var whoTrans = allTrans.Where(r => r.StoreId != null && r.PaymentCode == orderCode.ToString()).ToList();
 
-                await _unitOfWork.TransactionRepository.UpdateAsync(trans);
+                    if (whoTrans.Any())
+                    {
+                        PaymentLinkInformation paymentLinkInformation = await _payOS.getPaymentLinkInformation(orderCode);
+
+                        var storeTrans = await _unitOfWork.TransactionRepository.GetByIdAsync(orderCode);
+                        storeTrans.PaymentStatus = paymentLinkInformation.status;
+                        storeTrans.PaymentDate = DateTime.Now;
+                        storeTrans.PaymentUrl = null;
+                        
+                        await _unitOfWork.TransactionRepository.UpdateAsync(storeTrans);
+
+                        var store_pack = await _unitOfWork.StorePackageRepository.GetAllAsync();
+
+                        var this_store_pack = store_pack.Where(r => r.StoreId == storeTrans.StoreId && r.PackageId == storeTrans.PackageId && r.StartDate == null).FirstOrDefault();
+                        
+                        this_store_pack.StartDate = DateTime.Now;
+                        this_store_pack.EndDate = DateTime.Now.AddMonths((int) this_store_pack.Duration.Value);
+                        this_store_pack.Status = true;
+
+                        await _unitOfWork.StorePackageRepository.UpdateAsync(this_store_pack);
+                    }
+                    else
+                    {
+                        PaymentLinkInformation paymentLinkInformation = await _payOS.getPaymentLinkInformation(orderCode);
+
+                        var cusTrans = await _unitOfWork.TransactionRepository.GetByIdAsync(orderCode);
+                        cusTrans.PaymentDate = DateTime.Now;
+                        cusTrans.PaymentStatus = paymentLinkInformation.status;
+                        cusTrans.PaymentUrl = null;
+
+                        await _unitOfWork.TransactionRepository.UpdateAsync(cusTrans);
+                    }
+                }
+
             }
             catch (Exception ex)
             {

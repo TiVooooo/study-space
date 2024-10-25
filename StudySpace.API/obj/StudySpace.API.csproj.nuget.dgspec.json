@@ -512,6 +512,10 @@
               "target": "Package",
               "version": "[5.0.17, )"
             },
+            "Microsoft.Extensions.Hosting": {
+              "target": "Package",
+              "version": "[8.0.1, )"
+            },
             "payOS": {
               "target": "Package",
               "version": "[1.0.7, )"
