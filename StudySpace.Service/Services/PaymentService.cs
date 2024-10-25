@@ -286,10 +286,9 @@ namespace StudySpace.Service.Services
 
                     if (whoTrans.Any())
                     {
-                        PaymentLinkInformation paymentLinkInformation = await _payOS.getPaymentLinkInformation(orderCode);
 
                         var storeTrans = await _unitOfWork.TransactionRepository.GetByIdAsync(orderCode);
-                        storeTrans.PaymentStatus = paymentLinkInformation.status;
+                        storeTrans.PaymentStatus = "PAID";
                         storeTrans.PaymentDate = DateTime.Now;
                         storeTrans.PaymentUrl = null;
                         
@@ -307,11 +306,9 @@ namespace StudySpace.Service.Services
                     }
                     else
                     {
-                        PaymentLinkInformation paymentLinkInformation = await _payOS.getPaymentLinkInformation(orderCode);
-
                         var cusTrans = await _unitOfWork.TransactionRepository.GetByIdAsync(orderCode);
                         cusTrans.PaymentDate = DateTime.Now;
-                        cusTrans.PaymentStatus = paymentLinkInformation.status;
+                        cusTrans.PaymentStatus = "PAID";
                         cusTrans.PaymentUrl = null;
 
                         await _unitOfWork.TransactionRepository.UpdateAsync(cusTrans);
