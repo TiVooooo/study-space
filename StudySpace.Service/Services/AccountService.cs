@@ -43,7 +43,7 @@ namespace StudySpace.Service.Services
         private readonly IMapper _mapper;
         private readonly string _jwtSecret = "s3cr3tKeyF0rJWT@2024!MustBe32Char$";
         private readonly string _confirmUrl;
-        private readonly string _frontendUrl = "";
+        private readonly string _frontendUrl = "https://study-space-admin-site.vercel.app/signUpInformation/";
         private readonly IFirebaseService _firebaseService;
 
         public AccountService(IMapper mapper, IEmailService emailService, IConfiguration config, IFirebaseService firebaseService)
