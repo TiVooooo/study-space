@@ -80,11 +80,13 @@ namespace StudySpace.Service.Services
                     return new BusinessResult(Const.FAIL_BOOKING, "Failed to update booking status!");
                 }
 
-                ItemData room = new ItemData(bookingDetails.Room.RoomName, 1, (int) bookingExisted.Fee);
+                var orderCode = OrderCodeHashHelper.GenerateOrderCodeHash(bookingExisted.User.Id, request.BookingId, DateTime.Now);
+
+                ItemData room = new ItemData(bookingDetails.Room.RoomName + " " + DateTime.Now, 1, (int) bookingExisted.Fee);
                 List<ItemData> items = new List<ItemData>();
                 items.Add(room);
 
-                PaymentData paymentData = new PaymentData(bookingExisted.Id, request.Amount, request.Description, items, cancelURL, returnURL);
+                PaymentData paymentData = new PaymentData(orderCode, request.Amount, request.Description, items, cancelURL, returnURL);
                 CreatePaymentResult createPayment = await _payOS.createPaymentLink(paymentData);
 
                 if (createPayment == null)
@@ -136,7 +138,7 @@ namespace StudySpace.Service.Services
                     return new BusinessResult(Const.FAIL_CREATE, "Supplier already has package !");
                 }
 
-                ItemData package = new ItemData(pack_sup.Name, 1, request.Amount);
+                ItemData package = new ItemData(pack_sup.Name + " " + DateTime.Now, 1, request.Amount);
                 List<ItemData> items = new List<ItemData>();
                 items.Add(package);
 
@@ -209,9 +211,7 @@ namespace StudySpace.Service.Services
 
                 long paymentCode = long.Parse(transactions.PaymentCode);
 
-                PayOS payOS = new PayOS(_clientID, _apiKey, _checkSum);
-
-                PaymentLinkInformation paymentLinkInformation = await payOS.getPaymentLinkInformation(paymentCode);
+                PaymentLinkInformation paymentLinkInformation = await _payOS.getPaymentLinkInformation(paymentCode);
 
                 if(paymentLinkInformation == null)
                 {

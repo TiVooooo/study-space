@@ -11,7 +11,7 @@ namespace StudySpace.Service.Helper
     {
         public static int GenerateOrderCodeHash(int storeId, int packageId, DateTime startDate)
         {
-            string input = $"{storeId}-{packageId}-{startDate:yyyyMMdd}";
+            string input = $"{storeId}-{packageId}-{startDate:yyyyMMddHHmmss}";
 
             using (SHA256 sha256 = SHA256.Create())
             {
