@@ -30,7 +30,9 @@ namespace StudySpace.Service.Services
         {
             try
             {
-                var transaction = _unitOfWork.TransactionRepository.FindByCondition(t => t.UserId == userId).ToList();
+                var transaction = _unitOfWork.TransactionRepository.FindByCondition(t => t.UserId == userId)
+                    .OrderByDescending(t => t.Date)
+                    .ToList();
                 var result = new List<TransactionUserModel>();
                 foreach (var transactionUser in transaction)
                 {

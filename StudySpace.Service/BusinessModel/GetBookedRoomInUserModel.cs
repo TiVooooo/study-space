@@ -34,11 +34,11 @@ namespace StudySpace.Service.BusinessModel
         public bool? isOvernight { get; set; }
 
         public string TypeSpace { get; set; }
-        public  DateTime? BookedDate { get; set; }
-        public TimeSpan? BookedTime { get; set; }
+        public string BookedDate { get; set; }
+        public string BookedTime { get; set; }
         public string BookingStatus { get; set; }
-        public TimeSpan? Start {  get; set; }
-        public TimeSpan? End { get; set; }
+        public string Start {  get; set; }
+        public string End { get; set; }
         public bool CheckIn {  get; set; }
         public string PaymentMethod { get; set; }
 
