@@ -244,16 +244,12 @@ namespace StudySpace.Service.Services
 
                 if (string.IsNullOrEmpty(cancelReason))
                 {
-                    cancelledPaymentLinkInfo = await _payOS.cancelPaymentLink(paymentCode);
+                    await _payOS.cancelPaymentLink(paymentCode);
                 } else
                 {
-                    cancelledPaymentLinkInfo = await _payOS.cancelPaymentLink(paymentCode, cancelReason);
+                    await _payOS.cancelPaymentLink(paymentCode, cancelReason);
                 }
 
-                if (cancelledPaymentLinkInfo == null)
-                {
-                    return new BusinessResult(Const.FAIL_BOOKING, "Wrong bookingID");
-                }
                 transaction.PaymentStatus = StatusBookingEnums.CANCELED.ToString();
                 transaction.PaymentDate = DateTime.Now;
                 transaction.PaymentUrl = null;
