@@ -240,8 +240,9 @@ namespace StudySpace.Service.Services
                 }
 
                 long paymentCode = long.Parse(transaction.PaymentCode);
+                
 
-                PaymentLinkInformation cancelledPaymentLinkInfo;
+                PaymentLinkInformation cancelledPaymentLinkInfo =  await _payOS.getPaymentLinkInformation(paymentCode);
 
                 if (string.IsNullOrEmpty(cancelReason))
                 {

@@ -1,0 +1,15 @@
+D:\Learning Resource\study-space\StudySpace.Data\bin\Debug\net8.0\StudySpace.Data.deps.json
+D:\Learning Resource\study-space\StudySpace.Data\bin\Debug\net8.0\StudySpace.Data.runtimeconfig.json
+D:\Learning Resource\study-space\StudySpace.Data\bin\Debug\net8.0\StudySpace.Data.dll
+D:\Learning Resource\study-space\StudySpace.Data\bin\Debug\net8.0\StudySpace.Data.pdb
+D:\Learning Resource\study-space\StudySpace.Data\obj\Debug\net8.0\StudySpace.Data.csproj.AssemblyReference.cache
+D:\Learning Resource\study-space\StudySpace.Data\obj\Debug\net8.0\StudySpace.Data.GeneratedMSBuildEditorConfig.editorconfig
+D:\Learning Resource\study-space\StudySpace.Data\obj\Debug\net8.0\StudySpace.Data.AssemblyInfoInputs.cache
+D:\Learning Resource\study-space\StudySpace.Data\obj\Debug\net8.0\StudySpace.Data.AssemblyInfo.cs
+D:\Learning Resource\study-space\StudySpace.Data\obj\Debug\net8.0\StudySpace.Data.csproj.CoreCompileInputs.cache
+D:\Learning Resource\study-space\StudySpace.Data\obj\Debug\net8.0\StudySpace.Data.sourcelink.json
+D:\Learning Resource\study-space\StudySpace.Data\obj\Debug\net8.0\StudySpace.Data.dll
+D:\Learning Resource\study-space\StudySpace.Data\obj\Debug\net8.0\refint\StudySpace.Data.dll
+D:\Learning Resource\study-space\StudySpace.Data\obj\Debug\net8.0\StudySpace.Data.pdb
+D:\Learning Resource\study-space\StudySpace.Data\obj\Debug\net8.0\StudySpace.Data.genruntimeconfig.cache
+D:\Learning Resource\study-space\StudySpace.Data\obj\Debug\net8.0\ref\StudySpace.Data.dll

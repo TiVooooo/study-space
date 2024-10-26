@@ -3195,7 +3195,7 @@
           "lib/netstandard2.0/NuGet.Versioning.dll": {}
         }
       },
-      "payOS/1.0.7": {
+      "payOS/1.0.8": {
         "type": "package",
         "dependencies": {
           "Newtonsoft.Json": "13.0.3"
@@ -10512,17 +10512,17 @@
         "nuget.versioning.nuspec"
       ]
     },
-    "payOS/1.0.7": {
-      "sha512": "4SqQbcEy/ZLYYmPeaoeMZLdElDrPQTgVz92Us7xAulPcfxB61Xx7+TkuFNHqGTFbtugfXoOjfZMBniOa0QxJ5A==",
+    "payOS/1.0.8": {
+      "sha512": "vi2N7QFqrdrl0bhX9smE0f3j4PIBYvE7Y+/VWXfMLEfP1kyUWK27xS4Czmp4GBWtNpCNCQKriFuns3msHxLjNQ==",
       "type": "package",
-      "path": "payos/1.0.7",
+      "path": "payos/1.0.8",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "README.md",
         "lib/net6.0/payos-lib-backend-dotnet.dll",
         "lib/net6.0/payos-lib-backend-dotnet.runtimeconfig.json",
-        "payos.1.0.7.nupkg.sha512",
+        "payos.1.0.8.nupkg.sha512",
         "payos.nuspec"
       ]
     },
@@ -15090,7 +15090,7 @@
       "StudySpace.Service >= 1.0.0",
       "Swashbuckle.AspNetCore >= 6.7.3",
       "System.IdentityModel.Tokens.Jwt >= 8.0.2",
-      "payOS >= 1.0.7"
+      "payOS >= 1.0.8"
     ]
   },
   "packageFolders": {
@@ -15208,7 +15208,7 @@
           },
           "payOS": {
             "target": "Package",
-            "version": "[1.0.7, )"
+            "version": "[1.0.8, )"
           }
         },
         "imports": [
