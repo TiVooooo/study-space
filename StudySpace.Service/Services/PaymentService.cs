@@ -224,7 +224,8 @@ namespace StudySpace.Service.Services
             } 
             catch (Exception ex)
             {
-                return new BusinessResult(Const.ERROR_EXEPTION, ex.Message);
+                throw new Exception(ex.Source + "\n" + ex.Message + "\n" + ex.StackTrace + "\n" + _apiKey + " \n"+  _checkSum +
+                    "\n" + _clientID);
             }
         }
 
