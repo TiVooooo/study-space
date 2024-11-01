@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Learning Resource\\study-space\\StudySpace.API\\StudySpace.API.csproj": {}
+    "D:\\Learning Resource\\Term08\\EXE201\\study-space\\StudySpace.API\\StudySpace.API.csproj": {}
   },
   "projects": {
-    "D:\\Learning Resource\\study-space\\StudySpace.API\\StudySpace.API.csproj": {
+    "D:\\Learning Resource\\Term08\\EXE201\\study-space\\StudySpace.API\\StudySpace.API.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Learning Resource\\study-space\\StudySpace.API\\StudySpace.API.csproj",
+        "projectUniqueName": "D:\\Learning Resource\\Term08\\EXE201\\study-space\\StudySpace.API\\StudySpace.API.csproj",
         "projectName": "StudySpace.API",
-        "projectPath": "D:\\Learning Resource\\study-space\\StudySpace.API\\StudySpace.API.csproj",
+        "projectPath": "D:\\Learning Resource\\Term08\\EXE201\\study-space\\StudySpace.API\\StudySpace.API.csproj",
         "packagesPath": "C:\\Users\\BINF\\.nuget\\packages\\",
-        "outputPath": "D:\\Learning Resource\\study-space\\StudySpace.API\\obj\\",
+        "outputPath": "D:\\Learning Resource\\Term08\\EXE201\\study-space\\StudySpace.API\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -33,17 +33,17 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "D:\\Learning Resource\\study-space\\StudySpace.Common\\StudySpace.Common.csproj": {
-                "projectPath": "D:\\Learning Resource\\study-space\\StudySpace.Common\\StudySpace.Common.csproj"
+              "D:\\Learning Resource\\Term08\\EXE201\\study-space\\StudySpace.Common\\StudySpace.Common.csproj": {
+                "projectPath": "D:\\Learning Resource\\Term08\\EXE201\\study-space\\StudySpace.Common\\StudySpace.Common.csproj"
               },
-              "D:\\Learning Resource\\study-space\\StudySpace.Data\\StudySpace.Data.csproj": {
-                "projectPath": "D:\\Learning Resource\\study-space\\StudySpace.Data\\StudySpace.Data.csproj"
+              "D:\\Learning Resource\\Term08\\EXE201\\study-space\\StudySpace.Data\\StudySpace.Data.csproj": {
+                "projectPath": "D:\\Learning Resource\\Term08\\EXE201\\study-space\\StudySpace.Data\\StudySpace.Data.csproj"
               },
-              "D:\\Learning Resource\\study-space\\StudySpace.DTOs\\StudySpace.DTOs.csproj": {
-                "projectPath": "D:\\Learning Resource\\study-space\\StudySpace.DTOs\\StudySpace.DTOs.csproj"
+              "D:\\Learning Resource\\Term08\\EXE201\\study-space\\StudySpace.DTOs\\StudySpace.DTOs.csproj": {
+                "projectPath": "D:\\Learning Resource\\Term08\\EXE201\\study-space\\StudySpace.DTOs\\StudySpace.DTOs.csproj"
               },
-              "D:\\Learning Resource\\study-space\\StudySpace.Service\\StudySpace.Service.csproj": {
-                "projectPath": "D:\\Learning Resource\\study-space\\StudySpace.Service\\StudySpace.Service.csproj"
+              "D:\\Learning Resource\\Term08\\EXE201\\study-space\\StudySpace.Service\\StudySpace.Service.csproj": {
+                "projectPath": "D:\\Learning Resource\\Term08\\EXE201\\study-space\\StudySpace.Service\\StudySpace.Service.csproj"
               }
             }
           }
@@ -141,14 +141,14 @@
         }
       }
     },
-    "D:\\Learning Resource\\study-space\\StudySpace.Common\\StudySpace.Common.csproj": {
+    "D:\\Learning Resource\\Term08\\EXE201\\study-space\\StudySpace.Common\\StudySpace.Common.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Learning Resource\\study-space\\StudySpace.Common\\StudySpace.Common.csproj",
+        "projectUniqueName": "D:\\Learning Resource\\Term08\\EXE201\\study-space\\StudySpace.Common\\StudySpace.Common.csproj",
         "projectName": "StudySpace.Common",
-        "projectPath": "D:\\Learning Resource\\study-space\\StudySpace.Common\\StudySpace.Common.csproj",
+        "projectPath": "D:\\Learning Resource\\Term08\\EXE201\\study-space\\StudySpace.Common\\StudySpace.Common.csproj",
         "packagesPath": "C:\\Users\\BINF\\.nuget\\packages\\",
-        "outputPath": "D:\\Learning Resource\\study-space\\StudySpace.Common\\obj\\",
+        "outputPath": "D:\\Learning Resource\\Term08\\EXE201\\study-space\\StudySpace.Common\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -170,8 +170,8 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "D:\\Learning Resource\\study-space\\StudySpace.Data\\StudySpace.Data.csproj": {
-                "projectPath": "D:\\Learning Resource\\study-space\\StudySpace.Data\\StudySpace.Data.csproj"
+              "D:\\Learning Resource\\Term08\\EXE201\\study-space\\StudySpace.Data\\StudySpace.Data.csproj": {
+                "projectPath": "D:\\Learning Resource\\Term08\\EXE201\\study-space\\StudySpace.Data\\StudySpace.Data.csproj"
               }
             }
           }
@@ -232,14 +232,14 @@
         }
       }
     },
-    "D:\\Learning Resource\\study-space\\StudySpace.Data\\StudySpace.Data.csproj": {
+    "D:\\Learning Resource\\Term08\\EXE201\\study-space\\StudySpace.Data\\StudySpace.Data.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Learning Resource\\study-space\\StudySpace.Data\\StudySpace.Data.csproj",
+        "projectUniqueName": "D:\\Learning Resource\\Term08\\EXE201\\study-space\\StudySpace.Data\\StudySpace.Data.csproj",
         "projectName": "StudySpace.Data",
-        "projectPath": "D:\\Learning Resource\\study-space\\StudySpace.Data\\StudySpace.Data.csproj",
+        "projectPath": "D:\\Learning Resource\\Term08\\EXE201\\study-space\\StudySpace.Data\\StudySpace.Data.csproj",
         "packagesPath": "C:\\Users\\BINF\\.nuget\\packages\\",
-        "outputPath": "D:\\Learning Resource\\study-space\\StudySpace.Data\\obj\\",
+        "outputPath": "D:\\Learning Resource\\Term08\\EXE201\\study-space\\StudySpace.Data\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -345,14 +345,14 @@
         }
       }
     },
-    "D:\\Learning Resource\\study-space\\StudySpace.DTOs\\StudySpace.DTOs.csproj": {
+    "D:\\Learning Resource\\Term08\\EXE201\\study-space\\StudySpace.DTOs\\StudySpace.DTOs.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Learning Resource\\study-space\\StudySpace.DTOs\\StudySpace.DTOs.csproj",
+        "projectUniqueName": "D:\\Learning Resource\\Term08\\EXE201\\study-space\\StudySpace.DTOs\\StudySpace.DTOs.csproj",
         "projectName": "StudySpace.DTOs",
-        "projectPath": "D:\\Learning Resource\\study-space\\StudySpace.DTOs\\StudySpace.DTOs.csproj",
+        "projectPath": "D:\\Learning Resource\\Term08\\EXE201\\study-space\\StudySpace.DTOs\\StudySpace.DTOs.csproj",
         "packagesPath": "C:\\Users\\BINF\\.nuget\\packages\\",
-        "outputPath": "D:\\Learning Resource\\study-space\\StudySpace.DTOs\\obj\\",
+        "outputPath": "D:\\Learning Resource\\Term08\\EXE201\\study-space\\StudySpace.DTOs\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -374,8 +374,8 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "D:\\Learning Resource\\study-space\\StudySpace.Data\\StudySpace.Data.csproj": {
-                "projectPath": "D:\\Learning Resource\\study-space\\StudySpace.Data\\StudySpace.Data.csproj"
+              "D:\\Learning Resource\\Term08\\EXE201\\study-space\\StudySpace.Data\\StudySpace.Data.csproj": {
+                "projectPath": "D:\\Learning Resource\\Term08\\EXE201\\study-space\\StudySpace.Data\\StudySpace.Data.csproj"
               }
             }
           }
@@ -436,14 +436,14 @@
         }
       }
     },
-    "D:\\Learning Resource\\study-space\\StudySpace.Service\\StudySpace.Service.csproj": {
+    "D:\\Learning Resource\\Term08\\EXE201\\study-space\\StudySpace.Service\\StudySpace.Service.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Learning Resource\\study-space\\StudySpace.Service\\StudySpace.Service.csproj",
+        "projectUniqueName": "D:\\Learning Resource\\Term08\\EXE201\\study-space\\StudySpace.Service\\StudySpace.Service.csproj",
         "projectName": "StudySpace.Service",
-        "projectPath": "D:\\Learning Resource\\study-space\\StudySpace.Service\\StudySpace.Service.csproj",
+        "projectPath": "D:\\Learning Resource\\Term08\\EXE201\\study-space\\StudySpace.Service\\StudySpace.Service.csproj",
         "packagesPath": "C:\\Users\\BINF\\.nuget\\packages\\",
-        "outputPath": "D:\\Learning Resource\\study-space\\StudySpace.Service\\obj\\",
+        "outputPath": "D:\\Learning Resource\\Term08\\EXE201\\study-space\\StudySpace.Service\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -465,14 +465,14 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "D:\\Learning Resource\\study-space\\StudySpace.Common\\StudySpace.Common.csproj": {
-                "projectPath": "D:\\Learning Resource\\study-space\\StudySpace.Common\\StudySpace.Common.csproj"
+              "D:\\Learning Resource\\Term08\\EXE201\\study-space\\StudySpace.Common\\StudySpace.Common.csproj": {
+                "projectPath": "D:\\Learning Resource\\Term08\\EXE201\\study-space\\StudySpace.Common\\StudySpace.Common.csproj"
               },
-              "D:\\Learning Resource\\study-space\\StudySpace.Data\\StudySpace.Data.csproj": {
-                "projectPath": "D:\\Learning Resource\\study-space\\StudySpace.Data\\StudySpace.Data.csproj"
+              "D:\\Learning Resource\\Term08\\EXE201\\study-space\\StudySpace.Data\\StudySpace.Data.csproj": {
+                "projectPath": "D:\\Learning Resource\\Term08\\EXE201\\study-space\\StudySpace.Data\\StudySpace.Data.csproj"
               },
-              "D:\\Learning Resource\\study-space\\StudySpace.DTOs\\StudySpace.DTOs.csproj": {
-                "projectPath": "D:\\Learning Resource\\study-space\\StudySpace.DTOs\\StudySpace.DTOs.csproj"
+              "D:\\Learning Resource\\Term08\\EXE201\\study-space\\StudySpace.DTOs\\StudySpace.DTOs.csproj": {
+                "projectPath": "D:\\Learning Resource\\Term08\\EXE201\\study-space\\StudySpace.DTOs\\StudySpace.DTOs.csproj"
               }
             }
           }

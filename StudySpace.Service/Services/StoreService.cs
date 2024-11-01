@@ -42,15 +42,16 @@ namespace StudySpace.Service.Services
         private readonly IMapper _mapper;
         private readonly string _jwtSecret = "s3cr3tKeyF0rJWT@2024!MustBe32Char$";
         private readonly IFirebaseService _firebaseService;
-        private readonly string _registerSuccessURL = "https//front-end";
+        private readonly string _registerSuccessURL;
 
         public StoreService(IMapper mapper, IEmailService emailService, IConfiguration config, IFirebaseService firebaseService)
         {
             _unitOfWork ??= new UnitOfWork();
             _mapper = mapper;
             _emailService = emailService;
-            _confirmUrl = config["ConfirmUrl"];
+            _confirmUrl = config["ConfirmUrl-admin"];
             _firebaseService = firebaseService;
+            _registerSuccessURL = config["FrontEndUrl-admin"];
         }
 
         public async Task<IBusinessResult> DeleteById(int id)

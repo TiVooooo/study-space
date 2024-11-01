@@ -33,8 +33,8 @@ namespace StudySpace.Service.Services
     public class PaymentService : IPaymentService
     {
         private readonly UnitOfWork _unitOfWork;
-        private readonly static string cancelURL = "http://localhost:3000/payment-cancel";
-        private readonly static string returnURL = "http://localhost:3000/payment-success";
+        private readonly string _cancelURL;
+        private readonly string _returnURL;
 
         private readonly string _clientID;
         private readonly string _apiKey;
@@ -49,6 +49,8 @@ namespace StudySpace.Service.Services
             _apiKey = configuration["PayOS:ApiKey"];
             _checkSum = configuration["PayOS:ChecksumKey"];
             _payOS = new PayOS(_clientID, _apiKey, _checkSum);
+            _cancelURL = configuration["CancelURL"];
+            _returnURL = configuration["ReturnURL"];
         }
 
         public async Task<IBusinessResult> CreatePaymentWithPayOS(CreatePaymentRequest request)

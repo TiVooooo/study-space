@@ -9298,11 +9298,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Learning Resource\\study-space\\StudySpace.Data\\StudySpace.Data.csproj",
+      "projectUniqueName": "D:\\Learning Resource\\Term08\\EXE201\\study-space\\StudySpace.Data\\StudySpace.Data.csproj",
       "projectName": "StudySpace.Data",
-      "projectPath": "D:\\Learning Resource\\study-space\\StudySpace.Data\\StudySpace.Data.csproj",
+      "projectPath": "D:\\Learning Resource\\Term08\\EXE201\\study-space\\StudySpace.Data\\StudySpace.Data.csproj",
       "packagesPath": "C:\\Users\\BINF\\.nuget\\packages\\",
-      "outputPath": "D:\\Learning Resource\\study-space\\StudySpace.Data\\obj\\",
+      "outputPath": "D:\\Learning Resource\\Term08\\EXE201\\study-space\\StudySpace.Data\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
