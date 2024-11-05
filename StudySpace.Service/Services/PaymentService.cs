@@ -88,7 +88,7 @@ namespace StudySpace.Service.Services
                 List<ItemData> items = new List<ItemData>();
                 items.Add(room);
 
-                PaymentData paymentData = new PaymentData(orderCode, request.Amount, request.Description, items, cancelURL, returnURL);
+                PaymentData paymentData = new PaymentData(orderCode, request.Amount, request.Description, items, _cancelURL, _returnURL);
                 CreatePaymentResult createPayment = await _payOS.createPaymentLink(paymentData);
 
                 if (createPayment == null)
@@ -146,7 +146,7 @@ namespace StudySpace.Service.Services
 
                 var orderCode = OrderCodeHashHelper.GenerateOrderCodeHash(request.StoreID, request.PackageID, DateTime.Now);
 
-                PaymentData paymentData = new PaymentData(orderCode, request.Amount, request.Description, items, cancelURL, returnURL);
+                PaymentData paymentData = new PaymentData(orderCode, request.Amount, request.Description, items, _cancelURL, _returnURL);
                 CreatePaymentResult createPayment = await _payOS.createPaymentLink(paymentData);
 
                 if (createPayment == null)
