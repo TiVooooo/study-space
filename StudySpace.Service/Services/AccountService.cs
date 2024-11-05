@@ -200,7 +200,7 @@ namespace StudySpace.Service.Services
                     IsActive = true,
                     Wallet = 0,
                     RoleId = userRole.Id,
-                    AvatarUrl = "https://scontent.fsgn3-1.fna.fbcdn.net/v/t39.30808-6/460988998_122109837560414676_6957837609958495355_n.jpg?_nc_cat=104&ccb=1-7&_nc_sid=6ee11a&_nc_eui2=AeGxasUF1_cqgAkICzwV6pNWkrJeYIPbAnySsl5gg9sCfLwS-qjG0dNHVAW1YSj7J_zUqzbG21mFXwWepYn1e5mA&_nc_ohc=FUj7X_J07FIQ7kNvgFT9YnZ&_nc_zt=23&_nc_ht=scontent.fsgn3-1.fna&oh=00_AYDEwjSOMughY8zhvOx1jvo0-dGrxz80SlsqrENQ4edGNQ&oe=67009BD9"
+                    AvatarUrl = "https://i.ibb.co/V23Jp9d/LOGO-SS-02.png"
                 };
 
                 _unitOfWork.AccountRepository.PrepareCreate(newAcc);
