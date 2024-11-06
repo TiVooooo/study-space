@@ -765,67 +765,14 @@ namespace StudySpace.Service.Services
                                                                     .ToList();
 
                 
-                //var allRooms = await _unitOfWork.RoomRepository.GetAllAsync();
-
-                //var listRoomID = _unitOfWork.BookingRepository.FindByCondition(b => b.UserId == userId).ToList();
-
-             
-
-                //var result = new List<GetBookedRoomInUserModel>();
-
-
-                //foreach (var booking in listRoomID)
-                //{
-                //    var r = _unitOfWork.RoomRepository.GetById(booking.Id);
-                //    //var booking = _unitOfWork.BookingRepository.FindByCondition(b => b.RoomId == room.Id && b.UserId == userId).FirstOrDefault();
-
-                //    var store = _unitOfWork.StoreRepository.GetById(r.StoreId ?? 0);
-                //    var imageEntity = _unitOfWork.ImageRoomRepository.FindByCondition(ie => ie.RoomId == r.Id).FirstOrDefault();
-                //    var space = _unitOfWork.SpaceRepository.GetById(r.SpaceId ?? 0);
-
-                //    var feedback = _unitOfWork.FeedbackRepository.FindByCondition(f => f.UserId == userId && f.BookingId == booking.Id).FirstOrDefault();
-                //    var isFeedback = false;
-
-                //    if (feedback != null)
-                //    { isFeedback = true; };
-
-
-
-                //    var roomModel = new GetBookedRoomInUserModel
-                //    {
-                //        BookingId = booking.Id,
-                //        RoomId = r.Id,
-                //        RoomName = r.RoomName,
-                //        StoreName = store.Name,
-                //        Capacity = r.Capacity ?? 0,
-                //        PricePerHour = r.PricePerHour ?? 0,
-                //        Description = r.Description,
-                //        Status = r.Status ?? false,
-                //        Area = r.Area ?? 0,
-                //        Type = r.Type,
-                //        Address = store.Address,
-                //        Image = imageEntity.ImageUrl,
-                //        BookedDate = booking.BookingDate,
-                //        BookedTime = booking.BookingDate?.TimeOfDay,
-                //        BookingStatus = booking.Status,
-                //        CheckIn = booking.Checkin ?? false,
-                //        isOvernight = store.IsOverNight,
-                //        TypeSpace = space.SpaceName,
-                //        PaymentMethod = booking.PaymentMethod,
-                //        Start = booking.StartTime?.TimeOfDay,
-                //        End = booking.EndTime?.TimeOfDay,
-                //        IsFeedback = false
-                //    };
-                //    result.Add(roomModel);
-                //}
-
+               
                 if(result.Count > 0)
                 {
                     return new BusinessResult(Const.SUCCESS_READ, Const.SUCCESS_READ_MSG, result);
                 } 
                 else
                 {
-                    return new BusinessResult(Const.FAIL_READ, "No booked room");
+                    return new BusinessResult(Const.FAIL_READ, "No booked room",new List<GetBookedRoomInUserModel>());
                 }
             }
             catch (Exception ex)
