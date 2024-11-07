@@ -36,6 +36,9 @@ namespace StudySpace.Service.Services
         private readonly string _cancelURL;
         private readonly string _returnURL;
 
+        private readonly string _cancel_adminURL;
+        private readonly string _return_adminURL;
+
         private readonly string _clientID;
         private readonly string _apiKey;
         private readonly string _checkSum;
@@ -51,6 +54,8 @@ namespace StudySpace.Service.Services
             _payOS = new PayOS(_clientID, _apiKey, _checkSum);
             _cancelURL = configuration["CancelURL"];
             _returnURL = configuration["ReturnURL"];
+            _cancel_adminURL = "http://localhost:3000/payment-cancel";
+            _return_adminURL = "http://localhost:3000/payment-success";
         }
 
         public async Task<IBusinessResult> CreatePaymentWithPayOS(CreatePaymentRequest request)
@@ -146,7 +151,7 @@ namespace StudySpace.Service.Services
 
                 var orderCode = OrderCodeHashHelper.GenerateOrderCodeHash(request.StoreID, request.PackageID, DateTime.Now);
 
-                PaymentData paymentData = new PaymentData(orderCode, request.Amount, request.Description, items, _cancelURL, _returnURL);
+                PaymentData paymentData = new PaymentData(orderCode, request.Amount, request.Description, items, _cancel_adminURL, _return_adminURL);
                 CreatePaymentResult createPayment = await _payOS.createPaymentLink(paymentData);
 
                 if (createPayment == null)
