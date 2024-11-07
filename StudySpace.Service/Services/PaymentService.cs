@@ -93,8 +93,9 @@ namespace StudySpace.Service.Services
                 List<ItemData> items = new List<ItemData>();
                 items.Add(room);
 
-                DateTime expirationDate = DateTime.Now.AddMinutes(30);
-                long expiredAt = ((DateTimeOffset)expirationDate).ToUnixTimeMilliseconds();
+                DateTime expirationDate = DateTime.UtcNow.AddMinutes(30);
+                int expiredAt = (int)((DateTimeOffset)expirationDate).ToUnixTimeSeconds();
+
                 PaymentData paymentData = new PaymentData(orderCode, request.Amount, request.Description, items, _cancelURL, _returnURL, expiredAt:expiredAt);
                 CreatePaymentResult createPayment = await _payOS.createPaymentLink(paymentData);
 
@@ -153,8 +154,8 @@ namespace StudySpace.Service.Services
 
                 var orderCode = OrderCodeHashHelper.GenerateOrderCodeHash(request.StoreID, request.PackageID, DateTime.Now);
 
-                DateTime expirationDate = DateTime.Now.AddMinutes(30);
-                long expiredAt = ((DateTimeOffset)expirationDate).ToUnixTimeMilliseconds();
+                DateTime expirationDate = DateTime.UtcNow.AddMinutes(30);
+                int expiredAt = (int)((DateTimeOffset)expirationDate).ToUnixTimeSeconds();
 
                 PaymentData paymentData = new PaymentData(orderCode, request.Amount, request.Description, items, _cancel_adminURL, _return_adminURL, expiredAt: expiredAt);
                 CreatePaymentResult createPayment = await _payOS.createPaymentLink(paymentData);
