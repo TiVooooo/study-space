@@ -5205,7 +5205,7 @@
           "StudySpace.Common": "1.0.0",
           "StudySpace.DTOs": "1.0.0",
           "StudySpace.Data": "1.0.0",
-          "payOS": "1.0.7"
+          "payOS": "1.0.8"
         },
         "compile": {
           "bin/placeholder/StudySpace.Service.dll": {}

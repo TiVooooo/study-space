@@ -13,7 +13,7 @@
     <PackageReference Include="MailKit" Version="4.7.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="5.0.17" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.1" />
-    <PackageReference Include="payOS" Version="1.0.7" />
+    <PackageReference Include="payOS" Version="1.0.8" />
   </ItemGroup>
 
   <ItemGroup>
