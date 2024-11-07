@@ -31,7 +31,11 @@ namespace StudySpace.Data.Repository
                     .ThenInclude(r => r.Bookings)
                     .ThenInclude(b => b.Feedbacks)
                 .Include(s => s.Rooms)
-                .Include(s => s.Transactions);
+                .Include(s => s.Transactions)
+                .Include(s => s.StorePackages)
+                .Include(s => s.StorePackages)
+                    .ThenInclude(p => p.Package);
         }
+
     }
 }

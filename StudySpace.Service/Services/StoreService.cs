@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using StudySpace.Common;
@@ -172,8 +173,42 @@ namespace StudySpace.Service.Services
                 #region Business rule
                 #endregion
 
+                var obj = _unitOfWork.StoreRepository.GetAllRooms();
 
-                var obj = await _unitOfWork.StoreRepository.GetByIdAsync(id);
+                var returnObj = obj
+                    .Where(s => s.Id == id)
+                    .Select(c => new GetStore
+                    {
+                        Id = c.Id,
+                        ThumbnailUrl = c.ThumbnailUrl,
+                        Longitude = c.Longitude,
+                        Latitude = c.Latitude,
+                        Description = c.Description,
+                        Status = c.Status,
+                        IsApproved = c.IsApproved,
+                        IsPackaged = c.StorePackages.Any(p => p.Status == true),
+                        Name = c.Name,
+                        Email = c.Email,
+                        Address = c.Address,
+                        Phone = c.Phone,
+                        CreateDate = c.CreateDate,
+                        OpenTime = c.OpenTime,
+                        CloseTime = c.CloseTime,
+                        IsOverNight = c.IsOverNight,
+                        IsActive = c.IsActive,
+                        TaxNumber = c.TaxNumber,
+                        PostalNumber = c.PostalNumber,
+                        StoreWithPack = c.StorePackages
+                            .Where(swp => swp.Status == true)
+                            .Select(swp => new StoreWithPack
+                            {
+                                PackageID = swp.PackageId,
+                                PackageName = swp.Package.Name,
+                                Duration = swp.Duration,
+                                StartDate = swp.StartDate.HasValue ? swp.StartDate.Value.ToString("yyyy-MM-dd") : null,
+                                EndDate = swp.EndDate.HasValue ? swp.EndDate.Value.ToString("yyyy-MM-dd") : null
+                            }).FirstOrDefault()
+                        }).FirstOrDefault();
 
                 if (obj == null)
                 {
@@ -181,7 +216,7 @@ namespace StudySpace.Service.Services
                 }
                 else
                 {
-                    return new BusinessResult(Const.SUCCESS_READ, Const.SUCCESS_READ_MSG, obj);
+                    return new BusinessResult(Const.SUCCESS_READ, Const.SUCCESS_READ_MSG, returnObj);
                 }
             }
             catch (Exception ex)
