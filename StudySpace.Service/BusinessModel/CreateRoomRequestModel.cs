@@ -31,7 +31,7 @@ namespace StudySpace.Service.BusinessModel
 
         public List<IFormFile> ImageRoom { get; set; }
 
-        public List<Amities> Amities { get; set; }
+        public List<Amities>? Amities { get; set; } = new List<Amities>();
     }
 
 

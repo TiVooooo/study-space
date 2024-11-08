@@ -478,25 +478,23 @@ namespace StudySpace.Service.Services
                     return new BusinessResult(Const.WARNING_NO_DATA, "Unknown Space.");
                 }
 
-
-                if (room.Amities.Count == 0)
+                
+                if (room.Amities.Count != 0)
                 {
-
-                    return new BusinessResult(Const.WARNING_NO_DATA, "Amities is null.");
-
-
-                }
-
-
-                // Step 3: Validate Amity Availability
-                foreach (var item in room.Amities)
-                {
-                    var amity = _unitOfWork.AmityRepository.GetById(item.AmityId);
-                    if (amity == null || amity.Quantity < item.Quantity)
+                    foreach (var item in room.Amities)
                     {
-                        return new BusinessResult(Const.FAIL_CREATE, "There is not enough Amity in stock!");
+                        var amity = _unitOfWork.AmityRepository.GetById(item.AmityId);
+                        if (amity == null || amity.Quantity < item.Quantity)
+                        {
+                            return new BusinessResult(Const.FAIL_CREATE, "There is not enough Amity in stock!");
+                        }
                     }
+
+
                 }
+                
+                // Step 3: Validate Amity Availability
+                
 
                 // Step 4: Format House Rules
                 var hr = string.Join(".", room.HouseRule.Select(hr => hr.TrimEnd('.')));
@@ -520,20 +518,6 @@ namespace StudySpace.Service.Services
                     HouseRule = hr
                 };
 
-                // Handle images before saving the room
-                var newMenuImage = new ImageRoom();
-                if (room.ImageMenu != null)
-                {
-                    newMenuImage = new ImageRoom
-                    {
-                        Status = true
-                    };
-                    var imgPath = FirebasePathName.MENU + Guid.NewGuid().ToString();
-                    var imgUploadRes = await _firebaseService.UploadImageToFirebaseAsync(room.ImageMenu, imgPath);
-                    newMenuImage.ImageUrl = imgUploadRes;
-                    _unitOfWork.ImageRoomRepository.PrepareCreate(newMenuImage);
-                }
-
                 // Step 6: Save the Room
                 _unitOfWork.RoomRepository.PrepareCreate(newRoom);
                 int roomResult = await _unitOfWork.RoomRepository.SaveAsync();
@@ -545,19 +529,38 @@ namespace StudySpace.Service.Services
                 }
 
                 // Step 7: Create RoomAmity entries
-                foreach (var item in room.Amities)
+                if (room.Amities.Count != 0)
                 {
-                    var amity = _unitOfWork.AmityRepository.GetById(item.AmityId);
-                    amity.Quantity -= item.Quantity; // Update the quantity
-                    _unitOfWork.AmityRepository.PrepareUpdate(amity);
-
-                    var amityRoom = new RoomAmity
+                    foreach (var item in room.Amities)
                     {
-                        RoomId = newRoom.Id, // Use the saved room's ID
-                        AmitiesId = item.AmityId,
-                        Quantity = item.Quantity
+                        var amity = _unitOfWork.AmityRepository.GetById(item.AmityId);
+                        amity.Quantity -= item.Quantity; // Update the quantity
+                        _unitOfWork.AmityRepository.PrepareUpdate(amity);
+
+                        var amityRoom = new RoomAmity
+                        {
+                            RoomId = newRoom.Id, // Use the saved room's ID
+                            AmitiesId = item.AmityId,
+                            Quantity = item.Quantity
+                        };
+                        _unitOfWork.RoomAminitiesRepository.PrepareCreate(amityRoom);
+                    }
+                }
+                
+
+                // Handle menu image
+                var newMenuImage = new ImageRoom();
+                if (room.ImageMenu != null)
+                {
+                    newMenuImage = new ImageRoom
+                    {
+                        Room = newRoom,
+                        Status = true
                     };
-                    _unitOfWork.RoomAminitiesRepository.PrepareCreate(amityRoom);
+                    var imgPath = FirebasePathName.MENU + Guid.NewGuid().ToString();
+                    var imgUploadRes = await _firebaseService.UploadImageToFirebaseAsync(room.ImageMenu, imgPath);
+                    newMenuImage.ImageUrl = imgUploadRes;
+                    _unitOfWork.ImageRoomRepository.PrepareCreate(newMenuImage);
                 }
 
                 // Handle Room Images

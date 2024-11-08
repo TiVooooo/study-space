@@ -56,9 +56,9 @@ namespace StudySpace.API.Controllers
             return Ok(result);
         }
 
-
+        /*
         [HttpDelete("test")]
-/*
+
         public async Task<IActionResult> Xoa (string url)
         {
             var result = _roomService.Xoa(url);
