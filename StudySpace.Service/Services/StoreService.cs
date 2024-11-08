@@ -231,7 +231,7 @@ namespace StudySpace.Service.Services
             var existedAcc = await _unitOfWork.StoreRepository.GetByEmailAsync(model.Email);
             if (existedAcc != null)
             {
-                throw new InvalidOperationException("Email is already existed!");
+                return new BusinessResult(Const.FAIL_CREATE, "Email is already existed!");
             }
 
             if (model.Phone.Length != 10 || !model.Phone.All(char.IsDigit))
