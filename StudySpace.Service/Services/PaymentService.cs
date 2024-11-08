@@ -54,8 +54,8 @@ namespace StudySpace.Service.Services
             _payOS = new PayOS(_clientID, _apiKey, _checkSum);
             _cancelURL = configuration["CancelURL"];
             _returnURL = configuration["ReturnURL"];
-            _cancel_adminURL = "http://localhost:3000/payment-cancel";
-            _return_adminURL = "http://localhost:3000/payment-success";
+            _cancel_adminURL = configuration["Cancel-adminURL"];
+            _return_adminURL = configuration["Return-adminURL"];
         }
 
         public async Task<IBusinessResult> CreatePaymentWithPayOS(CreatePaymentRequest request)
