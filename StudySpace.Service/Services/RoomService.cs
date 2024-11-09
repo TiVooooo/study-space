@@ -161,7 +161,12 @@ namespace StudySpace.Service.Services
         {
             try
             {
-                var rooms = _unitOfWork.RoomRepository.FindByCondition(r => r.Space.SpaceName.Equals(condition)).Take(3).ToList();
+                var rooms = _unitOfWork.RoomRepository
+                        .FindByCondition(r => r.Space.SpaceName.Equals(condition))
+                        .ToList();
+
+                var random = new Random();
+                rooms = rooms.OrderBy(r => random.Next()).Take(3).ToList();
 
                 var list = new List<RoomModel>();
 
@@ -172,16 +177,17 @@ namespace StudySpace.Service.Services
 
                     var roomModel = new RoomModel
                     {
+                        RoomId = r.Id,
                         RoomName = r.RoomName,
-                        StoreName = store?.Name ?? "Unknown",  // Check if store is null
+                        StoreName = store?.Name ?? "Unknown", 
                         Capacity = r.Capacity ?? 0,
                         PricePerHour = r.PricePerHour ?? 0,
                         Description = r.Description,
                         Status = r.Status ?? false,
                         Area = r.Area ?? 0,
                         Type = r.Type,
-                        Address = store?.Address ?? "Unknown",  // Check if store is null
-                        Image = imageEntity?.ImageUrl, // Check if imageEntity is null
+                        Address = store?.Address ?? "Unknown", 
+                        Image = imageEntity?.ImageUrl, 
                         isOvernight = store?.IsOverNight
                     };
 
@@ -200,7 +206,6 @@ namespace StudySpace.Service.Services
                 return new BusinessResult(Const.ERROR_EXEPTION, ex.Message);
             }
         }
-
 
         public async Task<IBusinessResult> SearchRooms(int pageNumber, int pageSize, string space, string location, string room, int person)
         {
@@ -460,7 +465,6 @@ namespace StudySpace.Service.Services
             }
         }
 
-
         public async Task<IBusinessResult> Save(CreateRoomRequestModel room)
         {
             try
@@ -594,9 +598,6 @@ namespace StudySpace.Service.Services
             }
         }
 
-
-
-
         public async Task<IBusinessResult> GetDetailBookedRoomInUser(int bookingId)
         {
             try
@@ -725,8 +726,6 @@ namespace StudySpace.Service.Services
                 return new BusinessResult(Const.ERROR_EXEPTION, ex.Message);
             }
         }
-
-        
 
         public async Task<IBusinessResult> GetAllBookedRoomInUser(int userId)
         {
@@ -1048,7 +1047,7 @@ namespace StudySpace.Service.Services
                         Quantity = ra.Quantity,
                         Description = ra.Amities.Description
                     }).ToList()
-                }).ToList();
+                }).OrderByDescending(r => r.RoomId).ToList();
 
                 if (rooms.Count > 0)
                 {
