@@ -27,6 +27,7 @@ namespace StudySpace.Data.Repository
                 .Include(r => r.Store)
                 .Include(r => r.ImageRooms)
                 .Include(r=>r.Space)
+                .OrderByDescending(r => r.Id)
                 .ToListAsync();
         }
         public IQueryable<Room> FindByConditionv2(Expression<Func<Room, bool>> expression)
