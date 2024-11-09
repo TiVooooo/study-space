@@ -218,6 +218,8 @@ namespace StudySpace.Service.Services
                     ).ToList();
                 }
 
+                rooms = rooms.OrderByDescending(r => r.Id).ToList();
+
                 var totalCount = rooms.Count;
                 var totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
 
@@ -246,12 +248,10 @@ namespace StudySpace.Service.Services
                     list.Add(roomModel);
                 }
 
-                var sortedList = list.OrderByDescending(room => room.RoomId).ToList();
-
                 var result = new GetAllRoomModel
                 {
                     TotalAvailable = list.Count,
-                    Rooms = sortedList,
+                    Rooms = list,
                     TotalCount = totalPages
                 };
 
