@@ -125,7 +125,7 @@ namespace StudySpace.Service.Services
                 {
                     var booking = bookings.FirstOrDefault(b => b.RoomId == room.Id);
                     var store = stores.FirstOrDefault(s => s.Id == room.StoreId);
-                    var imageEntity = imageEntities.FirstOrDefault(ie => ie.RoomId == room.Id);
+                    var imageEntity = imageEntities.FirstOrDefault(ie => ie.RoomId == room.Id && !ie.ImageUrl.Contains("MENU"));
 
                     if (booking.Status != null && booking.Status == "")
                     {
@@ -168,7 +168,7 @@ namespace StudySpace.Service.Services
                 foreach (var r in rooms)
                 {
                     var store = _unitOfWork.StoreRepository.GetById(r.StoreId ?? 0);
-                    var imageEntity = _unitOfWork.ImageRoomRepository.FindByCondition(ie => ie.RoomId == r.Id).FirstOrDefault();
+                    var imageEntity = _unitOfWork.ImageRoomRepository.FindByCondition(ie => ie.RoomId == r.Id && !ie.ImageUrl.Contains("MENU")).FirstOrDefault();
 
                     var roomModel = new RoomModel
                     {
@@ -228,7 +228,7 @@ namespace StudySpace.Service.Services
                 foreach (var r in pagedRooms)
                 {
                     var store = _unitOfWork.StoreRepository.GetById(r.StoreId ?? 0);
-                    var imageEntity = _unitOfWork.ImageRoomRepository.FindByCondition(ie => ie.RoomId == r.Id).FirstOrDefault();
+                    var imageEntity = _unitOfWork.ImageRoomRepository.FindByCondition(ie => ie.RoomId == r.Id && !ie.ImageUrl.Contains("MENU")).FirstOrDefault();
 
                     var roomModel = new RoomModel
                     {
@@ -551,18 +551,6 @@ namespace StudySpace.Service.Services
 
                 // Handle menu image
                 var newMenuImage = new ImageRoom();
-                if (room.ImageMenu != null)
-                {
-                    newMenuImage = new ImageRoom
-                    {
-                        Room = newRoom,
-                        Status = true
-                    };
-                    var imgPath = FirebasePathName.MENU + Guid.NewGuid().ToString();
-                    var imgUploadRes = await _firebaseService.UploadImageToFirebaseAsync(room.ImageMenu, imgPath);
-                    newMenuImage.ImageUrl = imgUploadRes;
-                    _unitOfWork.ImageRoomRepository.PrepareCreate(newMenuImage);
-                }
 
                 // Handle Room Images
                 if (room.ImageRoom != null)
@@ -579,6 +567,19 @@ namespace StudySpace.Service.Services
                         newRoomImage.ImageUrl = imageUploadResult;
                         _unitOfWork.ImageRoomRepository.PrepareCreate(newRoomImage);
                     }
+                }
+
+                if (room.ImageMenu != null)
+                {
+                    newMenuImage = new ImageRoom
+                    {
+                        Room = newRoom,
+                        Status = true
+                    };
+                    var imgPath = FirebasePathName.MENU + Guid.NewGuid().ToString();
+                    var imgUploadRes = await _firebaseService.UploadImageToFirebaseAsync(room.ImageMenu, imgPath);
+                    newMenuImage.ImageUrl = imgUploadRes;
+                    _unitOfWork.ImageRoomRepository.PrepareCreate(newMenuImage);
                 }
 
                 // Save all changes
