@@ -299,10 +299,10 @@ namespace StudySpace.Service.Services
                     if (whoTrans.Count() > 0)
                     {
                         var storeTrans = trans.FirstOrDefault(r => r.PaymentCode == orderCode.ToString());
-                        var booking = await _unitOfWork.BookingRepository.GetByIdAsync(storeTrans.BookingId);
+                        
 
                         storeTrans.PaymentStatus = StatusBookingEnums.PAID.ToString();
-                        booking.Status = StatusBookingEnums.PAID.ToString();
+                        
                         storeTrans.PaymentDate = DateTime.Now;
                         storeTrans.PaymentUrl = null;
                         
@@ -324,7 +324,10 @@ namespace StudySpace.Service.Services
                         cusTrans.PaymentDate = DateTime.Now;
                         cusTrans.PaymentStatus = StatusBookingEnums.PAID.ToString();
                         cusTrans.PaymentUrl = null;
+                        var booking = await _unitOfWork.BookingRepository.GetByIdAsync(cusTrans.BookingId);
 
+                        booking.Status = StatusBookingEnums.PAID.ToString();
+                        await _unitOfWork.BookingRepository.UpdateAsync(booking);
                         await _unitOfWork.TransactionRepository.UpdateAsync(cusTrans);
                     }
                 }
