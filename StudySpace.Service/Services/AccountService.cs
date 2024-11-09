@@ -569,6 +569,7 @@ namespace StudySpace.Service.Services
                     IsActive = u.IsActive,
                     Wallet = u.Wallet,
                     AvatarUrl = u.AvatarUrl,
+                    Date = u.CreatedDate
                 }).ToList();
                 return new BusinessResult(Const.SUCCESS_READ, Const.SUCCESS_READ_MSG, results);
             }

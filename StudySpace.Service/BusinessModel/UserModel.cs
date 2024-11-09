@@ -19,5 +19,6 @@ namespace StudySpace.Service.BusinessModel
         public bool? IsActive { get; set; }
         public double? Wallet { get; set; }
         public string AvatarUrl { get; set; }
+        public DateTime? Date { get; set; }
     }
 }
