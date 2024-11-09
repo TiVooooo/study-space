@@ -246,11 +246,12 @@ namespace StudySpace.Service.Services
                     list.Add(roomModel);
                 }
 
+                var sortedList = list.OrderByDescending(room => room.RoomId).ToList();
 
                 var result = new GetAllRoomModel
                 {
                     TotalAvailable = list.Count,
-                    Rooms = list,
+                    Rooms = sortedList,
                     TotalCount = totalPages
                 };
 
