@@ -118,5 +118,11 @@ namespace StudySpace.API.Controllers
             return Ok(await _roomService.GetRoomDetailInSup(storeId,roomId));
         }
 
+        [HttpGet("premium-store")]
+        public async Task<IActionResult> GetRoomPremiumStore()
+        {
+            return Ok(await _roomService.GetPremiumRoomStore());
+        }
+
     }
 }

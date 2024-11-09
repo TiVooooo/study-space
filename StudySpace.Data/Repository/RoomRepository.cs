@@ -40,6 +40,8 @@ namespace StudySpace.Data.Repository
             return await _context.Rooms
             .Include(r => r.Bookings)       
             .Include(r => r.Store)          
+            .Include(r => r.Store)
+                .ThenInclude(s => s.StorePackages)
             .Include(r => r.Space)
             .Include(r => r.ImageRooms)
             .Include(r => r.RoomAmities)    

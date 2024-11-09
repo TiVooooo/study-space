@@ -30,11 +30,7 @@ namespace StudySpace.Service.Services
         Task<IBusinessResult> DeleteById(int id);
         Task<IBusinessResult> GetAll();
         Task<IBusinessResult> GetDetailBookedRoomInUser(int bookingId);
-
-
         Task<IBusinessResult> Save(CreateRoomRequestModel room);
-
-
         Task<IBusinessResult> SearchRooms(int pageNumber, int pageSize, string space, string location, string room, int person);
         Task<IBusinessResult> GetRoomWithCondition(string condition);
         Task<IBusinessResult> UnactiveRoom(int roomId);
@@ -42,11 +38,9 @@ namespace StudySpace.Service.Services
         Task<IBusinessResult> GetAllBookedRoomInSup(int supID);
         Task<IBusinessResult> FilterRoom(int pageNumber, int pageSize, string price, Double[]? priceRange, string[]? utilities, string space, string location, string room, int person);
         Task<IBusinessResult> GetAllRoomInSup(int supID);
-
         Task<IBusinessResult> Xoa(string url);
-
         Task<IBusinessResult> GetRoomDetailInSup(int supId, int roomId);
-
+        Task<IBusinessResult> GetPremiumRoomStore();
     }
 
     public class RoomService : IRoomService
@@ -1058,6 +1052,30 @@ namespace StudySpace.Service.Services
                     return new BusinessResult(Const.WARNING_NO_DATA, Const.WARNING_NO_DATA_MSG);
                 }
             } catch (Exception ex)
+            {
+                return new BusinessResult(Const.ERROR_EXEPTION, ex.Message);
+            }
+        }
+
+        public async Task<IBusinessResult> GetPremiumRoomStore()
+        {
+            try
+            {
+                var room = await _unitOfWork.RoomRepository.GetSupRoomAsync();
+
+                var preRoom = room
+                    .Where(c => c.Store.StorePackages.Any(sp => sp.PackageId == 3 && sp.Status == true) && c.Status == true)
+                    .Select(pr => new PremiumStore
+                        {
+                            RoomId = pr.Id,
+                            RoomImage = pr.ImageRooms.FirstOrDefault(img => !img.ImageUrl.Contains("MENU"))?.ImageUrl,
+                            StoreName = pr.Store.Name
+                        })
+                    .ToList();
+
+                return new BusinessResult(Const.SUCCESS_CREATE, Const.SUCCESS_CREATE_MSG, preRoom);
+            }
+            catch (Exception ex)
             {
                 return new BusinessResult(Const.ERROR_EXEPTION, ex.Message);
             }
