@@ -200,7 +200,7 @@ namespace StudySpace.Service.Services
                             Fee =transaction.Amount,
                             Id = transaction.Id,
                             PaymentMethod = "PayOS",
-                            Status = "PAYED",
+                            Status = "PAID",
                             Type = "Package",
                             UserName = user.Name,
                             PackageName = package.Name
