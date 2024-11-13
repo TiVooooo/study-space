@@ -100,7 +100,8 @@ namespace StudySpace.Service.Services
                     Status = book.Status,
                     End = book.EndTime?.TimeOfDay,
                     PaymentMethod = book.PaymentMethod,
-                    RoomName = room.RoomName
+                    RoomName = room.RoomName,
+                    Hastag = tran.PaymentCode
                 };
 
                 return new BusinessResult(Const.SUCCESS_READ, Const.SUCCESS_READ_MSG, transaction);
@@ -203,7 +204,8 @@ namespace StudySpace.Service.Services
                             Status = "PAID",
                             Type = "Package",
                             UserName = user.Name,
-                            PackageName = package.Name
+                            PackageName = package.Name,
+                            Hastag = transaction.PaymentCode
                         };
                         result.Add(trans);
                     }

@@ -25,5 +25,7 @@ namespace StudySpace.Service.BusinessModel
 
         public string Avatar {  get; set; }
 
+        public string? Hastag { get; set; }
+
     }
 }

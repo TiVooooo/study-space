@@ -28,5 +28,6 @@ namespace StudySpace.Service.BusinessModel
         public double? Fee { get; set; }
         public string? PaymentMethod { get; set; }
         public string? Status { get; set; }
+        public string? Hastag { get; set; }
     }
 }
