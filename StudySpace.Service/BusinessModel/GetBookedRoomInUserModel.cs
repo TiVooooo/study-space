@@ -17,7 +17,9 @@ namespace StudySpace.Service.BusinessModel
 
         public int Capacity { get; set; }
 
-        public double PricePerHour { get; set; }
+        public double? TotalFee { get; set; }
+
+        public double? DepositFee { get; set; }
 
         public string Description { get; set; }
 
