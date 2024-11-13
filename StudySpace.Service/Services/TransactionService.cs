@@ -44,7 +44,7 @@ namespace StudySpace.Service.Services
                     }
                     var trans = new TransactionUserModel
                     {
-                        Id = transactionUser.Id,
+                        Id = transactionUser.PaymentCode,
                         Date = transactionUser.Date,
                         Fee = transactionUser.Amount,
                         PaymentMethod = booking.PaymentMethod,
@@ -130,7 +130,7 @@ namespace StudySpace.Service.Services
                         var booking = _unitOfWork.BookingRepository.GetById(b.Id);
                         var trans = new TransactionUserModel
                         {
-                            Id = transaction.Id,
+                            Id = transaction.PaymentCode,
                             Date = transaction.Date,
                             Fee = booking.Fee,
                             PaymentMethod = booking.PaymentMethod,
@@ -149,10 +149,10 @@ namespace StudySpace.Service.Services
 
                     var trans = new TransactionUserModel
                     {
-                        Id = transaction.Id,
+                        Id = transaction.PaymentCode,
                         Date = transaction.Date,
                         Fee = transaction.Amount,
-                        PaymentMethod = "Credit Card",
+                        PaymentMethod = "PayOS",
                         Status = "PAYED",
                         Type = "Package"
                     };
@@ -199,7 +199,7 @@ namespace StudySpace.Service.Services
                             Date = transaction.Date,
                             Fee =transaction.Amount,
                             Id = transaction.Id,
-                            PaymentMethod = "Credit Card",
+                            PaymentMethod = "PayOS",
                             Status = "PAYED",
                             Type = "Package",
                             UserName = user.Name,

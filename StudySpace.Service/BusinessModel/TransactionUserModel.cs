@@ -20,7 +20,7 @@ namespace StudySpace.Service.BusinessModel
     }
         public class TransactionUserModel
         {
-            public int Id { get; set; }
+            public string Id { get; set; }
             public DateTime? Date { get; set; }
             public double? Fee { get; set; }
             public string? PaymentMethod { get; set; }
