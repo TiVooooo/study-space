@@ -36,5 +36,14 @@ namespace StudySpace.Data.Repository
                 .FirstOrDefaultAsync(f => f.Id == feedbackId);
         }
 
+        public IQueryable<Feedback> GetFeedbackDetails()
+        {
+            return _context.Feedbacks
+            .Include(b => b.User)
+            .Include(b => b.Booking)
+                .ThenInclude(c => c.Room)
+            .Include(b => b.Booking);
+        }
+
     }
 }

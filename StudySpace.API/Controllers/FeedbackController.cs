@@ -45,6 +45,12 @@ namespace StudySpace.API.Controllers
         {
             return Ok(await _feedbackService.GetById(id));
         }
+
+        [HttpGet("UI")]
+        public async Task<IActionResult> GetFeedbackInUI()
+        {
+            return Ok(await _feedbackService.GetFeedbackUI());
+        }
     }
 
 }

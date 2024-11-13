@@ -25,6 +25,7 @@ namespace StudySpace.Service.Services
         Task<IBusinessResult> GetFeedback(int roomId, int pageNumber, int pageSize);
         Task<IBusinessResult> GetAllFeedbackOfStore(int storeId);
         Task<IBusinessResult> GetAllImageFeedbackOfRoom(int storeId);
+        Task<IBusinessResult> GetFeedbackUI();
     }
 
     public class FeedbackService : IFeedbackService
@@ -386,6 +387,32 @@ namespace StudySpace.Service.Services
             {
                 return new BusinessResult(-4, ex.Message);
 
+            }
+        }
+
+        public async Task<IBusinessResult> GetFeedbackUI()
+        {
+            try
+            {
+                var feedback = _unitOfWork.FeedbackRepository.GetFeedbackDetails();
+                var feedbackUI = feedback
+                    .Where(f => f.Rating >= 4)
+                    .Select(f => new FeedbackInUI
+                    {
+                        AvatarURL = f.User.AvatarUrl ?? null,
+                        UserName = f.User.Name ?? null,
+                        FeedbackText = f.ReviewText ?? null,
+                        Rate = f.Rating ?? 0,
+                        RoomName = f.Booking.Room.RoomName ?? null,
+                    })
+                    .OrderBy(_ => Guid.NewGuid())
+                    .ToList();
+
+                return new BusinessResult(Const.SUCCESS_READ, Const.SUCCESS_CREATE_MSG, feedbackUI);
+            }
+            catch (Exception ex)
+            {
+                return new BusinessResult(-4, ex.Message);
             }
         }
     }
