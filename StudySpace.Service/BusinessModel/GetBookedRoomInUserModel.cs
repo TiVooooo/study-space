@@ -45,5 +45,6 @@ namespace StudySpace.Service.BusinessModel
         public string PaymentMethod { get; set; }
 
         public bool IsFeedback { get; set; }
+        public string Hastag {  get; set; }
     }
 }

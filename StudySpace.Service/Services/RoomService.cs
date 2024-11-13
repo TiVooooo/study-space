@@ -759,7 +759,8 @@ namespace StudySpace.Service.Services
                                                                         PaymentMethod = booking.PaymentMethod,
                                                                         Start = booking.StartTime.HasValue ? booking.StartTime.Value.ToString("HH:mm:ss") : null,
                                                                         End = booking.EndTime.HasValue ? booking.EndTime.Value.ToString("HH:mm:ss") : null,
-                                                                        IsFeedback = booking.Feedbacks.Any(f => f.UserId == userId)
+                                                                        IsFeedback = booking.Feedbacks.Any(f => f.UserId == userId),
+                                                                        Hastag = booking.Transactions.FirstOrDefault(c => c.UserId == userId).PaymentCode ?? null
                                                                     })
                                                                     .ToList();
 
