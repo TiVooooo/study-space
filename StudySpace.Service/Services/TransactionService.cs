@@ -44,12 +44,13 @@ namespace StudySpace.Service.Services
                     }
                     var trans = new TransactionUserModel
                     {
-                        Id = transactionUser.PaymentCode,
+                        Id = transactionUser.Id,
                         Date = transactionUser.Date,
                         Fee = transactionUser.Amount,
                         PaymentMethod = booking.PaymentMethod,
                         Status = booking.Status,
-                        Type = type
+                        Type = type,
+                        Hastag = transactionUser.PaymentCode
                     };
                     result.Add(trans);
                 }
@@ -131,12 +132,13 @@ namespace StudySpace.Service.Services
                         var booking = _unitOfWork.BookingRepository.GetById(b.Id);
                         var trans = new TransactionUserModel
                         {
-                            Id = transaction.PaymentCode,
+                            Id = transaction.Id,
                             Date = transaction.Date,
                             Fee = booking.Fee,
                             PaymentMethod = booking.PaymentMethod,
                             Status = booking.Status,
-                            Type = "Room"
+                            Type = "Room",
+                            Hastag = transaction.PaymentCode
                         };
                         list.Add(trans);
                     }
@@ -150,12 +152,13 @@ namespace StudySpace.Service.Services
 
                     var trans = new TransactionUserModel
                     {
-                        Id = transaction.PaymentCode,
+                        Id = transaction.Id,
                         Date = transaction.Date,
                         Fee = transaction.Amount,
                         PaymentMethod = "PayOS",
-                        Status = "PAYED",
-                        Type = "Package"
+                        Status = "PAID",
+                        Type = "Package",
+                        Hastag = transaction.PaymentCode
                     };
                     list.Add(trans);
                 }
@@ -168,7 +171,6 @@ namespace StudySpace.Service.Services
                     Transaction = list,
                     TotalRevenue = totalOfBookingRoom,
                     TotalCost = totalCost,
-
                 };
                 return new BusinessResult(Const.SUCCESS_READ, Const.SUCCESS_READ_MSG, result);
 
@@ -185,7 +187,7 @@ namespace StudySpace.Service.Services
         {
             try
             {
-                var allTrans = await _unitOfWork.TransactionRepository.GetAllAsync();
+                var allTrans = _unitOfWork.TransactionRepository.GetAllTransactions();
                 var result = new List<GetAllTransactionModel>();
                 foreach (var transaction in allTrans)
                 {
@@ -225,7 +227,8 @@ namespace StudySpace.Service.Services
                             RoomName = room.RoomName,
                             Status = book.Status,
                             Type = "Room",
-                            UserName = user.Name
+                            UserName = user.Name,
+                            Hastag = transaction.PaymentCode
                         };
                         result.Add(trans);
 

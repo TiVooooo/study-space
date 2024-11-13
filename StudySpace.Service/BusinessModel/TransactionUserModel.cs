@@ -18,15 +18,15 @@ namespace StudySpace.Service.BusinessModel
             get; set;
         }
     }
-        public class TransactionUserModel
-        {
-            public string Id { get; set; }
-            public DateTime? Date { get; set; }
-            public double? Fee { get; set; }
-            public string? PaymentMethod { get; set; }
-            public string? Status { get; set; }
-
+    public class TransactionUserModel
+    {
+        public int? Id { get; set; }
+        public DateTime? Date { get; set; }
+        public double? Fee { get; set; }
+        public string? PaymentMethod { get; set; }
+        public string? Status { get; set; }
         public string? Type { get; set; }
-        }
-    
+        public string? Hastag { get; set; }
+    }
+
 }
