@@ -234,7 +234,8 @@ namespace StudySpace.Service.Services
 
                     }
                 }
-                return new BusinessResult(Const.SUCCESS_READ, Const.SUCCESS_READ_MSG, result);
+
+                return new BusinessResult(Const.SUCCESS_READ, Const.SUCCESS_READ_MSG, result.OrderByDescending(r => r.Date));
 
             }
             catch (Exception ex)

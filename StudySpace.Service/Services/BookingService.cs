@@ -63,7 +63,7 @@ namespace StudySpace.Service.Services
                     SpaceType = b.Room.Space.SpaceName,
                     Image = b.Room.ImageRooms.FirstOrDefault() != null ? b.Room.ImageRooms.FirstOrDefault().ImageUrl : null,
                     Address = b.Room.Store.Address,
-                }).ToList();
+                }).OrderByDescending(r => r.BookingDate).ToList();
 
                 if (objs == null)
                 {
