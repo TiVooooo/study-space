@@ -96,7 +96,9 @@ namespace StudySpace.Service.Services
                 DateTime expirationDate = DateTime.UtcNow.AddMinutes(30);
                 int expiredAt = (int)((DateTimeOffset)expirationDate).ToUnixTimeSeconds();
 
-                PaymentData paymentData = new PaymentData(orderCode, request.Amount, request.Description, items, _cancelURL, _returnURL, expiredAt:expiredAt);
+                var description = "# " + orderCode + " " + DateTime.Now.ToString("yyyy-MM-dd");
+
+                PaymentData paymentData = new PaymentData(orderCode, request.Amount, description, items, _cancelURL, _returnURL, expiredAt:expiredAt);
                 CreatePaymentResult createPayment = await _payOS.createPaymentLink(paymentData);
 
                 if (createPayment == null)
@@ -157,7 +159,10 @@ namespace StudySpace.Service.Services
                 DateTime expirationDate = DateTime.UtcNow.AddMinutes(30);
                 int expiredAt = (int)((DateTimeOffset)expirationDate).ToUnixTimeSeconds();
 
-                PaymentData paymentData = new PaymentData(orderCode, request.Amount, request.Description, items, _cancel_adminURL, _return_adminURL, expiredAt: expiredAt);
+                var description = "# " + orderCode + " " + DateTime.Now.ToString("yyyy-MM-dd");
+
+
+                PaymentData paymentData = new PaymentData(orderCode, request.Amount, description, items, _cancel_adminURL, _return_adminURL, expiredAt: expiredAt);
                 CreatePaymentResult createPayment = await _payOS.createPaymentLink(paymentData);
 
                 if (createPayment == null)
