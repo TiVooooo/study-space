@@ -132,7 +132,7 @@ namespace StudySpace.Service.Services
                         Id = c.Id,
                         PaymentMethod = "PayOS",
                         Status = c.PaymentStatus,
-                        Type = c.Package.Name,
+                        Type = "PACKAGE",
                     })
                     .OrderByDescending(c => c.Date)
                     .ToList();
@@ -155,11 +155,27 @@ namespace StudySpace.Service.Services
                     })
                     .ToList();
 
+                var bookedList = rooms
+                    .Where(r => r.Booking?.Room?.Store?.Id == supID)
+                    .Select(c => new TransactionUserModel
+                    {
+                        Date = c.PaymentDate,
+                        Fee = c.Amount,
+                        Hastag = c.PaymentCode,
+                        Id = c.Id,
+                        PaymentMethod = "PayOS",
+                        Status = c.PaymentStatus,
+                        Type = "ROOM",
+                    })
+                    .OrderByDescending(c => c.Date)
+                    .ToList();
+
                 var totalRev = bookingRoom.Sum(c => c.Fee ?? 0);
+                var combinedList = list.Concat(bookedList).ToList();
 
                 var result = new TotalTransaction
                 {
-                    Transaction = list,
+                    Transaction = combinedList,
                     TotalRevenue = totalRev,
                     TotalCost = totalCost,
                 };
