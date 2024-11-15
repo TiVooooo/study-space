@@ -21,7 +21,12 @@ namespace StudySpace.Data.Repository
         {
             return _context.Transactions
                 .Include(t => t.Booking)
-                .Include(t => t.Booking.Room)
+                .Include(t => t.Booking)
+                    .ThenInclude(b => b.Room)
+                .Include(t => t.Booking)
+                    .ThenInclude(b => b.Room)
+                        .ThenInclude(r => r.Store)
+                .Include(t => t.Package)
                 .ToList();
         }
     }

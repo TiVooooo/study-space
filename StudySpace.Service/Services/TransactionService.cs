@@ -120,56 +120,39 @@ namespace StudySpace.Service.Services
         {
             try
             {
-                var rooms = _unitOfWork.BookingRepository.FindByCondition(r => r.UserId == supID).ToList();
-                double totalOfBookingRoom = 0;
-                var list = new List<TransactionUserModel>();
-                foreach (var room in rooms)
-                {
-                    var bookings = _unitOfWork.BookingRepository.FindByCondition(b => b.RoomId == room.Id).ToList();
-                    foreach (var b in bookings)
+                var rooms = _unitOfWork.TransactionRepository.GetAllTransactions();
+
+                var list = rooms
+                    .Where(c => c.StoreId == supID)
+                    .Select(c => new TransactionUserModel
                     {
-                        var transaction = _unitOfWork.TransactionRepository.FindByCondition(b => b.BookingId == b.Id).FirstOrDefault();
-                        var booking = _unitOfWork.BookingRepository.GetById(b.Id);
-                        var trans = new TransactionUserModel
-                        {
-                            Id = transaction.Id,
-                            Date = transaction.Date,
-                            Fee = booking.Fee,
-                            PaymentMethod = booking.PaymentMethod,
-                            Status = booking.Status,
-                            Type = "Room",
-                            Hastag = transaction.PaymentCode
-                        };
-                        list.Add(trans);
-                    }
-                    totalOfBookingRoom += bookings.Sum(b => b.Fee ?? 0);
-                }
-
-                var package = _unitOfWork.TransactionRepository.FindByCondition(b => b.StoreId == supID).ToList();
-
-                foreach (var transaction in package)
-                {
-
-                    var trans = new TransactionUserModel
-                    {
-                        Id = transaction.Id,
-                        Date = transaction.Date,
-                        Fee = transaction.Amount,
+                        Date = c.PaymentDate,
+                        Fee = c.Amount,
+                        Hastag = c.PaymentCode,
+                        Id = c.Id,
                         PaymentMethod = "PayOS",
-                        Status = "PAID",
-                        Type = "Package",
-                        Hastag = transaction.PaymentCode
-                    };
-                    list.Add(trans);
-                }
+                        Status = c.PaymentStatus,
+                        Type = c.Package.Name,
+                    })
+                    .OrderByDescending(c => c.Date)
+                    .ToList();
 
-                var totalCost = package.Sum(b => b.Amount ?? 0);
+                var totalCost = list.Sum(c => c.Fee ?? 0);
 
+                var bookingRoom = rooms
+                    .Where(r => r.Booking?.Room?.Store?.Id == supID)
+                    .Select(c => new TransactionUserModel
+                    {
+                        Fee = c.Amount ?? 0,
+                    })
+                    .ToList();
+
+                var totalRev = bookingRoom.Sum(c => c.Fee ?? 0);
 
                 var result = new TotalTransaction
                 {
                     Transaction = list,
-                    TotalRevenue = totalOfBookingRoom,
+                    TotalRevenue = totalRev,
                     TotalCost = totalCost,
                 };
                 return new BusinessResult(Const.SUCCESS_READ, Const.SUCCESS_READ_MSG, result);
@@ -178,7 +161,6 @@ namespace StudySpace.Service.Services
             catch (Exception ex)
             {
                 return new BusinessResult(-4, ex.Message);
-
             }
         }
 

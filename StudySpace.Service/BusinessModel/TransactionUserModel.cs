@@ -6,17 +6,11 @@ using System.Threading.Tasks;
 
 namespace StudySpace.Service.BusinessModel
 {
-
-
     public class TotalTransaction
     {
-        public List<TransactionUserModel> Transaction { get; set; }
-
+        public List<TransactionUserModel>? Transaction { get; set; }
         public double TotalRevenue { get; set; }
-        public double TotalCost
-        {
-            get; set;
-        }
+        public double TotalCost { get; set; }
     }
     public class TransactionUserModel
     {
@@ -28,5 +22,4 @@ namespace StudySpace.Service.BusinessModel
         public string? Type { get; set; }
         public string? Hastag { get; set; }
     }
-
 }
