@@ -137,10 +137,18 @@ namespace StudySpace.Service.Services
                     .OrderByDescending(c => c.Date)
                     .ToList();
 
-                var totalCost = list.Sum(c => c.Fee ?? 0);
+                var paiedPack = rooms
+                    .Where(c => c.StoreId == supID && c.PaymentStatus == "PAID")
+                    .Select(c => new TransactionUserModel
+                    {
+                        Fee = c.Amount ?? 0,
+                    })
+                    .ToList();
+
+                var totalCost = paiedPack.Sum(c => c.Fee ?? 0);
 
                 var bookingRoom = rooms
-                    .Where(r => r.Booking?.Room?.Store?.Id == supID)
+                    .Where(r => r.Booking?.Room?.Store?.Id == supID && r.PaymentStatus == "PAID")
                     .Select(c => new TransactionUserModel
                     {
                         Fee = c.Amount ?? 0,
